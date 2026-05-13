@@ -1,0 +1,17 @@
+---
+import SocialLinks from './SocialLinks.astro';
+import { useTranslations, getLangFromUrl } from '~/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="mt-24 border-t border-zinc-200 bg-zinc-50/50 dark:border-zinc-800 dark:bg-zinc-900/30">
+  <div class="mx-auto flex max-w-5xl flex-col gap-4 px-4 py-8 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+    <div class="text-sm text-zinc-600 dark:text-zinc-400">
+      &copy; {year} Michel Banagouro. {t('footer.rights')}
+    </div>
+    <SocialLinks size="sm" />
+  </div>
+</footer>

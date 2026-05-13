@@ -1,0 +1,66 @@
+---
+import BaseLayout from './BaseLayout.astro';
+import { useTranslations, getLangFromUrl } from '~/i18n/utils';
+
+interface Props {
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  heroImage?: string;
+  tags?: string[];
+}
+
+const { title, description, pubDate, updatedDate, heroImage, tags = [] } = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const locale = lang === 'pt-br' ? 'pt-BR' : 'en-US';
+const formatter = new Intl.DateTimeFormat(locale, {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  type="article"
+  publishedTime={pubDate.toISOString()}
+  image={heroImage}
+>
+  <article class="mx-auto max-w-3xl">
+    <header class="mb-10">
+      <p class="mb-3 text-sm uppercase tracking-wider text-brand-600 dark:text-brand-400">
+        {t('blog.published_on')} <time datetime={pubDate.toISOString()}>{formatter.format(pubDate)}</time>
+        {updatedDate && (
+          <>
+            &middot; <span class="italic">updated {formatter.format(updatedDate)}</span>
+          </>
+        )}
+      </p>
+      <h1 class="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-5xl">
+        {title}
+      </h1>
+      <p class="mt-4 text-lg text-zinc-600 dark:text-zinc-400">{description}</p>
+      {tags.length > 0 && (
+        <ul class="mt-4 flex flex-wrap gap-2">
+          {tags.map((tag) => (
+            <li class="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
+              #{tag}
+            </li>
+          ))}
+        </ul>
+      )}
+    </header>
+
+    {heroImage && (
+      <img src={heroImage} alt="" class="mb-10 w-full rounded-xl border border-zinc-200 dark:border-zinc-800" />
+    )}
+
+    <div class="prose-custom">
+      <slot />
+    </div>
+  </article>
+</BaseLayout>

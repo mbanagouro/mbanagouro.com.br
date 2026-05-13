@@ -1,0 +1,3 @@
+# Convenience redirects. The Astro 404.astro page handles unmatched routes.
+/about      /en/about      301
+/projects   /en/projects   301

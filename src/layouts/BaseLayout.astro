@@ -1,0 +1,78 @@
+---
+import '~/styles/global.css';
+import SEO from '~/components/SEO.astro';
+import Header from '~/components/Header.astro';
+import Footer from '~/components/Footer.astro';
+import GoogleAnalytics from '~/components/GoogleAnalytics.astro';
+import MetaPixel from '~/components/MetaPixel.astro';
+import { getLangFromUrl, htmlLang } from '~/i18n/utils';
+import type { Lang } from '~/i18n/ui';
+
+interface Props {
+  title: string;
+  description: string;
+  lang?: Lang;
+  image?: string;
+  type?: 'website' | 'article';
+  publishedTime?: string;
+  noindex?: boolean;
+}
+
+const detectedLang = getLangFromUrl(Astro.url);
+const {
+  title,
+  description,
+  lang = detectedLang,
+  image,
+  type = 'website',
+  publishedTime,
+  noindex = false,
+} = Astro.props;
+---
+
+<!doctype html>
+<html lang={htmlLang(lang)}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="alternate" type="application/rss+xml" title="Michel Banagouro — Blog (PT)" href="/rss.xml" />
+    <link rel="alternate" type="application/rss+xml" title="Michel Banagouro — Blog (EN)" href="/en/rss.xml" />
+    <meta name="generator" content={Astro.generator} />
+
+    <script is:inline>
+      (function () {
+        try {
+          var saved = localStorage.getItem('theme');
+          var prefers = window.matchMedia('(prefers-color-scheme: dark)').matches;
+          if (saved === 'dark' || (!saved && prefers)) {
+            document.documentElement.classList.add('dark');
+          }
+        } catch (_) {}
+      })();
+    </script>
+
+    <SEO
+      title={title}
+      description={description}
+      lang={lang}
+      image={image}
+      type={type}
+      publishedTime={publishedTime}
+      noindex={noindex}
+    />
+
+    <GoogleAnalytics />
+    <MetaPixel />
+  </head>
+  <body class="flex min-h-screen flex-col">
+    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-brand-600 focus:px-3 focus:py-2 focus:text-white">
+      Pular para o conteúdo
+    </a>
+    <Header />
+    <main id="main" class="mx-auto w-full max-w-5xl flex-1 px-4 py-10 sm:px-6 sm:py-14">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

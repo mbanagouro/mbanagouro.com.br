@@ -1,0 +1,48 @@
+---
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import { useTranslations } from '~/i18n/utils';
+
+const lang = 'pt-br' as const;
+const t = useTranslations(lang);
+---
+
+<BaseLayout title={t('about.title')} description={t('about.subtitle')} lang={lang}>
+  <header class="mb-10">
+    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">{t('about.title')}</h1>
+    <p class="mt-3 text-lg text-zinc-600 dark:text-zinc-400">{t('about.subtitle')}</p>
+  </header>
+
+  <div class="prose-custom">
+    <p>
+      Sou <strong>Michel Banagouro</strong>, engenheiro de software com foco em ASP.NET, .NET e arquitetura web.
+      Fundador do <a href="https://aspnetpro.com.br" target="_blank" rel="noopener noreferrer">ASP.NET PRO</a>,
+      onde ajudo desenvolvedores brasileiros a evoluírem na carreira com .NET.
+    </p>
+
+    <h2>O que faço hoje</h2>
+    <ul>
+      <li>
+        <strong>ASP.NET PRO</strong> — formação técnica para desenvolvedores .NET no Brasil.
+      </li>
+      <li>
+        <strong>Conteúdo em vídeo</strong> — publico no <a href="https://www.youtube.com/@mbanagouro" target="_blank" rel="noopener noreferrer">YouTube</a>
+        sobre desenvolvimento, arquitetura e IA aplicada.
+      </li>
+      <li>
+        <strong>Open source</strong> — mantenho projetos no <a href="https://github.com/mbanagouro" target="_blank" rel="noopener noreferrer">GitHub</a>.
+      </li>
+    </ul>
+
+    <h2>Trajetória</h2>
+    <p>
+      <em>Em construção.</em> Edite este conteúdo em <code>src/pages/sobre.astro</code> com sua biografia,
+      timeline de carreira, empresas em que trabalhou, palestras, livros recomendados etc.
+    </p>
+
+    <h2>Como podemos conversar</h2>
+    <p>
+      Para parcerias, mentorias ou imprensa, me chame pelos canais listados na página de
+      <a href="/links">links</a>.
+    </p>
+  </div>
+</BaseLayout>
