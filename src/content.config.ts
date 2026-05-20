@@ -27,7 +27,32 @@ const blogEn = defineCollection({
   }),
 });
 
+const eventSchema = z.object({
+  date: z.coerce.date(),
+  title: z.string(),
+  subtitle: z.string().optional(),
+  abstract: z.string().optional(),
+  role: z.enum(['speaker', 'instructor', 'panelist']),
+  city: z.string(),
+  online: z.boolean().default(false),
+  featured: z.boolean().default(false),
+  url: z.string().optional(),
+  resources: z.array(z.object({ label: z.string(), url: z.string() })).default([]),
+});
+
+const eventsPt = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/events/pt' }),
+  schema: eventSchema,
+});
+
+const eventsEn = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/events/en' }),
+  schema: eventSchema,
+});
+
 export const collections = {
   'blog-pt': blogPt,
   'blog-en': blogEn,
+  'events-pt': eventsPt,
+  'events-en': eventsEn,
 };

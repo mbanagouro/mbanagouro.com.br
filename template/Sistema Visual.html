@@ -1,0 +1,1174 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Sistema Visual — mbanagouro.com.br</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="styles/tokens.css" />
+<link rel="stylesheet" href="styles/base.css" />
+<style>
+  /* Page-specific layout for the visual-system doc */
+  body { background: var(--ink-50); }
+
+  /* ── Doc header ── */
+  .doc-header {
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .doc-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--s-5) 0;
+  }
+  .doc-mark {
+    display: flex;
+    align-items: center;
+    gap: var(--s-3);
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    color: var(--text);
+  }
+  .doc-mark__dot {
+    width: 10px; height: 10px;
+    border-radius: 2px;
+    background: var(--accent);
+  }
+  .doc-meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--text-muted);
+    display: flex; gap: var(--s-5);
+  }
+  .doc-meta span strong { color: var(--text); font-weight: 500; }
+
+  /* ── Hero ── */
+  .vs-hero {
+    padding: var(--s-9) 0 var(--s-8);
+    border-bottom: 1px solid var(--border);
+  }
+  .vs-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-7);
+  }
+  @media (min-width: 900px) {
+    .vs-hero__grid { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--s-9); align-items: end; }
+  }
+  .vs-hero h1 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: var(--lh-tight);
+    letter-spacing: var(--tracking-display);
+    color: var(--text);
+    margin-top: var(--s-5);
+  }
+  .vs-hero h1 em {
+    font-style: italic;
+    color: var(--ink-700);
+  }
+  .vs-hero p {
+    font-size: var(--fs-18);
+    line-height: var(--lh-prose);
+    color: var(--ink-600);
+    max-width: 52ch;
+    margin-top: var(--s-5);
+  }
+  .vs-hero__aside {
+    border-left: 1px solid var(--border);
+    padding-left: var(--s-5);
+    padding-bottom: var(--s-2);
+  }
+  .vs-hero__aside dl {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    row-gap: var(--s-3);
+    column-gap: var(--s-4);
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    line-height: 1.5;
+  }
+  .vs-hero__aside dt { color: var(--text-subtle); }
+  .vs-hero__aside dd { color: var(--text); }
+
+  /* ── Section frame ── */
+  section.vs {
+    padding: var(--s-9) 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .vs__head {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-4);
+    margin-bottom: var(--s-7);
+    padding-bottom: var(--s-5);
+    border-bottom: 1px dashed var(--border-strong);
+  }
+  @media (min-width: 900px) {
+    .vs__head { grid-template-columns: 240px 1fr; gap: var(--s-7); align-items: baseline; }
+  }
+  .vs__num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    color: var(--text-subtle);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+  .vs__title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--fs-32);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.15;
+  }
+  .vs__title span {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--text-muted);
+  }
+  .vs__lede {
+    margin-top: var(--s-4);
+    font-size: var(--fs-16);
+    line-height: var(--lh-prose);
+    color: var(--ink-600);
+    max-width: 62ch;
+  }
+
+  /* ── 01: Color ── */
+  .swatch-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+    gap: var(--s-3);
+  }
+  .swatch {
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .swatch__chip {
+    height: 88px;
+    border-bottom: 1px solid var(--border);
+  }
+  .swatch__meta {
+    padding: var(--s-3) var(--s-4) var(--s-4);
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    line-height: 1.5;
+  }
+  .swatch__name { color: var(--text); display: block; }
+  .swatch__val  { color: var(--text-muted); display: block; }
+
+  .palette-row + .palette-row { margin-top: var(--s-6); }
+  .palette-row__head {
+    display: flex; align-items: baseline; gap: var(--s-4);
+    margin-bottom: var(--s-3);
+    padding-bottom: var(--s-2);
+  }
+  .palette-row__title {
+    font-weight: 600; font-size: var(--fs-15);
+  }
+  .palette-row__note {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted);
+  }
+
+  .accent-compare {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-4);
+    margin-top: var(--s-6);
+  }
+  @media (min-width: 700px) { .accent-compare { grid-template-columns: 1fr 1fr; } }
+  .accent-card {
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .accent-card__bar {
+    height: 96px;
+    display: flex; align-items: flex-end;
+    padding: var(--s-4);
+    color: var(--ink-950);
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+  }
+  .accent-card__body {
+    padding: var(--s-5);
+    display: grid; gap: var(--s-3);
+  }
+  .accent-card__title {
+    font-weight: 600; font-size: var(--fs-18);
+    letter-spacing: var(--tracking-tight);
+    display: flex; align-items: center; gap: var(--s-3);
+  }
+  .accent-card__title .pick {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--accent-700);
+    background: var(--accent-50);
+    border: 1px solid var(--accent-300);
+    padding: 2px 8px; border-radius: var(--r-pill);
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-weight: 500;
+  }
+  .accent-card__copy {
+    font-size: var(--fs-14);
+    color: var(--ink-600);
+    line-height: var(--lh-prose);
+  }
+  .accent-card__demo {
+    display: flex; gap: var(--s-3); flex-wrap: wrap;
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--border);
+  }
+  .accent-card.amber .accent-card__bar { background: oklch(72% 0.16 65); }
+  .accent-card.blue  .accent-card__bar { background: oklch(60% 0.18 250); color: white; }
+  .accent-card.blue  .btn-acc { background: oklch(60% 0.18 250); color: white; }
+  .accent-card.blue  .btn-acc:hover { background: oklch(52% 0.18 250); }
+
+  /* ── 02: Type ── */
+  .type-spec {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-5);
+  }
+  .type-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-3);
+    padding: var(--s-5) 0;
+    border-top: 1px solid var(--border);
+  }
+  .type-row:first-child { border-top: 0; padding-top: 0; }
+  @media (min-width: 900px) {
+    .type-row { grid-template-columns: 180px 1fr; gap: var(--s-7); align-items: baseline; }
+  }
+  .type-row__meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--text-muted);
+    line-height: 1.6;
+  }
+  .type-row__meta strong { color: var(--text); font-weight: 500; display: block; margin-bottom: 2px; }
+  .type-row__demo { color: var(--text); }
+
+  .demo-h1 { font-family: var(--font-display); font-weight: 400; font-size: clamp(2.5rem, 5.5vw, 4rem); line-height: var(--lh-tight); letter-spacing: var(--tracking-display); }
+  .demo-h1 em { font-style: italic; color: var(--ink-700); }
+  .demo-h2 { font-family: var(--font-sans); font-weight: 600; font-size: clamp(1.75rem, 3vw, 2.5rem); line-height: 1.15; letter-spacing: var(--tracking-tight); }
+  .demo-h3 { font-family: var(--font-sans); font-weight: 600; font-size: var(--fs-24); line-height: 1.25; letter-spacing: var(--tracking-tight); }
+  .demo-eyebrow { font-family: var(--font-sans); font-size: var(--fs-12); font-weight: 500; letter-spacing: var(--tracking-wide); text-transform: uppercase; color: var(--text-muted); }
+  .demo-lede { font-size: var(--fs-20); line-height: 1.55; color: var(--ink-700); max-width: 50ch; }
+  .demo-body { font-size: var(--fs-16); line-height: var(--lh-prose); color: var(--ink-700); max-width: 62ch; }
+  .demo-small { font-size: var(--fs-14); color: var(--text-muted); }
+  .demo-mono { font-family: var(--font-mono); font-size: var(--fs-13); color: var(--ink-700); }
+  .demo-prose { font-family: var(--font-sans); font-size: 1.0625rem; line-height: var(--lh-prose); color: var(--ink-700); max-width: var(--prose-max); }
+
+  /* ── 03: Spacing ── */
+  .space-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: var(--s-3);
+  }
+  .space-cell {
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    padding: var(--s-4);
+    display: grid; gap: var(--s-3);
+  }
+  .space-cell__bar {
+    background: var(--ink-900);
+    border-radius: 2px;
+    height: 8px;
+  }
+  .space-cell__meta {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--text-muted);
+  }
+  .space-cell__meta strong { color: var(--text); font-weight: 500; }
+
+  /* ── 04: Buttons ── */
+  .btn {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    padding: 10px 18px;
+    font-size: var(--fs-14);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    border-radius: var(--r-md);
+    border: 1px solid transparent;
+    transition: background var(--dur-fast) var(--ease-out),
+                color var(--dur-fast) var(--ease-out),
+                border-color var(--dur-fast) var(--ease-out),
+                transform var(--dur-fast) var(--ease-out);
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .btn:active { transform: translateY(1px); }
+  .btn svg { width: 16px; height: 16px; stroke-width: 1.75; }
+
+  .btn-primary { background: var(--ink-900); color: var(--ink-0); }
+  .btn-primary:hover { background: var(--ink-800); }
+
+  .btn-acc { background: var(--accent); color: var(--accent-fg); }
+  .btn-acc:hover { background: var(--accent-hover); }
+
+  .btn-secondary { background: var(--surface); color: var(--text); border-color: var(--border-strong); }
+  .btn-secondary:hover { border-color: var(--ink-600); background: var(--surface-alt); }
+
+  .btn-ghost { background: transparent; color: var(--text); padding-left: 8px; padding-right: 8px; }
+  .btn-ghost:hover { color: var(--accent-700); }
+
+  .btn-inverse { background: var(--ink-0); color: var(--ink-900); }
+  .btn-inverse:hover { background: var(--ink-100); }
+
+  .btn-sm { padding: 6px 12px; font-size: var(--fs-13); border-radius: var(--r-sm); }
+  .btn-lg { padding: 14px 22px; font-size: var(--fs-15); border-radius: var(--r-md); }
+
+  .btn-grid {
+    display: grid; gap: var(--s-5);
+  }
+  .btn-row { display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center; }
+  .btn-row__label {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted); min-width: 140px;
+  }
+  .btn-bg-inverse {
+    background: var(--ink-950);
+    padding: var(--s-5);
+    border-radius: var(--r-lg);
+    display: flex; flex-wrap: wrap; gap: var(--s-3); align-items: center;
+  }
+  .btn-bg-inverse .btn-row__label { color: var(--ink-400); }
+
+  /* ── 05: Cards ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-5);
+  }
+  @media (min-width: 760px) { .card-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1080px) { .card-grid { grid-template-columns: 1fr 1fr 1fr; } }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: var(--s-6);
+    display: grid; gap: var(--s-4);
+    transition: border-color var(--dur-base) var(--ease-out),
+                transform var(--dur-base) var(--ease-out);
+  }
+  .card:hover { border-color: var(--border-strong); }
+  .card__icon {
+    width: 36px; height: 36px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-sm);
+    display: grid; place-items: center;
+    color: var(--ink-800);
+  }
+  .card__icon svg { width: 18px; height: 18px; stroke-width: 1.5; }
+  .card__title { font-weight: 600; font-size: var(--fs-18); letter-spacing: var(--tracking-tight); }
+  .card__copy { font-size: var(--fs-14); line-height: var(--lh-prose); color: var(--ink-600); }
+  .card__foot {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted);
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+  }
+
+  /* Featured card variant — para a seção ASP.NET PRO */
+  .card-featured {
+    grid-column: 1 / -1;
+    background: var(--ink-950);
+    color: var(--ink-100);
+    border-color: transparent;
+    padding: var(--s-7);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-5);
+  }
+  @media (min-width: 800px) { .card-featured { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); align-items: end; } }
+  .card-featured .eyebrow { color: var(--accent-300); }
+  .card-featured h3 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    letter-spacing: var(--tracking-display);
+    line-height: 1.1;
+    color: var(--ink-0);
+  }
+  .card-featured h3 em { font-style: italic; color: var(--accent-300); }
+  .card-featured p { color: var(--ink-300); font-size: var(--fs-15); line-height: var(--lh-prose); max-width: 50ch; }
+  .card-featured .demo-list {
+    list-style: none;
+    display: grid; gap: var(--s-2);
+    font-size: var(--fs-14); color: var(--ink-200);
+  }
+  .card-featured .demo-list li { display: flex; gap: var(--s-3); align-items: flex-start; }
+  .card-featured .demo-list li::before {
+    content: ""; width: 6px; height: 6px; background: var(--accent); border-radius: 2px;
+    margin-top: 8px;
+  }
+
+  /* ── 06: Iconography ── */
+  .icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+    gap: var(--s-2);
+  }
+  .icon-cell {
+    border: 1px solid var(--border);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    padding: var(--s-4);
+    display: grid; gap: var(--s-3); place-items: center;
+    text-align: center;
+  }
+  .icon-cell svg { width: 24px; height: 24px; stroke-width: 1.5; color: var(--ink-800); }
+  .icon-cell span {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted);
+  }
+
+  /* ── 07: Chrome — sample header / footer ── */
+  .sample-frame {
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .sample-frame__bar {
+    background: var(--ink-100);
+    padding: var(--s-2) var(--s-4);
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: var(--s-3);
+  }
+  .sample-frame__bar::before {
+    content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ink-300);
+    box-shadow: 14px 0 0 var(--ink-300), 28px 0 0 var(--ink-300);
+  }
+  .sample-frame__bar span { margin-left: 36px; }
+
+  /* Sample site nav */
+  .site-nav {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: var(--s-4) var(--s-6);
+    border-bottom: 1px solid var(--border);
+  }
+  .site-nav__brand {
+    display: flex; align-items: center; gap: var(--s-3);
+    font-weight: 600; letter-spacing: var(--tracking-tight);
+  }
+  .site-nav__brand-mark {
+    width: 28px; height: 28px;
+    background: var(--ink-900);
+    color: var(--ink-0);
+    display: grid; place-items: center;
+    font-family: var(--font-mono); font-size: var(--fs-13); font-weight: 600;
+    border-radius: var(--r-sm);
+  }
+  .site-nav__links {
+    display: flex; gap: var(--s-5);
+    font-size: var(--fs-14); color: var(--ink-700);
+  }
+  .site-nav__links a:hover { color: var(--accent-700); }
+  .site-nav__cta { display: flex; gap: var(--s-3); }
+
+  /* Sample footer */
+  .site-foot {
+    background: var(--ink-950);
+    color: var(--ink-300);
+    padding: var(--s-7) var(--s-6) var(--s-5);
+    display: grid;
+    gap: var(--s-6);
+  }
+  @media (min-width: 720px) {
+    .site-foot { grid-template-columns: 2fr 1fr 1fr 1fr; }
+  }
+  .site-foot h4 {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    text-transform: uppercase; letter-spacing: var(--tracking-wide);
+    color: var(--ink-400); font-weight: 500;
+    margin-bottom: var(--s-3);
+  }
+  .site-foot ul { list-style: none; display: grid; gap: var(--s-2); font-size: var(--fs-14); }
+  .site-foot a:hover { color: var(--ink-0); }
+  .site-foot__brand {
+    font-family: var(--font-display);
+    font-size: var(--fs-28);
+    line-height: 1.1;
+    color: var(--ink-0);
+    letter-spacing: var(--tracking-display);
+    max-width: 28ch;
+    margin-bottom: var(--s-4);
+  }
+  .site-foot__copy {
+    grid-column: 1 / -1;
+    border-top: 1px solid oklch(28% 0.01 65);
+    padding-top: var(--s-4);
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--ink-500);
+  }
+
+  /* Form bits */
+  .input {
+    width: 100%;
+    padding: 10px 12px;
+    background: var(--surface);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
+    font: inherit; font-size: var(--fs-14);
+    color: var(--text);
+    transition: border-color var(--dur-fast), box-shadow var(--dur-fast);
+  }
+  .input:focus {
+    outline: none;
+    border-color: var(--ink-700);
+    box-shadow: 0 0 0 3px oklch(72% 0.16 65 / 0.18);
+  }
+
+  /* Chip / tag */
+  .chip {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    padding: 4px 10px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-pill);
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--ink-700);
+    background: var(--surface);
+  }
+  .chip--solid { background: var(--ink-900); color: var(--ink-100); border-color: var(--ink-900); }
+  .chip--accent { background: var(--accent-50); color: var(--accent-700); border-color: var(--accent-300); }
+
+  .chip-row { display: flex; flex-wrap: wrap; gap: var(--s-2); }
+
+  /* ── Decision strip ── */
+  .decisions {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: var(--s-6);
+    display: grid;
+    gap: var(--s-5);
+  }
+  @media (min-width: 800px) { .decisions { grid-template-columns: 1fr 1fr; } }
+  .decision__label {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    text-transform: uppercase; letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+    margin-bottom: var(--s-2);
+  }
+  .decision__value {
+    font-weight: 600; font-size: var(--fs-18);
+    letter-spacing: var(--tracking-tight);
+  }
+  .decision__copy {
+    font-size: var(--fs-14); line-height: var(--lh-prose);
+    color: var(--ink-600); margin-top: var(--s-2);
+  }
+
+  /* TOC strip below header */
+  .toc {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 10;
+  }
+  .toc__inner {
+    display: flex; gap: var(--s-5);
+    overflow-x: auto;
+    padding: var(--s-3) 0;
+    font-family: var(--font-mono); font-size: var(--fs-13);
+    scrollbar-width: none;
+  }
+  .toc__inner::-webkit-scrollbar { display: none; }
+  .toc a {
+    color: var(--text-muted);
+    white-space: nowrap;
+    transition: color var(--dur-fast);
+  }
+  .toc a:hover { color: var(--text); }
+  .toc a strong { color: var(--text-subtle); font-weight: 400; margin-right: 6px; }
+
+  /* Quote / closing */
+  .closing {
+    padding: var(--s-9) 0;
+  }
+  .closing__inner {
+    max-width: 720px;
+    margin: 0 auto;
+    text-align: center;
+    display: grid; gap: var(--s-5);
+  }
+  .closing h2 {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-display);
+  }
+  .closing h2 em { font-style: italic; color: var(--ink-600); }
+  .closing p {
+    font-size: var(--fs-16); line-height: var(--lh-prose);
+    color: var(--ink-600);
+  }
+  .closing__actions { display: flex; gap: var(--s-3); justify-content: center; flex-wrap: wrap; }
+</style>
+</head>
+<body data-screen-label="00 Sistema Visual">
+
+  <!-- ────────────────────────────── HEADER ────────────────────────────── -->
+  <header class="doc-header">
+    <div class="container doc-header__inner">
+      <div class="doc-mark">
+        <span class="doc-mark__dot" aria-hidden="true"></span>
+        <span>mbanagouro.com.br&nbsp;&nbsp;·&nbsp;&nbsp;Sistema visual&nbsp;<span style="color:var(--text-subtle)">v0.1</span></span>
+      </div>
+      <div class="doc-meta">
+        <span><strong>Status</strong> Para validação</span>
+        <span><strong>Autor</strong> M. Banagouro</span>
+        <span><strong>Data</strong> Mai 2026</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- ────────────────────────────── TOC ────────────────────────────── -->
+  <nav class="toc">
+    <div class="container">
+      <div class="toc__inner">
+        <a href="#decisoes"><strong>00</strong>Decisões</a>
+        <a href="#cor"><strong>01</strong>Cor</a>
+        <a href="#tipografia"><strong>02</strong>Tipografia</a>
+        <a href="#espacamento"><strong>03</strong>Espaçamento</a>
+        <a href="#botoes"><strong>04</strong>Botões</a>
+        <a href="#cards"><strong>05</strong>Cards</a>
+        <a href="#icones"><strong>06</strong>Ícones</a>
+        <a href="#chrome"><strong>07</strong>Chrome do site</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ────────────────────────────── HERO ────────────────────────────── -->
+  <section class="vs-hero">
+    <div class="container">
+      <div class="vs-hero__grid">
+        <div>
+          <span class="t-eyebrow">Sistema visual · Proposta v0.1</span>
+          <h1>Sóbrio, técnico, brasileiro. <em>Sem virar SaaS americano.</em></h1>
+          <p>Um sistema monocromático com um único acento âmbar. A serifa entra apenas em momentos editoriais — H1 da home, capa de post, fim de seção — para dar personalidade sem virar revista. Tudo o resto é Figtree, geométrica e direta, no peso certo.</p>
+        </div>
+        <aside class="vs-hero__aside">
+          <dl>
+            <dt>Domínio</dt><dd>mbanagouro.com.br</dd>
+            <dt>Stack</dt><dd>HTML estático + CSS puro</dd>
+            <dt>Deploy</dt><dd>Cloudflare Pages</dd>
+            <dt>Referências</dt><dd>Linear / Stripe / Vercel — porém mais quente e editorial</dd>
+            <dt>Não-referências</dt><dd>SaaS gradient, glassmorphism, 3D, ilustração genérica</dd>
+          </dl>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── 00 · DECISÕES ────────────────────────────── -->
+  <section class="vs" id="decisoes">
+    <div class="container">
+      <div class="vs__head">
+        <div class="vs__num">— 00 / Decisões</div>
+        <div>
+          <h2 class="vs__title">Resumo das escolhas <span>para você aprovar.</span></h2>
+          <p class="vs__lede">Toque qualquer uma e eu refaço. Tudo abaixo deriva desses cinco eixos.</p>
+        </div>
+      </div>
+
+      <div class="decisions">
+        <div>
+          <div class="decision__label">01 · Acento</div>
+          <div class="decision__value">Âmbar <span style="font-family:var(--font-mono); font-size:var(--fs-14); color:var(--text-muted); font-weight:400; margin-left:8px;">oklch(72% .16 65)</span></div>
+          <div class="decision__copy">Quente, não-genérico, sinaliza craft. Aparece só em CTA primário, marcadores e estados ativos. Comparação com a alternativa azul-elétrico mais abaixo.</div>
+        </div>
+        <div>
+          <div class="decision__label">02 · Tipografia</div>
+          <div class="decision__value">Figtree · Instrument Serif</div>
+          <div class="decision__copy">Figtree em todo o produto. Instrument Serif só em H1 da home, eyebrows editoriais e capa de post — usada com parcimônia, italic-friendly.</div>
+        </div>
+        <div>
+          <div class="decision__label">03 · CSS</div>
+          <div class="decision__value">CSS puro com custom properties</div>
+          <div class="decision__copy">~6KB no total, zero runtime. Tailwind CDN tem custo desnecessário num site institucional servido em Cloudflare Pages.</div>
+        </div>
+        <div>
+          <div class="decision__label">04 · Ícones</div>
+          <div class="decision__value">Heroicons outline · 1.5px</div>
+          <div class="decision__copy">Mesma família que você já usa na Leanwork. Inline SVG, sem dependência externa.</div>
+        </div>
+        <div>
+          <div class="decision__label">05 · Densidade</div>
+          <div class="decision__value">Generosa · escala 4px</div>
+          <div class="decision__copy">Whitespace abundante. Limite de coluna: 680px para leitura, 1200px para o site. Hierarquia por escala + peso, não por cor.</div>
+        </div>
+        <div>
+          <div class="decision__label">06 · Microinterações</div>
+          <div class="decision__value">120–200ms · ease-out</div>
+          <div class="decision__copy">Hover discreto (mudança de borda, não de fundo). Sem parallax, sem reveals no scroll. Reduzido para usuários com prefers-reduced-motion.</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── 01 · COR ────────────────────────────── -->
+  <section class="vs" id="cor">
+    <div class="container">
+      <div class="vs__head">
+        <div class="vs__num">— 01 / Cor</div>
+        <div>
+          <h2 class="vs__title">Neutros mornos <span>+ um único acento.</span></h2>
+          <p class="vs__lede">Todos os neutros compartilham um leve viés de 65° (warm). Acentos vêm da mesma família — só lightness muda. Nada de saturação acima de 0.012 nos neutros.</p>
+        </div>
+      </div>
+
+      <!-- Neutrals -->
+      <div class="palette-row">
+        <div class="palette-row__head">
+          <div class="palette-row__title">Neutros · Ink</div>
+          <div class="palette-row__note">oklch(L · 0.01 · 65) — warm-tinted grayscale</div>
+        </div>
+        <div class="swatch-grid">
+          <div class="swatch"><div class="swatch__chip" style="background:#ffffff; border-bottom-color:var(--border)"></div><div class="swatch__meta"><span class="swatch__name">ink-0</span><span class="swatch__val">#ffffff</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(98.5% 0.003 65)"></div><div class="swatch__meta"><span class="swatch__name">ink-50</span><span class="swatch__val">bg padrão</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(96.2% 0.004 65)"></div><div class="swatch__meta"><span class="swatch__name">ink-100</span><span class="swatch__val">surface alt</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(92.5% 0.005 65)"></div><div class="swatch__meta"><span class="swatch__name">ink-200</span><span class="swatch__val">hairline</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(85% 0.006 65)"></div><div class="swatch__meta"><span class="swatch__name">ink-300</span><span class="swatch__val">border forte</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(68% 0.008 65)"></div><div class="swatch__meta"><span class="swatch__name">ink-400</span><span class="swatch__val">terciário</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(54% 0.009 65)"></div><div class="swatch__meta"><span class="swatch__name">ink-500</span><span class="swatch__val">secundário</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(42% 0.01 65)"></div><div class="swatch__meta"><span class="swatch__name">ink-600</span><span class="swatch__val">corpo</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(30% 0.011 65)"></div><div class="swatch__meta"><span class="swatch__name">ink-700</span><span class="swatch__val">forte</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(20% 0.012 65)"></div><div class="swatch__meta"><span class="swatch__name">ink-800</span><span class="swatch__val">surface escura</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(14% 0.012 65)"></div><div class="swatch__meta"><span class="swatch__name">ink-900</span><span class="swatch__val">texto base</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(9% 0.011 65)"></div><div class="swatch__meta"><span class="swatch__name">ink-950</span><span class="swatch__val">footer / inverse</span></div></div>
+        </div>
+      </div>
+
+      <!-- Accent (recommended) -->
+      <div class="palette-row">
+        <div class="palette-row__head">
+          <div class="palette-row__title">Acento · Âmbar (proposto)</div>
+          <div class="palette-row__note">oklch(L · 0.04–0.16 · 65) — mesma matiz dos neutros</div>
+        </div>
+        <div class="swatch-grid">
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(96% 0.04 65)"></div><div class="swatch__meta"><span class="swatch__name">accent-50</span><span class="swatch__val">bg tag</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(90% 0.08 65)"></div><div class="swatch__meta"><span class="swatch__name">accent-100</span><span class="swatch__val">surface</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(82% 0.13 65)"></div><div class="swatch__meta"><span class="swatch__name">accent-300</span><span class="swatch__val">border</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(72% 0.16 65)"></div><div class="swatch__meta"><span class="swatch__name">accent-500 ★</span><span class="swatch__val">primário</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(64% 0.15 65)"></div><div class="swatch__meta"><span class="swatch__name">accent-600</span><span class="swatch__val">hover</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(54% 0.13 65)"></div><div class="swatch__meta"><span class="swatch__name">accent-700</span><span class="swatch__val">texto/link</span></div></div>
+          <div class="swatch"><div class="swatch__chip" style="background:oklch(32% 0.08 65)"></div><div class="swatch__meta"><span class="swatch__name">accent-900</span><span class="swatch__val">dark accent</span></div></div>
+        </div>
+      </div>
+
+      <!-- Comparison cards -->
+      <div class="accent-compare">
+        <div class="accent-card amber">
+          <div class="accent-card__bar">oklch(72% 0.16 65) · #E6A23D</div>
+          <div class="accent-card__body">
+            <div class="accent-card__title">Âmbar <span class="pick">Recomendado</span></div>
+            <div class="accent-card__copy">Distingue do azul SaaS padrão. Pesa em um único CTA por dobra. Funciona bem em fundo escuro (footer, seção ASP.NET PRO). Mais "craft" do que "tech genérico".</div>
+            <div class="accent-card__demo">
+              <button class="btn btn-acc">Inscreva-se no ASP.NET PRO</button>
+              <span class="chip chip--accent">acento</span>
+            </div>
+          </div>
+        </div>
+        <div class="accent-card blue">
+          <div class="accent-card__bar">oklch(60% 0.18 250) · #2A6FDB</div>
+          <div class="accent-card__body">
+            <div class="accent-card__title">Azul-elétrico <span class="pick" style="background:oklch(95% 0.04 250); color:oklch(40% 0.18 250); border-color:oklch(80% 0.1 250)">Alternativa</span></div>
+            <div class="accent-card__copy">Mais convencional, lê imediatamente como "tech". Custo: você vai parecer com Vercel/Linear/Stripe. Indicado se você prefere conformidade ao território da categoria.</div>
+            <div class="accent-card__demo">
+              <button class="btn btn-acc">Inscreva-se no ASP.NET PRO</button>
+              <span class="chip" style="background:oklch(95% 0.04 250); color:oklch(40% 0.18 250); border-color:oklch(80% 0.1 250)">acento</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── 02 · TIPOGRAFIA ────────────────────────────── -->
+  <section class="vs" id="tipografia">
+    <div class="container">
+      <div class="vs__head">
+        <div class="vs__num">— 02 / Tipografia</div>
+        <div>
+          <h2 class="vs__title">Figtree no corpo, <span>Instrument Serif em momentos editoriais.</span></h2>
+          <p class="vs__lede">Inter e Fraunces estão fora — saturados demais no mercado. Figtree (sans humanista geométrica) carrega o produto. Instrument Serif aparece em 3 lugares no site: H1 da home, capa do post, fechamento de seção. Em todo o resto, Figtree 700 cumpre o papel de display.</p>
+        </div>
+      </div>
+
+      <div class="type-spec">
+
+        <div class="type-row">
+          <div class="type-row__meta"><strong>Display H1</strong>Instrument Serif · 400/italic<br/>72px · -2.5% · 1.05</div>
+          <div class="type-row__demo">
+            <div class="demo-h1">Software de produção, <em>não slides bonitos.</em></div>
+          </div>
+        </div>
+
+        <div class="type-row">
+          <div class="type-row__meta"><strong>Section H2</strong>Figtree · 600<br/>40px · -2% · 1.15</div>
+          <div class="type-row__demo">
+            <div class="demo-h2">11 anos entregando .NET em produção</div>
+          </div>
+        </div>
+
+        <div class="type-row">
+          <div class="type-row__meta"><strong>Card / H3</strong>Figtree · 600<br/>24px · -2% · 1.25</div>
+          <div class="type-row__demo">
+            <div class="demo-h3">Arquitetura para sistemas que precisam durar</div>
+          </div>
+        </div>
+
+        <div class="type-row">
+          <div class="type-row__meta"><strong>Eyebrow</strong>Figtree · 500 · uppercase<br/>12px · +8% tracking</div>
+          <div class="type-row__demo">
+            <div class="demo-eyebrow">CTO / Cofundador · Leanwork Group</div>
+          </div>
+        </div>
+
+        <div class="type-row">
+          <div class="type-row__meta"><strong>Lede</strong>Figtree · 400<br/>20px · 1.55</div>
+          <div class="type-row__demo">
+            <div class="demo-lede">Trabalho com arquitetura de software corporativo há mais de uma década. Construo, ensino, e ocasionalmente subo no palco para falar sobre .NET de verdade.</div>
+          </div>
+        </div>
+
+        <div class="type-row">
+          <div class="type-row__meta"><strong>Body</strong>Figtree · 400<br/>16px · 1.5–1.7</div>
+          <div class="type-row__demo">
+            <div class="demo-body">O ASP.NET PRO nasceu de uma constatação simples: cursos brasileiros de .NET costumam parar onde o problema real começa. A maioria ensina sintaxe e templates de Visual Studio; quase ninguém mostra como sustentar um sistema crítico em produção por cinco, dez anos. Esse é o vazio que tento preencher — com material denso, baseado em decisões reais de arquitetura.</div>
+          </div>
+        </div>
+
+        <div class="type-row">
+          <div class="type-row__meta"><strong>Prose (post)</strong>Figtree · 400<br/>17px · 1.7 · max 680px</div>
+          <div class="type-row__demo">
+            <div class="demo-prose">Antes de discutir CQRS, vale revisitar o que realmente é "complexidade essencial" num sistema de domínio. Boa parte das implementações que vejo são respostas a um problema acidental — geralmente acoplamento — disfarçado de problema arquitetural.</div>
+          </div>
+        </div>
+
+        <div class="type-row">
+          <div class="type-row__meta"><strong>Small / Meta</strong>Figtree · 400<br/>14px</div>
+          <div class="type-row__demo">
+            <div class="demo-small">14 de maio de 2026 · 8 min de leitura · Arquitetura</div>
+          </div>
+        </div>
+
+        <div class="type-row">
+          <div class="type-row__meta"><strong>Mono / Code</strong>JetBrains Mono · 400<br/>13px</div>
+          <div class="type-row__demo">
+            <div class="demo-mono">$ dotnet new webapi --use-minimal-apis --aot</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── 03 · ESPAÇAMENTO ────────────────────────────── -->
+  <section class="vs" id="espacamento">
+    <div class="container">
+      <div class="vs__head">
+        <div class="vs__num">— 03 / Espaçamento</div>
+        <div>
+          <h2 class="vs__title">Escala 4px · <span>generosa por padrão.</span></h2>
+          <p class="vs__lede">Onze passos cobrem do gap entre chips (4px) até a respiração entre seções da home (128px). Densidade próxima à do Linear, não à do GitHub.</p>
+        </div>
+      </div>
+
+      <div class="space-grid">
+        <div class="space-cell"><div class="space-cell__bar" style="width:4px"></div><div class="space-cell__meta"><strong>s-1</strong>4px · inline</div></div>
+        <div class="space-cell"><div class="space-cell__bar" style="width:8px"></div><div class="space-cell__meta"><strong>s-2</strong>8px · ícone↔texto</div></div>
+        <div class="space-cell"><div class="space-cell__bar" style="width:12px"></div><div class="space-cell__meta"><strong>s-3</strong>12px · stack</div></div>
+        <div class="space-cell"><div class="space-cell__bar" style="width:16px"></div><div class="space-cell__meta"><strong>s-4</strong>16px · padding base</div></div>
+        <div class="space-cell"><div class="space-cell__bar" style="width:24px"></div><div class="space-cell__meta"><strong>s-5</strong>24px · cluster</div></div>
+        <div class="space-cell"><div class="space-cell__bar" style="width:32px"></div><div class="space-cell__meta"><strong>s-6</strong>32px · card</div></div>
+        <div class="space-cell"><div class="space-cell__bar" style="width:48px"></div><div class="space-cell__meta"><strong>s-7</strong>48px · subseção</div></div>
+        <div class="space-cell"><div class="space-cell__bar" style="width:64px"></div><div class="space-cell__meta"><strong>s-8</strong>64px · bloco</div></div>
+        <div class="space-cell"><div class="space-cell__bar" style="width:96px"></div><div class="space-cell__meta"><strong>s-9</strong>96px · entre seções</div></div>
+        <div class="space-cell"><div class="space-cell__bar" style="width:128px"></div><div class="space-cell__meta"><strong>s-10</strong>128px · seção grande</div></div>
+        <div class="space-cell"><div class="space-cell__bar" style="width:160px"></div><div class="space-cell__meta"><strong>s-11</strong>160px · hero</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── 04 · BOTÕES ────────────────────────────── -->
+  <section class="vs" id="botoes">
+    <div class="container">
+      <div class="vs__head">
+        <div class="vs__num">— 04 / Botões</div>
+        <div>
+          <h2 class="vs__title">Quatro variantes, <span>uma hierarquia clara.</span></h2>
+          <p class="vs__lede">Acento (amber) só para a conversão principal — ASP.NET PRO. Preto sólido para CTAs secundários mas decisivos. Outline e ghost para todo o resto.</p>
+        </div>
+      </div>
+
+      <div class="btn-grid">
+        <div class="btn-row">
+          <span class="btn-row__label">primário · acento</span>
+          <button class="btn btn-acc btn-lg">Inscreva-se no ASP.NET PRO
+            <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="btn btn-acc">Garantir vaga</button>
+          <button class="btn btn-acc btn-sm">CTA pequeno</button>
+        </div>
+
+        <div class="btn-row">
+          <span class="btn-row__label">primário · preto</span>
+          <button class="btn btn-primary btn-lg">Fale comigo</button>
+          <button class="btn btn-primary">Ver todos os posts</button>
+          <button class="btn btn-primary btn-sm">Saiba mais</button>
+        </div>
+
+        <div class="btn-row">
+          <span class="btn-row__label">secundário · outline</span>
+          <button class="btn btn-secondary btn-lg">Ver agenda completa</button>
+          <button class="btn btn-secondary">Baixar slides
+            <svg viewBox="0 0 24 24"><path d="M12 3v13.5m0 0L8.25 12.75M12 16.5l3.75-3.75M21 21H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="btn btn-secondary btn-sm">Filtrar</button>
+        </div>
+
+        <div class="btn-row">
+          <span class="btn-row__label">ghost · link</span>
+          <button class="btn btn-ghost">Ver tudo
+            <svg viewBox="0 0 24 24"><path d="M8.25 4.5l7.5 7.5-7.5 7.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="btn btn-ghost">Continuar lendo</button>
+        </div>
+
+        <div class="btn-bg-inverse">
+          <span class="btn-row__label">sobre fundo escuro</span>
+          <button class="btn btn-acc">Inscreva-se no ASP.NET PRO</button>
+          <button class="btn btn-inverse">Falar comigo</button>
+          <button class="btn btn-secondary" style="background:transparent; color:var(--ink-100); border-color:oklch(40% 0.01 65)">Ver detalhes</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── 05 · CARDS ────────────────────────────── -->
+  <section class="vs" id="cards">
+    <div class="container">
+      <div class="vs__head">
+        <div class="vs__num">— 05 / Cards</div>
+        <div>
+          <h2 class="vs__title">Estrutura padrão <span>+ uma variante "destaque".</span></h2>
+          <p class="vs__lede">Cards normais para experiência, posts e eventos. O card destaque é reservado para a seção ASP.NET PRO na home — fundo preto, acento âmbar, peso visual deliberadamente maior.</p>
+        </div>
+      </div>
+
+      <div class="card-grid">
+        <div class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24"><path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25H12" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div>
+            <div class="card__title">Arquitetura .NET</div>
+            <div class="card__copy">Sistemas distribuídos, modelagem de domínio e estratégias de migração legacy → cloud. Foco em sustentar produção, não em hype.</div>
+          </div>
+          <div class="card__foot"><span>04 cases</span><span>↗</span></div>
+        </div>
+
+        <div class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24"><path d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25m18 0V12a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 12V5.25" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div>
+            <div class="card__title">Liderança técnica</div>
+            <div class="card__copy">CTO de software house com +40 engenheiros. Processos de revisão, plano de carreira técnica e modelo de squad por domínio.</div>
+          </div>
+          <div class="card__foot"><span>Leanwork · 11 anos</span><span>↗</span></div>
+        </div>
+
+        <div class="card">
+          <div class="card__icon"><svg viewBox="0 0 24 24"><path d="M3.75 6A2.25 2.25 0 016 3.75h2.25A2.25 2.25 0 0110.5 6v2.25a2.25 2.25 0 01-2.25 2.25H6a2.25 2.25 0 01-2.25-2.25V6zM3.75 15.75A2.25 2.25 0 016 13.5h2.25a2.25 2.25 0 012.25 2.25V18a2.25 2.25 0 01-2.25 2.25H6A2.25 2.25 0 013.75 18v-2.25zM13.5 6a2.25 2.25 0 012.25-2.25H18A2.25 2.25 0 0120.25 6v2.25A2.25 2.25 0 0118 10.5h-2.25a2.25 2.25 0 01-2.25-2.25V6zM13.5 15.75a2.25 2.25 0 012.25-2.25H18a2.25 2.25 0 012.25 2.25V18A2.25 2.25 0 0118 20.25h-2.25A2.25 2.25 0 0113.5 18v-2.25z" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+          <div>
+            <div class="card__title">Educação técnica</div>
+            <div class="card__copy">Criador do ASP.NET PRO. Material denso para devs sêniores que querem dominar arquitetura, não decorar atalhos.</div>
+          </div>
+          <div class="card__foot"><span>2.4k alunos</span><span>↗</span></div>
+        </div>
+
+        <!-- Featured -->
+        <div class="card card-featured">
+          <div>
+            <div class="t-eyebrow eyebrow">Programa de formação · 2026</div>
+            <h3 style="margin-top:16px;">ASP.NET PRO — o curso de <em>.NET para quem já programa.</em></h3>
+            <p style="margin-top:16px;">Não é mais um tutorial de Minimal API. É como times sêniores estruturam, observam e mantêm software .NET em produção por anos. Conteúdo em vídeo + repositórios reais + revisões ao vivo.</p>
+          </div>
+          <div style="display:grid; gap:24px;">
+            <ul class="demo-list">
+              <li>Arquitetura por domínio aplicada à realidade brasileira</li>
+              <li>Observabilidade, performance e plano de migração</li>
+              <li>Revisões de código com o instrutor — não conteúdo gravado e esquecido</li>
+            </ul>
+            <div style="display:flex; gap:12px; flex-wrap:wrap;">
+              <button class="btn btn-acc">Inscreva-se</button>
+              <button class="btn" style="background:transparent; color:var(--ink-100); border:1px solid oklch(40% 0.01 65);">Conheça o programa</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── 06 · ÍCONES ────────────────────────────── -->
+  <section class="vs" id="icones">
+    <div class="container">
+      <div class="vs__head">
+        <div class="vs__num">— 06 / Ícones</div>
+        <div>
+          <h2 class="vs__title">Heroicons outline · <span>1.5px stroke.</span></h2>
+          <p class="vs__lede">Inline SVG. Tamanho padrão 16/24px. Cor herda do contexto. Stroke uniforme em todo o sistema — não misturamos linhas finas e grossas na mesma tela.</p>
+        </div>
+      </div>
+
+      <div class="icon-grid">
+        <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M2.25 12l8.954-8.955a1.5 1.5 0 012.122 0l8.954 8.955M4.5 9.75V19.5a1.5 1.5 0 001.5 1.5h3v-7.5h6V21h3a1.5 1.5 0 001.5-1.5V9.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>home</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.75" stroke-linecap="round"/><path d="M4.5 20.25a7.5 7.5 0 0115 0" stroke-linecap="round"/></svg><span>user</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25M9 12l2 2 4-4M6.75 21h10.5a2.25 2.25 0 002.25-2.25V7.5l-5.25-5.25H6.75A2.25 2.25 0 004.5 4.5v14.25A2.25 2.25 0 006.75 21z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>document</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span>calendar</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75M14.25 6h6m0 0v6m0-6L10.5 15.75" stroke-linecap="round" stroke-linejoin="round"/></svg><span>arrow-up-right</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>bookmark</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"/></svg><span>book-open</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M15.59 14.37a6 6 0 01-5.84 7.38v-4.8m5.84-2.58a14.98 14.98 0 006.16-12.12A14.98 14.98 0 009.631 8.41m5.96 5.96a14.926 14.926 0 01-5.841 2.58m-.119-8.54a6 6 0 00-7.381 5.84h4.8m2.581-5.84a14.927 14.927 0 00-2.58 5.84m2.699 2.7c-.103.021-.207.041-.311.06a15.09 15.09 0 01-2.448-2.448 14.9 14.9 0 01.06-.312m-2.24 2.39a4.493 4.493 0 00-1.757 4.306 4.493 4.493 0 004.306-1.758M16.5 9a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>rocket</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>user-circle</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M19.5 14.25v-2.625a3.375 3.375 0 00-3.375-3.375h-1.5A1.125 1.125 0 0113.5 7.125v-1.5a3.375 3.375 0 00-3.375-3.375H8.25m-1.5 6.75h.008v.008H6.75v-.008zM6.75 12.75h.008v.008H6.75v-.008zm0 3h.008v.008H6.75v-.008zM5.625 3h-1.5C3.504 3 3 3.504 3 4.125v15.75c0 .621.504 1.125 1.125 1.125h15.75c.621 0 1.125-.504 1.125-1.125V8.625L13.5 3H5.625z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>document-text</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>identification</span></div>
+        <div class="icon-cell"><svg viewBox="0 0 24 24"><path d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" stroke-linecap="round" stroke-linejoin="round"/></svg><span>desktop</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── 07 · CHROME ────────────────────────────── -->
+  <section class="vs" id="chrome">
+    <div class="container">
+      <div class="vs__head">
+        <div class="vs__num">— 07 / Chrome do site</div>
+        <div>
+          <h2 class="vs__title">Header, footer e <span>elementos auxiliares.</span></h2>
+          <p class="vs__lede">Prévia rápida da navegação principal e do rodapé. Form, chips e search aparecem nas páginas internas — mas já ficam definidos aqui.</p>
+        </div>
+      </div>
+
+      <!-- Header sample -->
+      <div class="sample-frame" style="margin-bottom: 32px;">
+        <div class="sample-frame__bar"><span>mbanagouro.com.br</span></div>
+        <nav class="site-nav">
+          <div class="site-nav__brand">
+            <div class="site-nav__brand-mark">M</div>
+            <span>Mick Banagouro</span>
+          </div>
+          <div class="site-nav__links">
+            <a href="#">Sobre</a>
+            <a href="#">ASP.NET PRO</a>
+            <a href="#">Blog</a>
+            <a href="#">Eventos</a>
+          </div>
+          <div class="site-nav__cta">
+            <button class="btn btn-ghost btn-sm">Fale comigo</button>
+            <button class="btn btn-acc btn-sm">ASP.NET PRO ↗</button>
+          </div>
+        </nav>
+      </div>
+
+      <!-- Chips + input -->
+      <div style="display:grid; gap:24px; grid-template-columns: 1fr; margin-bottom: 32px;">
+        <div>
+          <div class="t-eyebrow" style="margin-bottom:12px;">Chips · filtros do blog</div>
+          <div class="chip-row">
+            <span class="chip chip--solid">Todos</span>
+            <span class="chip">Arquitetura</span>
+            <span class="chip">.NET</span>
+            <span class="chip">Azure</span>
+            <span class="chip">Liderança técnica</span>
+            <span class="chip">React</span>
+            <span class="chip">DevOps</span>
+            <span class="chip chip--accent">★ Em destaque</span>
+          </div>
+        </div>
+        <div style="max-width: 460px;">
+          <div class="t-eyebrow" style="margin-bottom:12px;">Input · busca / contato</div>
+          <input class="input" type="email" placeholder="seu@email.com.br" />
+        </div>
+      </div>
+
+      <!-- Footer sample -->
+      <div class="sample-frame">
+        <div class="sample-frame__bar"><span>mbanagouro.com.br/footer</span></div>
+        <footer class="site-foot">
+          <div>
+            <div class="site-foot__brand">Software de produção, ensinado por quem entrega.</div>
+            <div style="font-size:var(--fs-14); color:var(--ink-400); max-width:36ch;">CTO @ Leanwork. Arquiteto, instrutor e palestrante .NET. Baseado em São Paulo, Brasil.</div>
+          </div>
+          <div>
+            <h4>Site</h4>
+            <ul>
+              <li><a href="#">Sobre</a></li>
+              <li><a href="#">Blog</a></li>
+              <li><a href="#">Eventos</a></li>
+              <li><a href="#">ASP.NET PRO</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Redes</h4>
+            <ul>
+              <li><a href="#">LinkedIn ↗</a></li>
+              <li><a href="#">GitHub ↗</a></li>
+              <li><a href="#">YouTube ↗</a></li>
+              <li><a href="#">Twitter/X ↗</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4>Contato</h4>
+            <ul>
+              <li><a href="#">mick@mbanagouro.com.br</a></li>
+              <li><a href="#">Leanwork Group ↗</a></li>
+            </ul>
+          </div>
+          <div class="site-foot__copy">
+            <span>© 2026 Michel Banagouro</span>
+            <span>Construído estaticamente · Cloudflare Pages</span>
+          </div>
+        </footer>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ────────────────────────────── CLOSING ────────────────────────────── -->
+  <section class="closing">
+    <div class="container">
+      <div class="closing__inner">
+        <span class="t-eyebrow">Próximo passo</span>
+        <h2>Se o sistema bater, <em>parto para a home.</em></h2>
+        <p>Me diga o que mudar — acento (âmbar vs azul), peso da Instrument Serif, densidade, qualquer coisa. Quando estiver alinhado, transformo isto numa Home com hero, prova social, faixa ASP.NET PRO, blog e agenda.</p>
+        <div class="closing__actions">
+          <button class="btn btn-acc btn-lg">Aprovado · seguir para a home</button>
+          <button class="btn btn-secondary btn-lg">Quero ajustar antes</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>

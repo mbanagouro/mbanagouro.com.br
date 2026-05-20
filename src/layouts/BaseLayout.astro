@@ -1,8 +1,10 @@
 ---
-import '~/styles/global.css';
+import '~/styles/tokens.css';
+import '~/styles/base.css';
+import '~/styles/site.css';
 import SEO from '~/components/SEO.astro';
-import Header from '~/components/Header.astro';
-import Footer from '~/components/Footer.astro';
+import SiteHeader from '~/components/SiteHeader.astro';
+import SiteFooter from '~/components/SiteFooter.astro';
 import GoogleAnalytics from '~/components/GoogleAnalytics.astro';
 import MetaPixel from '~/components/MetaPixel.astro';
 import { getLangFromUrl, htmlLang } from '~/i18n/utils';
@@ -40,17 +42,12 @@ const {
     <link rel="alternate" type="application/rss+xml" title="Michel Banagouro — Blog (EN)" href="/en/rss.xml" />
     <meta name="generator" content={Astro.generator} />
 
-    <script is:inline>
-      (function () {
-        try {
-          var saved = localStorage.getItem('theme');
-          var prefers = window.matchMedia('(prefers-color-scheme: dark)').matches;
-          if (saved === 'dark' || (!saved && prefers)) {
-            document.documentElement.classList.add('dark');
-          }
-        } catch (_) {}
-      })();
-    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Figtree:ital,wght@0,300..900;1,300..900&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:ital,wght@0,400;0,500;1,400&display=swap"
+    />
 
     <SEO
       title={title}
@@ -65,14 +62,14 @@ const {
     <GoogleAnalytics />
     <MetaPixel />
   </head>
-  <body class="flex min-h-screen flex-col">
-    <a href="#main" class="sr-only focus:not-sr-only focus:fixed focus:left-2 focus:top-2 focus:z-50 focus:rounded focus:bg-brand-600 focus:px-3 focus:py-2 focus:text-white">
+  <body>
+    <a href="#main" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;focus:position:static;focus:width:auto;focus:height:auto">
       Pular para o conteúdo
     </a>
-    <Header />
-    <main id="main" class="mx-auto w-full max-w-5xl flex-1 px-4 py-10 sm:px-6 sm:py-14">
+    <SiteHeader />
+    <main id="main">
       <slot />
     </main>
-    <Footer />
+    <SiteFooter />
   </body>
 </html>

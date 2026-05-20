@@ -6,26 +6,49 @@ const currentLang = getLangFromUrl(Astro.url);
 const entries = Object.entries(languages) as [Lang, string][];
 ---
 
-<div class="flex items-center gap-1 text-sm">
-  {
-    entries.map(([code, label], i) => (
-      <>
-        {i > 0 && <span class="text-zinc-300 dark:text-zinc-700">/</span>}
-        <a
-          href={getAlternatePath(Astro.url, code)}
-          class:list={[
-            'rounded px-1.5 py-0.5 no-underline transition-colors',
-            code === currentLang
-              ? 'font-semibold text-brand-600 dark:text-brand-400'
-              : 'text-zinc-500 hover:text-brand-600 dark:text-zinc-400 dark:hover:text-brand-400',
-          ]}
-          hreflang={code === 'pt-br' ? 'pt-BR' : 'en'}
-          aria-current={code === currentLang ? 'true' : 'false'}
-          title={label}
-        >
-          {code === 'pt-br' ? 'PT' : 'EN'}
-        </a>
-      </>
-    ))
-  }
+<div class="lang-sw">
+  {entries.map(([code, label], i) => (
+    <>
+      {i > 0 && <span class="lang-sw__sep" aria-hidden="true">/</span>}
+      <a
+        href={getAlternatePath(Astro.url, code)}
+        class:list={['lang-sw__link', { 'lang-sw__link--active': code === currentLang }]}
+        hreflang={code === 'pt-br' ? 'pt-BR' : 'en'}
+        aria-current={code === currentLang ? 'true' : 'false'}
+        title={label}
+      >
+        {code === 'pt-br' ? 'PT' : 'EN'}
+      </a>
+    </>
+  ))}
 </div>
+
+<style>
+  .lang-sw {
+    display: flex;
+    align-items: center;
+    gap: 2px;
+    font-size: var(--fs-13);
+    font-family: var(--font-mono);
+  }
+  .lang-sw__sep {
+    color: var(--ink-300);
+    padding: 0 1px;
+  }
+  .lang-sw__link {
+    padding: 3px 6px;
+    border-radius: var(--r-sm);
+    color: var(--ink-500);
+    font-weight: 500;
+    transition: color var(--dur-fast), background var(--dur-fast);
+    letter-spacing: var(--tracking-wide);
+  }
+  .lang-sw__link:hover {
+    color: var(--text);
+    background: var(--surface-alt);
+  }
+  .lang-sw__link--active {
+    color: var(--text);
+    font-weight: 700;
+  }
+</style>

@@ -1,0 +1,266 @@
+---
+import '~/styles/events.css';
+import BaseLayout from '~/layouts/BaseLayout.astro';
+import EventCard from '~/components/EventCard.astro';
+import EventRow from '~/components/EventRow.astro';
+import { getCollection } from 'astro:content';
+import { useTranslations } from '~/i18n/utils';
+
+const lang = 'en' as const;
+const t = useTranslations(lang);
+
+const allEvents = await getCollection('events-en');
+allEvents.sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+
+const now = new Date();
+const upcoming = allEvents.filter(e => e.data.date > now);
+const past = allEvents.filter(e => e.data.date <= now);
+
+const cities = [...new Set(allEvents.map(e => e.data.city.split('·')[0].trim()))];
+const years = [...new Set(allEvents.map(e => e.data.date.getFullYear()))].sort((a, b) => b - a);
+---
+
+<BaseLayout
+  title={`Events — Michel Banagouro · CTO @ Leanwork`}
+  description={t('events.subtitle')}
+  lang={lang}
+>
+  <!-- PAGE HERO -->
+  <section class="page-hero">
+    <div class="container page-hero__inner">
+      <div>
+        <span class="page-hero__eyebrow">{t('events.hero.eyebrow')}</span>
+        <h1 class="page-hero__title" set:html={t('events.hero.title')} />
+        <p class="page-hero__lede">{t('events.hero.lede')}</p>
+      </div>
+      <div class="stats">
+        <div>
+          <div class="stat__num">{String(upcoming.length).padStart(2, '0')}</div>
+          <div class="stat__label">{t('events.stats.upcoming')}</div>
+        </div>
+        <div>
+          <div class="stat__num">{past.length}</div>
+          <div class="stat__label">{t('events.stats.archive')}</div>
+        </div>
+        <div>
+          <div class="stat__num">{cities.length}</div>
+          <div class="stat__label">{t('events.stats.cities')}</div>
+        </div>
+        <div>
+          <div class="stat__num">'18→</div>
+          <div class="stat__label">{t('events.stats.since_label')}</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FILTER BAR -->
+  <nav class="filters" aria-label={t('events.filter.aria')}>
+    <div class="container">
+      <div class="filters__inner">
+        <div class="filters__group">
+          <span class="filters__label">{t('events.filter.role')}</span>
+          <button class="chip-btn is-active" data-filter="role" data-value="all">{t('events.filter.all')}</button>
+          <button class="chip-btn" data-filter="role" data-value="speaker">{t('events.role.speaker')}</button>
+          <button class="chip-btn" data-filter="role" data-value="instructor">{t('events.role.instructor')}</button>
+          <button class="chip-btn" data-filter="role" data-value="panelist">{t('events.role.panelist')}</button>
+        </div>
+        <div class="filters__sep" aria-hidden="true"></div>
+        <div class="filters__group">
+          <span class="filters__label">{t('events.filter.year')}</span>
+          <button class="chip-btn is-active" data-filter="year" data-value="all">{t('events.filter.all')}</button>
+          {years.map(year => (
+            <button class="chip-btn" data-filter="year" data-value={String(year)}>{year}</button>
+          ))}
+        </div>
+        <div class="filters__spacer"></div>
+        <span class="filters__count" id="filtersCount">
+          {t('events.showing')} <strong style="color:var(--text);">{allEvents.length}</strong> {t('events.showing_events')}
+        </span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- UPCOMING -->
+  <section class="ev-section" id="proximos" aria-labelledby="up-title">
+    <div class="container">
+      <header class="ev-section__head">
+        <h2 class="ev-section__title" id="up-title">
+          <span class="num">{t('events.upcoming.heading')}</span>
+        </h2>
+        <span class="ev-section__count">
+          <strong id="upCount">{upcoming.length}</strong> {t('events.upcoming.confirmed')}
+        </span>
+      </header>
+      <div class="upcoming" id="upcoming">
+        {upcoming.map(ev => <EventCard event={ev} lang={lang} />)}
+      </div>
+      <div class="empty" id="emptyUpcoming">{t('events.upcoming.empty')}</div>
+    </div>
+  </section>
+
+  <!-- PAST / ARCHIVE -->
+  <section class="ev-section" id="anteriores" aria-labelledby="past-title">
+    <div class="container">
+      <header class="ev-section__head">
+        <h2 class="ev-section__title" id="past-title">
+          <span class="num">{t('events.past.heading')}</span>
+        </h2>
+        <span class="ev-section__count">
+          <strong id="pastCount">{past.length}</strong> {t('events.past.meta')}
+        </span>
+      </header>
+
+      <div class="past-list" id="pastList">
+        {past.map(ev => <EventRow event={ev} lang={lang} />)}
+      </div>
+      <div class="empty" id="emptyPast">{t('events.past.empty')}</div>
+
+      <nav class="pager" aria-label="Archive pagination">
+        <span class="pager__info">
+          Page <strong id="curPage">1</strong> of <strong id="totalPages">1</strong> ·
+          showing <strong id="rangeFrom">1</strong>–<strong id="rangeTo">{Math.min(6, past.length)}</strong> of <strong id="totalResults">{past.length}</strong>
+        </span>
+        <div class="pager__pages" id="pagerPages"></div>
+      </nav>
+
+      <div class="organize-cta" id="organizar">
+        <div>
+          <h3 class="organize-cta__title" set:html={t('events.organize.title')} />
+          <p class="organize-cta__copy">{t('events.organize.copy')}</p>
+        </div>
+        <div class="organize-cta__actions">
+          <a
+            href="mailto:mick@mbanagouro.com.br?subject=Event invitation"
+            class="btn btn-acc btn-lg"
+          >
+            {t('events.organize.cta_invite')}
+          </a>
+          <a href="#" class="btn btn-outline-dark btn-lg">{t('events.organize.cta_pdf')}</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script is:inline define:vars={{ l10n: {
+  showing: 'Showing',
+  events: 'events',
+  prev: 'Previous',
+  next: 'Next',
+} }}>
+  (function () {
+    const state = { role: 'all', year: 'all', page: 1, perPage: 6 };
+
+    const upcomingCards = Array.from(document.querySelectorAll('#upcoming .ev-card'));
+    const pastRows = Array.from(document.querySelectorAll('#pastList .past-row'));
+    const upCount = document.getElementById('upCount');
+    const pastCount = document.getElementById('pastCount');
+    const filtersCount = document.getElementById('filtersCount');
+    const emptyUp = document.getElementById('emptyUpcoming');
+    const emptyPast = document.getElementById('emptyPast');
+
+    const matches = (el) => {
+      const r = el.dataset.role;
+      const y = el.dataset.year;
+      return (state.role === 'all' || r === state.role)
+          && (state.year === 'all' || y === state.year);
+    };
+
+    function applyFilter() {
+      const upMatches = upcomingCards.filter(matches);
+      upcomingCards.forEach(el => el.classList.toggle('is-hidden', !matches(el)));
+      emptyUp.classList.toggle('is-shown', upMatches.length === 0);
+      upCount.textContent = upMatches.length;
+
+      const pastMatches = pastRows.filter(matches);
+      pastCount.textContent = pastMatches.length;
+      emptyPast.classList.toggle('is-shown', pastMatches.length === 0);
+
+      filtersCount.innerHTML = l10n.showing + ' <strong style="color:var(--text);">' + (upMatches.length + pastMatches.length) + '</strong> ' + l10n.events;
+
+      state.page = 1;
+      renderPage(pastMatches);
+    }
+
+    function renderPage(matchedPast) {
+      const totalPages = Math.max(1, Math.ceil(matchedPast.length / state.perPage));
+      if (state.page > totalPages) state.page = totalPages;
+
+      pastRows.forEach(r => (r.style.display = 'none'));
+      const from = (state.page - 1) * state.perPage;
+      const to = from + state.perPage;
+      matchedPast.slice(from, to).forEach(r => (r.style.display = ''));
+
+      document.getElementById('curPage').textContent = state.page;
+      document.getElementById('totalPages').textContent = totalPages;
+      document.getElementById('rangeFrom').textContent = matchedPast.length === 0 ? 0 : from + 1;
+      document.getElementById('rangeTo').textContent = Math.min(to, matchedPast.length);
+      document.getElementById('totalResults').textContent = matchedPast.length;
+
+      renderPagerControls(totalPages, matchedPast);
+    }
+
+    function renderPagerControls(totalPages, matchedPast) {
+      const pager = document.getElementById('pagerPages');
+      pager.innerHTML = '';
+
+      const prevSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+      const nextSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+      const mkBtn = (label, opts = {}) => {
+        const b = document.createElement('button');
+        b.className = 'pager__btn' + (opts.active ? ' is-active' : '');
+        if (opts.disabled) b.disabled = true;
+        if (opts.svg) { b.innerHTML = opts.svg; b.setAttribute('aria-label', label); }
+        else { b.textContent = label; }
+        if (opts.onClick) b.addEventListener('click', opts.onClick);
+        return b;
+      };
+
+      const scrollToPast = () => window.scrollTo({ top: document.getElementById('anteriores').offsetTop - 80, behavior: 'smooth' });
+
+      pager.appendChild(mkBtn(l10n.prev, {
+        svg: prevSvg,
+        disabled: state.page === 1,
+        onClick: () => { state.page--; renderPage(matchedPast); scrollToPast(); },
+      }));
+      for (let i = 1; i <= totalPages; i++) {
+        pager.appendChild(mkBtn(String(i), {
+          active: i === state.page,
+          onClick: () => { state.page = i; renderPage(matchedPast); scrollToPast(); },
+        }));
+      }
+      pager.appendChild(mkBtn(l10n.next, {
+        svg: nextSvg,
+        disabled: state.page === totalPages,
+        onClick: () => { state.page++; renderPage(matchedPast); scrollToPast(); },
+      }));
+    }
+
+    document.querySelectorAll('.past-row').forEach(row => {
+      row.addEventListener('click', e => {
+        if (e.target.closest('.res-link')) return;
+        const href = row.dataset.href;
+        if (href && href !== '#') window.location.href = href;
+      });
+      row.addEventListener('keydown', e => {
+        if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); row.click(); }
+      });
+    });
+
+    document.querySelectorAll('.chip-btn[data-filter]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        const value = btn.dataset.value;
+        state[filter] = value;
+        document.querySelectorAll('.chip-btn[data-filter="' + filter + '"]').forEach(b => {
+          b.classList.toggle('is-active', b.dataset.value === value);
+        });
+        applyFilter();
+      });
+    });
+
+    applyFilter();
+  })();
+</script>

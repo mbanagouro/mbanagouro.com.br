@@ -1,0 +1,742 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blog — Mick Banagouro</title>
+<meta name="description" content="Ensaios técnicos longos sobre arquitetura .NET, Azure, liderança e a operação real de uma software house brasileira." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="styles/tokens.css" />
+<link rel="stylesheet" href="styles/base.css" />
+<link rel="stylesheet" href="styles/site.css" />
+<style>
+  /* ── Page hero ── */
+  .page-hero {
+    padding: var(--s-9) 0 var(--s-7);
+    border-bottom: 1px solid var(--border);
+  }
+  .page-hero__inner { max-width: 880px; }
+  .page-hero__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+    display: inline-flex; align-items: center; gap: var(--s-3);
+    margin-bottom: var(--s-5);
+  }
+  .page-hero__eyebrow::before { content: ""; width: 24px; height: 1px; background: var(--ink-300); }
+  .page-hero__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 5.5vw, 4.25rem);
+    line-height: 1.02;
+    letter-spacing: var(--tracking-display);
+  }
+  .page-hero__title em { font-style: italic; color: var(--ink-600); }
+  .page-hero__lede {
+    margin-top: var(--s-5);
+    font-size: var(--fs-18);
+    line-height: var(--lh-prose);
+    color: var(--ink-600);
+    max-width: 60ch;
+  }
+  .page-hero__meta {
+    margin-top: var(--s-6);
+    display: flex; gap: var(--s-5); flex-wrap: wrap;
+    font-family: var(--font-mono); font-size: var(--fs-13);
+    color: var(--text-muted);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--border);
+  }
+  .page-hero__meta strong { color: var(--text); font-weight: 500; }
+
+  /* ── Filter bar ── */
+  .filters {
+    position: sticky;
+    top: 64px; z-index: 30;
+    background: oklch(98.5% 0.003 65 / 0.92);
+    backdrop-filter: saturate(150%) blur(12px);
+    -webkit-backdrop-filter: saturate(150%) blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .filters__inner {
+    display: flex; align-items: center; gap: var(--s-4);
+    padding: var(--s-3) 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filters__inner::-webkit-scrollbar { display: none; }
+  .filters__label {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-subtle);
+    text-transform: uppercase; letter-spacing: var(--tracking-wide);
+    flex-shrink: 0;
+  }
+  .chip-btn {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    padding: 5px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-pill);
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--ink-700);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all var(--dur-fast);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .chip-btn:hover { border-color: var(--ink-700); color: var(--text); }
+  .chip-btn.is-active {
+    background: var(--ink-900); color: var(--ink-0); border-color: var(--ink-900);
+  }
+  .chip-btn .count {
+    font-size: 10px; color: var(--text-subtle); margin-left: 4px;
+  }
+  .chip-btn.is-active .count { color: var(--ink-400); }
+  .filters__spacer { flex: 1; min-width: 16px; }
+  .filters__count {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted); flex-shrink: 0;
+  }
+
+  /* ── Featured post ── */
+  .featured-wrap { padding: var(--s-8) 0 var(--s-7); }
+  .featured {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-7);
+    text-decoration: none; color: inherit;
+    padding-bottom: var(--s-8);
+    border-bottom: 1px solid var(--border);
+  }
+  @media (min-width: 900px) {
+    .featured { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: var(--s-9); align-items: center; }
+  }
+  .featured__top {
+    display: flex; align-items: center; gap: var(--s-4);
+    margin-bottom: var(--s-5);
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted);
+  }
+  .featured__badge {
+    background: var(--accent);
+    color: var(--accent-fg);
+    padding: 4px 10px;
+    border-radius: var(--r-pill);
+    font-weight: 500;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    font-size: 10px;
+  }
+  .featured__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2rem, 4vw, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: var(--tracking-display);
+  }
+  .featured__title em { font-style: italic; color: var(--ink-700); }
+  .featured__excerpt {
+    margin-top: var(--s-5);
+    font-size: var(--fs-18);
+    line-height: var(--lh-prose);
+    color: var(--ink-600);
+    max-width: 50ch;
+  }
+  .featured__meta {
+    margin-top: var(--s-6);
+    display: flex; gap: var(--s-3); align-items: center; flex-wrap: wrap;
+  }
+  .featured__cta {
+    margin-top: var(--s-6);
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    font-weight: 500; color: var(--text);
+    border-bottom: 1px solid var(--ink-700);
+    padding-bottom: 2px;
+    transition: color var(--dur-fast), border-color var(--dur-fast);
+  }
+  .featured:hover .featured__cta { color: var(--accent-700); border-color: var(--accent-500); }
+  .featured__cta svg { width: 14px; height: 14px; stroke-width: 1.75; transition: transform var(--dur-base) var(--ease-out); }
+  .featured:hover .featured__cta svg { transform: translate(3px, -3px); }
+
+  /* Featured visual */
+  .featured__visual {
+    position: relative;
+    aspect-ratio: 5 / 4;
+    background:
+      repeating-linear-gradient(
+        135deg,
+        oklch(92% 0.006 65) 0,
+        oklch(92% 0.006 65) 1px,
+        transparent 1px,
+        transparent 9px
+      ),
+      linear-gradient(180deg, oklch(96% 0.005 65), oklch(91% 0.008 65));
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .featured__visual-num {
+    position: absolute; top: var(--s-5); left: var(--s-5);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 160px;
+    line-height: 1;
+    color: oklch(82% 0.008 65);
+    letter-spacing: -0.05em;
+  }
+  .featured__visual-tag {
+    position: absolute; bottom: var(--s-4); right: var(--s-4);
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    background: var(--ink-0);
+    border: 1px solid var(--border);
+    padding: 5px 9px;
+    border-radius: var(--r-sm);
+    color: var(--ink-700);
+  }
+
+  /* ── Post list (editorial stripes) ── */
+  .archive {
+    display: grid; gap: 0;
+    padding: var(--s-4) 0 var(--s-8);
+  }
+  .row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-4);
+    padding: var(--s-6) 0;
+    border-top: 1px solid var(--border);
+    text-decoration: none; color: inherit;
+    align-items: start;
+    transition: padding-left var(--dur-base) var(--ease-out);
+  }
+  @media (min-width: 900px) {
+    .row {
+      grid-template-columns: 96px minmax(0, 1.4fr) minmax(0, 1fr) 100px 36px;
+      gap: var(--s-6);
+      align-items: center;
+    }
+  }
+  .row:hover { padding-left: var(--s-4); }
+  .row:hover .row__title { color: var(--accent-700); }
+  .row:hover .row__arrow { background: var(--ink-900); color: var(--ink-0); border-color: var(--ink-900); }
+
+  .row__date {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted);
+    letter-spacing: 0;
+  }
+  .row__date strong { color: var(--text); font-weight: 500; display: block; font-size: var(--fs-13); }
+  .row__title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: clamp(1.125rem, 2vw, 1.5rem);
+    line-height: 1.25;
+    letter-spacing: var(--tracking-tight);
+    transition: color var(--dur-fast);
+  }
+  .row__title em {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink-700);
+  }
+  .row__excerpt {
+    font-size: var(--fs-14);
+    line-height: var(--lh-prose);
+    color: var(--ink-600);
+    margin-top: var(--s-2);
+  }
+  @media (min-width: 900px) {
+    .row__excerpt { margin-top: 0; }
+  }
+  .row__meta {
+    display: inline-flex; gap: var(--s-2); align-items: center;
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted);
+  }
+  .row__tag {
+    color: var(--accent-700);
+    background: var(--accent-50);
+    border: 1px solid var(--accent-300);
+    padding: 2px 8px;
+    border-radius: var(--r-pill);
+    font-weight: 500;
+  }
+  .row__time { color: var(--text-muted); }
+  .row__arrow {
+    display: none;
+    width: 28px; height: 28px;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    place-items: center;
+    color: var(--ink-700);
+    transition: all var(--dur-fast);
+  }
+  @media (min-width: 900px) { .row__arrow { display: grid; } }
+  .row__arrow svg { width: 12px; height: 12px; stroke-width: 1.75; }
+
+  .row.is-hidden { display: none; }
+
+  /* Empty state */
+  .archive-empty {
+    padding: var(--s-9) 0;
+    text-align: center;
+    font-family: var(--font-mono); font-size: var(--fs-13);
+    color: var(--text-muted);
+    display: none;
+  }
+  .archive-empty.is-shown { display: block; }
+
+  /* ── Pagination ── */
+  .pager {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--s-6) 0;
+    border-top: 1px solid var(--border);
+    flex-wrap: wrap; gap: var(--s-4);
+  }
+  .pager__info {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted);
+  }
+  .pager__pages {
+    display: flex; gap: var(--s-2); align-items: center;
+  }
+  .pager__btn {
+    min-width: 36px; height: 36px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    font-family: var(--font-mono); font-size: var(--fs-13);
+    color: var(--ink-700);
+    display: grid; place-items: center;
+    padding: 0 10px;
+    cursor: pointer;
+    transition: all var(--dur-fast);
+  }
+  .pager__btn:hover:not(:disabled) { border-color: var(--ink-700); color: var(--text); }
+  .pager__btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pager__btn.is-active {
+    background: var(--ink-900); color: var(--ink-0); border-color: var(--ink-900);
+  }
+  .pager__btn svg { width: 12px; height: 12px; stroke-width: 1.75; }
+  .pager__sep { color: var(--text-subtle); padding: 0 4px; }
+
+  /* ── Newsletter inline ── */
+  .nl {
+    background: var(--ink-950);
+    color: var(--ink-100);
+    padding: var(--s-8) var(--s-7);
+    border-radius: var(--r-lg);
+    margin: var(--s-8) 0;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-6);
+  }
+  @media (min-width: 800px) {
+    .nl { grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr); gap: var(--s-7); align-items: center; }
+  }
+  .nl__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.1;
+    color: var(--ink-0);
+    letter-spacing: var(--tracking-display);
+  }
+  .nl__title em { font-style: italic; color: var(--accent-300); }
+  .nl__copy {
+    margin-top: var(--s-3);
+    font-size: var(--fs-15); line-height: var(--lh-prose);
+    color: var(--ink-300);
+    max-width: 48ch;
+  }
+  .nl__form {
+    display: flex; gap: var(--s-2);
+  }
+  .nl__input {
+    flex: 1;
+    background: oklch(15% 0.012 65);
+    border: 1px solid oklch(25% 0.01 65);
+    color: var(--ink-100);
+    padding: 12px 14px;
+    border-radius: var(--r-md);
+    font: inherit; font-size: var(--fs-14);
+    min-width: 0;
+  }
+  .nl__input:focus {
+    outline: none;
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px oklch(72% 0.16 65 / 0.2);
+  }
+  .nl__input::placeholder { color: var(--ink-500); }
+  .nl__note {
+    margin-top: var(--s-3);
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--ink-500);
+  }
+</style>
+</head>
+<body data-screen-label="03 Blog — Listagem">
+
+  <!-- ─────────────────────────── HEADER ─────────────────────────── -->
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a href="index.html" class="brand">
+        <span class="brand__mark">M</span>
+        <span>Mick<span class="brand__last"> Banagouro</span></span>
+      </a>
+      <nav class="nav" aria-label="Principal">
+        <a href="sobre.html">Sobre</a>
+        <a href="aspnet-pro.html">ASP.NET&nbsp;PRO</a>
+        <a href="blog.html" aria-current="page">Blog</a>
+        <a href="eventos.html">Eventos</a>
+      </nav>
+      <div class="header-cta">
+        <a href="#contato" class="btn btn-ghost btn-sm">Fale comigo</a>
+        <a href="aspnet-pro.html" class="btn btn-acc btn-sm">ASP.NET PRO
+          <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <button class="menu-btn" aria-label="Abrir menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ─────────────────────────── PAGE HERO ─────────────────────────── -->
+    <section class="page-hero">
+      <div class="container page-hero__inner">
+        <span class="page-hero__eyebrow">— 03 / Escrita</span>
+        <h1 class="page-hero__title">Ensaios técnicos <em>sobre o software de verdade.</em></h1>
+        <p class="page-hero__lede">Posts longos sobre arquitetura .NET, Azure, observabilidade, liderança técnica e a operação real de uma software house brasileira. Sem listas de "10 dicas". Sem hype.</p>
+        <div class="page-hero__meta">
+          <span><strong>23</strong> publicados</span>
+          <span><strong>~9 min</strong> média de leitura</span>
+          <span><strong>Quinzenal</strong> · sem calendário fixo</span>
+          <span><strong>RSS</strong> disponível</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── FILTERS ─────────────────────────── -->
+    <nav class="filters" aria-label="Filtrar por categoria">
+      <div class="container">
+        <div class="filters__inner">
+          <span class="filters__label">Filtrar</span>
+          <button class="chip-btn is-active" data-tag="all">Todos <span class="count">23</span></button>
+          <button class="chip-btn" data-tag="arquitetura">Arquitetura <span class="count">08</span></button>
+          <button class="chip-btn" data-tag="dotnet">.NET <span class="count">07</span></button>
+          <button class="chip-btn" data-tag="azure">Azure <span class="count">04</span></button>
+          <button class="chip-btn" data-tag="devops">DevOps <span class="count">02</span></button>
+          <button class="chip-btn" data-tag="lideranca">Liderança <span class="count">03</span></button>
+          <div class="filters__spacer"></div>
+          <span class="filters__count" id="filtersCount">Mostrando 13 de 23</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ─────────────────────────── FEATURED ─────────────────────────── -->
+    <section class="featured-wrap" aria-label="Post em destaque">
+      <div class="container">
+        <a href="post.html" class="featured" data-tag="arquitetura">
+          <div>
+            <div class="featured__top">
+              <span class="featured__badge">★ Em destaque</span>
+              <span>14 mai · 2026</span>
+              <span>·</span>
+              <span>8 min de leitura</span>
+            </div>
+            <h2 class="featured__title">Quando CQRS é <em>(e quando não é)</em> a resposta</h2>
+            <p class="featured__excerpt">
+              Antes de discutir CQRS, vale revisitar o que realmente é "complexidade essencial" num sistema de domínio. Boa parte das implementações que vejo são respostas a um problema acidental — geralmente acoplamento — disfarçado de problema arquitetural.
+            </p>
+            <div class="featured__meta">
+              <span class="chip chip--accent">Arquitetura</span>
+              <span class="chip">.NET</span>
+              <span class="chip">DDD</span>
+            </div>
+            <span class="featured__cta">
+              Ler o ensaio
+              <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </span>
+          </div>
+          <div class="featured__visual" aria-hidden="true">
+            <div class="featured__visual-num">23</div>
+            <div class="featured__visual-tag">post #23 · capa editorial</div>
+          </div>
+        </a>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── ARCHIVE LIST ─────────────────────────── -->
+    <section aria-label="Arquivo de posts">
+      <div class="container">
+        <div class="archive" id="archive">
+
+          <a href="post.html" class="row" data-tag="azure">
+            <div class="row__date"><strong>02 mai</strong>2026</div>
+            <div>
+              <div class="row__title">Migração legacy → Azure: <em>o que ninguém te conta</em></div>
+              <div class="row__excerpt">Lift-and-shift é uma armadilha cara. O roteiro de migração que usamos em quatro projetos na Leanwork, com os pontos onde quase todo time tropeça.</div>
+            </div>
+            <div class="row__meta"><span class="row__tag">Azure</span><span class="row__time">12 min</span></div>
+            <div></div>
+            <span class="row__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="post.html" class="row" data-tag="lideranca">
+            <div class="row__date"><strong>18 abr</strong>2026</div>
+            <div>
+              <div class="row__title">Plano de carreira técnica numa empresa de serviços</div>
+              <div class="row__excerpt">Como construímos uma trilha técnica de verdade na Leanwork — sem obrigar todo dev sênior a virar gestor. O documento, os critérios e os erros que cometemos.</div>
+            </div>
+            <div class="row__meta"><span class="row__tag">Liderança</span><span class="row__time">10 min</span></div>
+            <div></div>
+            <span class="row__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="post.html" class="row" data-tag="arquitetura">
+            <div class="row__date"><strong>05 abr</strong>2026</div>
+            <div>
+              <div class="row__title">O custo real de microsserviços em times pequenos</div>
+              <div class="row__excerpt">Times de até oito devs raramente colhem o benefício da fragmentação. O que ganha quem fragmenta, o que perde, e a régua que uso na Leanwork antes de bater o martelo.</div>
+            </div>
+            <div class="row__meta"><span class="row__tag">Arquitetura</span><span class="row__time">9 min</span></div>
+            <div></div>
+            <span class="row__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="post.html" class="row" data-tag="dotnet">
+            <div class="row__date"><strong>22 mar</strong>2026</div>
+            <div>
+              <div class="row__title">Source generators em .NET 9 <em>que valem a pena</em></div>
+              <div class="row__excerpt">Source generators que efetivamente economizam linhas em produção — e os que adicionam complexidade sem retorno. Quatro casos práticos da nossa stack.</div>
+            </div>
+            <div class="row__meta"><span class="row__tag">.NET</span><span class="row__time">7 min</span></div>
+            <div></div>
+            <span class="row__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="post.html" class="row" data-tag="lideranca">
+            <div class="row__date"><strong>10 mar</strong>2026</div>
+            <div>
+              <div class="row__title">Onboarding técnico que não dura três meses</div>
+              <div class="row__excerpt">Como reduzimos o ramp-up de devs novos de 90 para 30 dias na Leanwork. Não foi com material extra — foi cortando ruído de processo.</div>
+            </div>
+            <div class="row__meta"><span class="row__tag">Liderança</span><span class="row__time">6 min</span></div>
+            <div></div>
+            <span class="row__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="post.html" class="row" data-tag="devops">
+            <div class="row__date"><strong>28 fev</strong>2026</div>
+            <div>
+              <div class="row__title">Observabilidade distribuída além de logs</div>
+              <div class="row__excerpt">Métricas, traces e logs respondem perguntas diferentes — e times que tratam tudo como log acabam pagando caro. Como balanceamos os três pilares nos nossos projetos críticos.</div>
+            </div>
+            <div class="row__meta"><span class="row__tag">DevOps</span><span class="row__time">11 min</span></div>
+            <div></div>
+            <span class="row__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="post.html" class="row" data-tag="dotnet">
+            <div class="row__date"><strong>14 fev</strong>2026</div>
+            <div>
+              <div class="row__title">Por que vamos manter Razor Pages em 2026</div>
+              <div class="row__excerpt">Nem todo painel administrativo precisa virar SPA. Como decidimos manter Razor Pages em três sistemas internos — e por que isso ainda é defensável.</div>
+            </div>
+            <div class="row__meta"><span class="row__tag">.NET</span><span class="row__time">8 min</span></div>
+            <div></div>
+            <span class="row__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="post.html" class="row" data-tag="dotnet">
+            <div class="row__date"><strong>02 fev</strong>2026</div>
+            <div>
+              <div class="row__title">EF Core vs Dapper: <em>a conversa que sempre acaba mal</em></div>
+              <div class="row__excerpt">A briga é falsa. EF Core e Dapper resolvem problemas diferentes e podem (e devem) conviver. Como organizamos isso por contexto de leitura/escrita.</div>
+            </div>
+            <div class="row__meta"><span class="row__tag">.NET</span><span class="row__time">9 min</span></div>
+            <div></div>
+            <span class="row__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="post.html" class="row" data-tag="arquitetura">
+            <div class="row__date"><strong>15 jan</strong>2026</div>
+            <div>
+              <div class="row__title">Boundaries: a única abstração que importa</div>
+              <div class="row__excerpt">Camadas, hexágonos, ports & adapters — todos os nomes apontam pra mesma ideia, e ainda assim é onde 80% dos projetos se perdem. Onde colocar a fronteira e por quê.</div>
+            </div>
+            <div class="row__meta"><span class="row__tag">Arquitetura</span><span class="row__time">9 min</span></div>
+            <div></div>
+            <span class="row__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="post.html" class="row" data-tag="azure">
+            <div class="row__date"><strong>02 jan</strong>2026</div>
+            <div>
+              <div class="row__title">App Service vs Container Apps: como decidimos</div>
+              <div class="row__excerpt">Critérios que aplicamos para escolher entre App Service, Container Apps e AKS em projetos .NET. Custo, operação e quando faz sentido cada um.</div>
+            </div>
+            <div class="row__meta"><span class="row__tag">Azure</span><span class="row__time">8 min</span></div>
+            <div></div>
+            <span class="row__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="post.html" class="row" data-tag="arquitetura">
+            <div class="row__date"><strong>18 dez</strong>2025</div>
+            <div>
+              <div class="row__title">Eventos de domínio sem broker</div>
+              <div class="row__excerpt">Você não precisa de RabbitMQ na primeira semana de projeto. Como começamos com eventos in-process e quando vale a pena externalizar.</div>
+            </div>
+            <div class="row__meta"><span class="row__tag">Arquitetura</span><span class="row__time">10 min</span></div>
+            <div></div>
+            <span class="row__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="post.html" class="row" data-tag="dotnet">
+            <div class="row__date"><strong>04 dez</strong>2025</div>
+            <div>
+              <div class="row__title">Minimal API em projeto grande: até onde vai</div>
+              <div class="row__excerpt">Saímos de Controllers para Minimal API em dois projetos médios. O que ganhamos, o que perdemos, e onde a faca começa a doer.</div>
+            </div>
+            <div class="row__meta"><span class="row__tag">.NET</span><span class="row__time">7 min</span></div>
+            <div></div>
+            <span class="row__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+        </div>
+
+        <div class="archive-empty" id="archiveEmpty">
+          Nenhum post nessa categoria. Tente outro filtro.
+        </div>
+
+        <!-- ───── Newsletter inline ───── -->
+        <div class="nl">
+          <div>
+            <h2 class="nl__title">Receba os ensaios <em>na sua caixa.</em></h2>
+            <p class="nl__copy">Um post novo a cada duas a três semanas. Conteúdo técnico denso — sem newsletter de "10 dicas" disfarçada. Sem patrocínio.</p>
+          </div>
+          <div>
+            <form class="nl__form" onsubmit="event.preventDefault(); this.querySelector('input').value=''; this.nextElementSibling.textContent='Obrigado — em breve, seu primeiro ensaio.';">
+              <input type="email" class="nl__input" placeholder="seu@email.com.br" required />
+              <button class="btn btn-acc" type="submit">Inscrever</button>
+            </form>
+            <div class="nl__note">Sem spam. Você sai com um clique.</div>
+          </div>
+        </div>
+
+        <!-- ───── Pagination ───── -->
+        <nav class="pager" aria-label="Paginação">
+          <span class="pager__info">Página <strong style="color:var(--text); font-weight:500;">1</strong> de 2 · 23 posts</span>
+          <div class="pager__pages">
+            <button class="pager__btn" disabled aria-label="Página anterior">
+              <svg viewBox="0 0 24 24"><path d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+            <button class="pager__btn is-active">1</button>
+            <button class="pager__btn">2</button>
+            <button class="pager__btn" aria-label="Próxima página">
+              <svg viewBox="0 0 24 24"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </button>
+          </div>
+        </nav>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─────────────────────────── FOOTER ─────────────────────────── -->
+  <footer class="site-footer" id="contato">
+    <div class="container">
+      <div class="site-footer__inner">
+        <div class="site-footer__brand-block">
+          <div class="site-footer__brand-line">Software de produção, <em>ensinado por quem entrega.</em></div>
+          <p class="site-footer__about">CTO @ Leanwork Group. Arquiteto, instrutor e palestrante .NET. Baseado em São Paulo, Brasil.</p>
+        </div>
+        <div>
+          <h4>Site</h4>
+          <ul>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="aspnet-pro.html">ASP.NET&nbsp;PRO</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="eventos.html">Eventos</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Redes</h4>
+          <ul>
+            <li><a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn <span style="font-size:10px;">↗</span></a></li>
+            <li><a href="https://github.com" target="_blank" rel="noopener">GitHub <span style="font-size:10px;">↗</span></a></li>
+            <li><a href="https://youtube.com" target="_blank" rel="noopener">YouTube <span style="font-size:10px;">↗</span></a></li>
+            <li><a href="https://x.com" target="_blank" rel="noopener">Twitter / X <span style="font-size:10px;">↗</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contato</h4>
+          <ul>
+            <li><a href="mailto:mick@mbanagouro.com.br">mick@mbanagouro.com.br</a></li>
+            <li><a href="https://leanwork.group" target="_blank" rel="noopener">Leanwork Group <span style="font-size:10px;">↗</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <span>© 2026 Michel Banagouro · mbanagouro.com.br</span>
+        <span>HTML estático · Cloudflare Pages</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Filter chips ──
+    (function() {
+      const chips = document.querySelectorAll('.chip-btn[data-tag]');
+      const rows = document.querySelectorAll('.archive .row');
+      const featured = document.querySelector('.featured');
+      const countEl = document.getElementById('filtersCount');
+      const empty = document.getElementById('archiveEmpty');
+      const total = 23; // total posts (mock)
+
+      chips.forEach(chip => {
+        chip.addEventListener('click', () => {
+          const tag = chip.dataset.tag;
+          chips.forEach(c => c.classList.toggle('is-active', c === chip));
+
+          let visible = 0;
+
+          // featured matches only if 'all' or its tag
+          if (featured) {
+            const matchF = tag === 'all' || featured.dataset.tag === tag;
+            featured.parentElement.style.display = matchF ? '' : 'none';
+            if (matchF) visible++;
+          }
+
+          rows.forEach(row => {
+            const match = tag === 'all' || row.dataset.tag === tag;
+            row.classList.toggle('is-hidden', !match);
+            if (match) visible++;
+          });
+
+          empty.classList.toggle('is-shown', visible === 0);
+
+          // Update count
+          if (tag === 'all') {
+            countEl.textContent = `Mostrando 13 de ${total}`;
+          } else {
+            const countAttr = chip.querySelector('.count');
+            const totalForTag = countAttr ? parseInt(countAttr.textContent, 10) : visible;
+            countEl.textContent = `Mostrando ${visible} de ${totalForTag}`;
+          }
+        });
+      });
+    })();
+  </script>
+
+</body>
+</html>

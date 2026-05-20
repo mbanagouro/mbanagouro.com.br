@@ -1,0 +1,78 @@
+---
+import { useTranslations, getLangFromUrl, localizedPath } from '~/i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+
+const aboutSlug = lang === 'pt-br' ? 'sobre' : 'about';
+const eventsSlug = lang === 'pt-br' ? 'eventos' : 'events';
+
+const siteLinks = [
+  { href: localizedPath(`/${aboutSlug}`, lang), label: t('nav.about') },
+  { href: 'https://aspnetpro.com.br', label: 'ASP.NET PRO', external: true },
+  { href: localizedPath('/blog', lang), label: t('nav.blog') },
+  { href: localizedPath(`/${eventsSlug}`, lang), label: t('nav.events') },
+];
+
+const socialLinks = [
+  { href: 'https://linkedin.com/in/mbanagouro', label: 'LinkedIn' },
+  { href: 'https://github.com/mbanagouro', label: 'GitHub' },
+  { href: 'https://www.youtube.com/@mbanagouro', label: 'YouTube' },
+  { href: 'https://x.com/mbanagouro', label: 'Twitter / X' },
+];
+---
+
+<footer class="site-footer" id="contato">
+  <div class="container">
+    <div class="site-footer__inner">
+      <div class="site-footer__brand-block">
+        <p class="site-footer__brand-line">
+          {t('footer.tagline').split(',')[0]},
+          <em>{t('footer.tagline').split(',').slice(1).join(',').trim()}</em>
+        </p>
+        <p class="site-footer__about">{t('footer.bio')}</p>
+      </div>
+
+      <div>
+        <h4>{t('footer.col.site')}</h4>
+        <ul>
+          {siteLinks.map((link) => (
+            <li>
+              {link.external
+                ? <a href={link.href} target="_blank" rel="noopener noreferrer">{link.label} <span aria-hidden="true">↗</span></a>
+                : <a href={link.href}>{link.label}</a>
+              }
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h4>{t('footer.col.social')}</h4>
+        <ul>
+          {socialLinks.map((link) => (
+            <li>
+              <a href={link.href} target="_blank" rel="noopener noreferrer">
+                {link.label} <span aria-hidden="true">↗</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h4>{t('footer.col.contact')}</h4>
+        <ul>
+          <li><a href="mailto:michel@mbanagouro.com.br">michel@mbanagouro.com.br</a></li>
+          <li><a href="https://leanwork.group" target="_blank" rel="noopener noreferrer">Leanwork Group <span aria-hidden="true">↗</span></a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="site-footer__bottom">
+      <span>© {year} Michel Banagouro · mbanagouro.com.br</span>
+      <span>Astro · Cloudflare Pages</span>
+    </div>
+  </div>
+</footer>

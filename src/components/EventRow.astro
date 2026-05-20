@@ -1,0 +1,70 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Lang } from '~/i18n/ui';
+import { useTranslations } from '~/i18n/utils';
+
+interface Props {
+  event: CollectionEntry<'events-pt'> | CollectionEntry<'events-en'>;
+  lang: Lang;
+}
+
+const { event, lang } = Astro.props;
+const t = useTranslations(lang);
+const { date, title, subtitle, role, city, online, url, resources } = event.data;
+
+const locale = lang === 'pt-br' ? 'pt-BR' : 'en-US';
+const day = new Intl.DateTimeFormat(locale, { day: '2-digit' }).format(date);
+const mon = new Intl.DateTimeFormat(locale, { month: 'short' }).format(date).replace('.', '');
+const yr = date.getFullYear().toString().slice(2);
+const monthYear = `${mon} · ${yr}`;
+
+const chipClass = { speaker: 'chip--solid', instructor: 'chip--accent', panelist: '' }[role];
+const roleLabel = { speaker: t('events.role.speaker'), instructor: t('events.role.instructor'), panelist: t('events.role.panelist') }[role];
+---
+
+<div
+  role="link"
+  tabindex="0"
+  class="past-row"
+  data-href={url ?? '#'}
+  data-role={role}
+  data-year={date.getFullYear()}
+>
+  <div class="past-date">
+    <span class="d">{day}</span>
+    <span class="m">{monthYear}</span>
+  </div>
+  <div>
+    <div class="past-title">{title}</div>
+    {subtitle && <div class="past-title-sub">{subtitle}</div>}
+  </div>
+  <span class:list={['chip', chipClass]}>{roleLabel}</span>
+  <span class="past-city">
+    {online ? (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    ) : (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/>
+        <path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    )}
+    {city}
+  </span>
+  <div class="past-resources">
+    {resources.map(r => (
+      <a href={r.url} class="res-link" target="_blank" rel="noopener">
+        {r.label}
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+          <path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    ))}
+  </div>
+  <span class="past-arrow">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+      <path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </span>
+</div>

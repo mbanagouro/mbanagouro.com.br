@@ -1,48 +1,506 @@
 ---
+import '~/styles/about.css';
 import BaseLayout from '~/layouts/BaseLayout.astro';
+import Button from '~/components/Button.astro';
 import { useTranslations } from '~/i18n/utils';
 
 const lang = 'pt-br' as const;
 const t = useTranslations(lang);
 ---
 
-<BaseLayout title={t('about.title')} description={t('about.subtitle')} lang={lang}>
-  <header class="mb-10">
-    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">{t('about.title')}</h1>
-    <p class="mt-3 text-lg text-zinc-600 dark:text-zinc-400">{t('about.subtitle')}</p>
-  </header>
+<BaseLayout
+  title="Sobre — Michel Banagouro · CTO @ Leanwork"
+  description="CTO e cofundador da Leanwork há onze anos. Arquiteto .NET, instrutor e palestrante. Bio, experiência, especialidades, projetos open source e cases."
+  lang={lang}
+>
 
-  <div class="prose-custom">
-    <p>
-      Sou <strong>Michel Banagouro</strong>, engenheiro de software com foco em ASP.NET, .NET e arquitetura web.
-      Fundador do <a href="https://aspnetpro.com.br" target="_blank" rel="noopener noreferrer">ASP.NET PRO</a>,
-      onde ajudo desenvolvedores brasileiros a evoluírem na carreira com .NET.
-    </p>
+  <!-- HERO -->
+  <section class="about-hero">
+    <div class="container">
+      <div class="about-hero__grid">
+        <div>
+          <span class="about-hero__eyebrow">{t('about.hero.eyebrow')}</span>
+          <h1 class="about-hero__title" set:html={t('about.hero.title')} />
+          <div class="about-hero__sub">
+            <span><strong>São Paulo, BR</strong></span>
+            <span><strong>11+</strong> anos em .NET</span>
+            <span><strong>40+</strong> engenheiros liderados</span>
+            <span><strong>2.4k</strong> alunos no PRO</span>
+            <span><strong>30+</strong> talks</span>
+          </div>
+        </div>
+        <div class="about-portrait" aria-hidden="true">
+          <div class="about-portrait__inner">
+            <span class="about-portrait__meta">Editorial · 4:5</span>
+            <span class="about-portrait__tag">[ retrato em escritório · cor ]</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <h2>O que faço hoje</h2>
-    <ul>
-      <li>
-        <strong>ASP.NET PRO</strong> — formação técnica para desenvolvedores .NET no Brasil.
-      </li>
-      <li>
-        <strong>Conteúdo em vídeo</strong> — publico no <a href="https://www.youtube.com/@mbanagouro" target="_blank" rel="noopener noreferrer">YouTube</a>
-        sobre desenvolvimento, arquitetura e IA aplicada.
-      </li>
-      <li>
-        <strong>Open source</strong> — mantenho projetos no <a href="https://github.com/mbanagouro" target="_blank" rel="noopener noreferrer">GitHub</a>.
-      </li>
-    </ul>
+  <!-- BIO -->
+  <section class="bio" aria-labelledby="bio-title">
+    <div class="container">
+      <div class="bio__inner">
+        <div class="bio__label" id="bio-title">{t('about.bio.label')}</div>
+        <div class="bio__prose">
+          <p class="lead">
+            Cresci escrevendo PHP e ASP clássico ainda no ensino médio, na época em que "publicar um site" significava abrir um cliente de FTP. Migrei pra .NET em 2007 e nunca mais saí — não porque seja fanático, mas porque o ecossistema sustentou os projetos pelos quais fui responsável.
+          </p>
+          <p>
+            Em 2014 fundei a <strong>Leanwork</strong> com dois sócios. Começamos com três pessoas dentro de um coworking em São Paulo. Hoje somos mais de quarenta engenheiros entregando software corporativo para bancos, varejistas e healthtechs brasileiras — em .NET, React e Azure, sempre com a mesma régua: <em>se não vai pra produção e vai durar, não fazemos</em>.
+          </p>
+          <p>
+            Como CTO, meu trabalho é cada vez menos código e cada vez mais decisão técnica, plano de carreira e curadoria de processos. Mas eu nunca consegui sair completamente do editor. Por isso, em 2022, lancei o <strong>ASP.NET PRO</strong> — uma formação para devs sêniores que queriam dominar arquitetura corporativa em .NET, e não viam material denso o suficiente em português. Hoje são mais de 2.400 alunos formados em três edições.
+          </p>
+          <p>
+            Em paralelo, palestro recorrentemente em <strong>TDC, .NET Conf Brasil, NDC, QCon e DevOps Days</strong>. Escrevo aqui no blog, quase sempre sobre coisas que aprendi <em>tropeçando</em>. Mantenho alguns projetos open source que apareceram quando uma ferramenta simplesmente não existia.
+          </p>
+          <p>
+            Se você é dev sênior, líder técnico ou organiza eventos: <strong>provavelmente vale uma conversa</strong>. Meu e-mail está no rodapé.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-    <h2>Trajetória</h2>
-    <p>
-      <em>Em construção.</em> Edite este conteúdo em <code>src/pages/sobre.astro</code> com sua biografia,
-      timeline de carreira, empresas em que trabalhou, palestras, livros recomendados etc.
-    </p>
+  <!-- ESPECIALIDADES -->
+  <section class="sec" id="especialidades" aria-labelledby="esp-title">
+    <div class="container">
+      <header class="sec__head">
+        <div class="sec__num">{t('about.spec.num')}</div>
+        <div>
+          <h2 class="sec__title" id="esp-title" set:html={t('about.spec.title')} />
+          <p class="sec__lede">{t('about.spec.lede')}</p>
+        </div>
+      </header>
 
-    <h2>Como podemos conversar</h2>
-    <p>
-      Para parcerias, mentorias ou imprensa, me chame pelos canais listados na página de
-      <a href="/links">links</a>.
-    </p>
-  </div>
+      <div class="spec-grid">
+
+        <div class="spec-group">
+          <div class="spec-group__top">
+            <h3 class="spec-group__title">Arquitetura</h3>
+            <div class="spec-group__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m4.5-6h1.5m-1.5 3h1.5m-1.5 3h1.5M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="spec-chips">
+            <span class="chip">DDD</span>
+            <span class="chip">CQRS</span>
+            <span class="chip">Event Sourcing</span>
+            <span class="chip">Modular Monolith</span>
+            <span class="chip">Microsserviços</span>
+            <span class="chip">Hexagonal</span>
+            <span class="chip">Vertical Slice</span>
+          </div>
+        </div>
+
+        <div class="spec-group">
+          <div class="spec-group__top">
+            <h3 class="spec-group__title">Backend (.NET / C#)</h3>
+            <div class="spec-group__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M6.75 7.5l3 2.25-3 2.25m4.5 0h3M2.25 12l8.954-8.955a1.5 1.5 0 012.122 0l8.954 8.955" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="spec-chips">
+            <span class="chip">.NET 9</span>
+            <span class="chip">ASP.NET Core</span>
+            <span class="chip">Minimal API</span>
+            <span class="chip">EF Core</span>
+            <span class="chip">Dapper</span>
+            <span class="chip">MediatR</span>
+            <span class="chip">Wolverine</span>
+            <span class="chip">SignalR</span>
+            <span class="chip">Source Generators</span>
+          </div>
+        </div>
+
+        <div class="spec-group">
+          <div class="spec-group__top">
+            <h3 class="spec-group__title">Cloud (Azure)</h3>
+            <div class="spec-group__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M2.25 15a4.5 4.5 0 004.5 4.5H18a3.75 3.75 0 001.332-7.257 3 3 0 00-3.758-3.848 5.25 5.25 0 00-10.233 2.33A4.502 4.502 0 002.25 15z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="spec-chips">
+            <span class="chip">App Service</span>
+            <span class="chip">Container Apps</span>
+            <span class="chip">AKS</span>
+            <span class="chip">Functions</span>
+            <span class="chip">Service Bus</span>
+            <span class="chip">Cosmos DB</span>
+            <span class="chip">SQL Azure</span>
+            <span class="chip">Key Vault</span>
+            <span class="chip">Front Door</span>
+          </div>
+        </div>
+
+        <div class="spec-group">
+          <div class="spec-group__top">
+            <h3 class="spec-group__title">DevOps &amp; Observabilidade</h3>
+            <div class="spec-group__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25m18 0A2.25 2.25 0 0018.75 3H5.25A2.25 2.25 0 003 5.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="spec-chips">
+            <span class="chip">GitHub Actions</span>
+            <span class="chip">Azure DevOps</span>
+            <span class="chip">Docker</span>
+            <span class="chip">OpenTelemetry</span>
+            <span class="chip">Application Insights</span>
+            <span class="chip">Datadog</span>
+            <span class="chip">Grafana</span>
+            <span class="chip">Bicep / Terraform</span>
+          </div>
+        </div>
+
+        <div class="spec-group">
+          <div class="spec-group__top">
+            <h3 class="spec-group__title">Frontend (suficiência)</h3>
+            <div class="spec-group__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M9 17.25v1.007a3 3 0 01-.879 2.122L7.5 21h9l-.621-.621A3 3 0 0115 18.257V17.25m6-12V15a2.25 2.25 0 01-2.25 2.25H5.25A2.25 2.25 0 013 15V5.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="spec-chips">
+            <span class="chip">React</span>
+            <span class="chip">TypeScript</span>
+            <span class="chip">Next.js</span>
+            <span class="chip">Tailwind</span>
+            <span class="chip">Razor Pages</span>
+            <span class="chip">Blazor (server)</span>
+          </div>
+        </div>
+
+        <div class="spec-group">
+          <div class="spec-group__top">
+            <h3 class="spec-group__title">Liderança técnica</h3>
+            <div class="spec-group__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </div>
+          <div class="spec-chips">
+            <span class="chip">Plano de carreira técnica</span>
+            <span class="chip">Squads por domínio</span>
+            <span class="chip">Hiring sênior</span>
+            <span class="chip">Code review</span>
+            <span class="chip">Onboarding técnico</span>
+            <span class="chip">Mentoring 1:1</span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- TRAJETÓRIA -->
+  <section class="sec" id="experiencia" aria-labelledby="xp-title">
+    <div class="container">
+      <header class="sec__head">
+        <div class="sec__num">{t('about.xp.num')}</div>
+        <div>
+          <h2 class="sec__title" id="xp-title" set:html={t('about.xp.title')} />
+          <p class="sec__lede">{t('about.xp.lede')}</p>
+        </div>
+      </header>
+
+      <div class="timeline">
+
+        <div class="tl-item is-current">
+          <div class="tl-year">
+            <strong>2014 — Hoje</strong>
+            <span class="now">{t('about.xp.now')}</span>
+          </div>
+          <div class="tl-content">
+            <div class="tl-role">CTO &amp; Cofundador</div>
+            <div class="tl-company">Leanwork Group · São Paulo</div>
+            <p class="tl-desc">Cofundei a Leanwork em 2014 com mais dois sócios. Começamos com três pessoas; hoje somos <strong>40+ engenheiros</strong> entregando software corporativo em .NET, React e Azure para bancos, varejistas e healthtechs. Como CTO, sou responsável pela <strong>diretriz técnica</strong>, plano de carreira da engenharia e curadoria de processos de delivery.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-year"><strong>2011 — 2014</strong></div>
+          <div class="tl-content">
+            <div class="tl-role">Tech Lead · Time de Plataforma</div>
+            <div class="tl-company">Software house · São Paulo</div>
+            <p class="tl-desc">Liderança técnica de um time de oito devs entregando integrações .NET para o setor financeiro. Aqui aprendi na prática que <strong>processo é o multiplicador</strong> — não código — e que liderança sênior é, na maior parte, escrever bem.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-year"><strong>2009 — 2011</strong></div>
+          <div class="tl-content">
+            <div class="tl-role">Desenvolvedor Sênior</div>
+            <div class="tl-company">Consultoria internacional · São Paulo / remoto</div>
+            <p class="tl-desc">Projetos para clientes nos EUA e Brasil em ASP.NET MVC, WCF e SQL Server. Primeira vez que vi <strong>código realmente legado</strong> — milhões de linhas — e entendi quanto disso sobrevive em produção indefinidamente.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-year"><strong>2007 — 2009</strong></div>
+          <div class="tl-content">
+            <div class="tl-role">Desenvolvedor Júnior &amp; Pleno</div>
+            <div class="tl-company">Agência digital · São Paulo</div>
+            <p class="tl-desc">Migrei de ASP clássico para .NET 2.0. Webforms, depois MVC. Quase tudo era pra portal de notícias ou e-commerce — bom para aprender prazo, péssimo para aprender arquitetura. Mas aqui formei a base.</p>
+          </div>
+        </div>
+
+        <div class="tl-item">
+          <div class="tl-year"><strong>2004 — 2007</strong></div>
+          <div class="tl-content">
+            <div class="tl-role">Freelas no ensino médio &amp; faculdade</div>
+            <div class="tl-company">Diversos clientes pequenos · São Paulo</div>
+            <p class="tl-desc">Sites em PHP, ASP clássico, HTML4. Comecei ao redor dos 16 cobrando R$ 300 por site institucional. Não tem glamour aqui — só a constatação retrospectiva de que <strong>código tem cheiro</strong> bem cedo.</p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- OPEN SOURCE -->
+  <section class="sec oss" id="open-source" aria-labelledby="oss-title">
+    <div class="container oss__inner">
+      <header class="sec__head">
+        <div class="sec__num">{t('about.oss.num')}</div>
+        <div>
+          <h2 class="sec__title" id="oss-title" set:html={t('about.oss.title')} />
+          <p class="sec__lede">{t('about.oss.lede')}</p>
+        </div>
+      </header>
+
+      <div class="oss-grid">
+
+        <a href="https://github.com/mbanagouro" target="_blank" rel="noopener" class="oss-card oss-card--featured">
+          <div>
+            <div class="oss-card__top">
+              <div class="oss-card__name">
+                <span class="org">mbanagouro</span><span class="slash">/</span><strong>observability-kit</strong>
+              </div>
+              <span class="oss-card__lang">C#</span>
+            </div>
+            <h3 class="oss-card__title">OpenTelemetry para .NET <em>com defaults sensatos.</em></h3>
+            <p class="oss-card__desc">Wrapper sobre OpenTelemetry SDK com presets para sistemas corporativos — métricas de aplicação, traces distribuídos e logs estruturados configurados em uma única linha. Foi nascendo dentro dos projetos da Leanwork até virar pacote.</p>
+            <div class="oss-card__stats">
+              <span>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M11.48 3.499a.562.562 0 011.04 0l2.125 5.111a.563.563 0 00.475.345l5.518.442c.499.04.701.663.321.988l-4.204 3.602a.563.563 0 00-.182.557l1.285 5.385a.562.562 0 01-.84.61l-4.725-2.885a.563.563 0 00-.586 0L6.982 20.54a.562.562 0 01-.84-.61l1.285-5.386a.562.562 0 00-.182-.557l-4.204-3.602a.563.563 0 01.321-.988l5.518-.442a.563.563 0 00.475-.345L11.48 3.5z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                <strong>1.2k</strong> stars
+              </span>
+              <span><strong>87</strong> forks</span>
+              <span>MIT</span>
+              <span>Atualizado <strong>3 dias</strong> atrás</span>
+            </div>
+          </div>
+          <div class="oss-card__terminal" aria-hidden="true">
+            <div><span class="prompt">$</span> <span class="cmd">dotnet add package Observability.Kit</span></div>
+            <div><span class="out">→ instalando 1.4.2 ...</span></div>
+            <div><span class="ok">✓ pacote adicionado</span></div>
+            <div>&nbsp;</div>
+            <div><span class="prompt">// Program.cs</span></div>
+            <div>builder.AddObservabilityKit();</div>
+          </div>
+        </a>
+
+        <a href="https://github.com/leanwork/dotnet-templates" target="_blank" rel="noopener" class="oss-card">
+          <div class="oss-card__top">
+            <div class="oss-card__name">
+              <span class="org">leanwork</span><span class="slash">/</span><strong>dotnet-templates</strong>
+            </div>
+            <span class="oss-card__lang">C#</span>
+          </div>
+          <p class="oss-card__desc">Conjunto de templates <code style="font-family:var(--font-mono); color:var(--ink-100); background:oklch(20% 0.01 65); padding:1px 5px; border-radius:3px;">dotnet new</code> com arquitetura por domínio, observabilidade configurada e CI mínimo. É o ponto de partida dos novos projetos da Leanwork.</p>
+          <div class="oss-card__stats">
+            <span><strong>410</strong> stars</span>
+            <span><strong>52</strong> forks</span>
+            <span>MIT</span>
+            <span>v3.1 · 14 mai</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/mbanagouro/cqrs-without-mediatr" target="_blank" rel="noopener" class="oss-card">
+          <div class="oss-card__top">
+            <div class="oss-card__name">
+              <span class="org">mbanagouro</span><span class="slash">/</span><strong>cqrs-without-mediatr</strong>
+            </div>
+            <span class="oss-card__lang">C#</span>
+          </div>
+          <p class="oss-card__desc">Implementação minimalista de CQRS em .NET 9 sem dependência do MediatR — usando apenas as primitivas do DI nativo. Repositório de referência do post de blog homônimo.</p>
+          <div class="oss-card__stats">
+            <span><strong>318</strong> stars</span>
+            <span><strong>41</strong> forks</span>
+            <span>MIT</span>
+            <span>v1.0 · 02 mai</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/leanwork/migration-checklist" target="_blank" rel="noopener" class="oss-card">
+          <div class="oss-card__top">
+            <div class="oss-card__name">
+              <span class="org">leanwork</span><span class="slash">/</span><strong>migration-checklist</strong>
+            </div>
+            <span class="oss-card__lang">Markdown</span>
+          </div>
+          <p class="oss-card__desc">Checklist público que usamos internamente em migrações legacy → Azure. Não é código, mas decisões — coisas que descobrimos doendo. <em>Pull requests bem-vindos.</em></p>
+          <div class="oss-card__stats">
+            <span><strong>892</strong> stars</span>
+            <span><strong>134</strong> forks</span>
+            <span>CC-BY</span>
+            <span>v2.0 · 22 abr</span>
+          </div>
+        </a>
+
+        <a href="https://github.com/mbanagouro/aspnetcore-feature-folders" target="_blank" rel="noopener" class="oss-card">
+          <div class="oss-card__top">
+            <div class="oss-card__name">
+              <span class="org">mbanagouro</span><span class="slash">/</span><strong>aspnetcore-feature-folders</strong>
+            </div>
+            <span class="oss-card__lang">C#</span>
+          </div>
+          <p class="oss-card__desc">Convenção e source generators para organizar ASP.NET Core por feature folders em vez de por camada. Pequeno e útil — não pretende virar framework.</p>
+          <div class="oss-card__stats">
+            <span><strong>156</strong> stars</span>
+            <span><strong>18</strong> forks</span>
+            <span>MIT</span>
+            <span>v0.9 · 14 fev</span>
+          </div>
+        </a>
+
+      </div>
+
+      <div class="gh-cta">
+        <div>
+          <h3 class="gh-cta__title" set:html={t('about.oss.gh.title')} />
+          <p class="gh-cta__copy">{t('about.oss.gh.copy')}</p>
+          <div class="gh-cta__handle">
+            <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path d="M12 2C6.475 2 2 6.475 2 12c0 4.425 2.863 8.163 6.838 9.488.5.087.687-.213.687-.475 0-.237-.013-1.025-.013-1.862-2.512.463-3.162-.612-3.362-1.175-.113-.288-.6-1.175-1.025-1.413-.35-.187-.85-.65-.013-.662.788-.013 1.35.725 1.538 1.025.9 1.512 2.337 1.087 2.912.825.088-.65.35-1.087.638-1.337-2.225-.25-4.55-1.113-4.55-4.938 0-1.088.387-1.987 1.025-2.688-.1-.25-.45-1.275.1-2.65 0 0 .837-.262 2.75 1.026a9.28 9.28 0 012.5-.338c.85 0 1.7.112 2.5.337 1.912-1.3 2.75-1.024 2.75-1.024.55 1.375.2 2.4.1 2.65.637.7 1.025 1.587 1.025 2.687 0 3.838-2.337 4.688-4.562 4.938.362.312.675.912.675 1.85 0 1.337-.013 2.412-.013 2.75 0 .262.188.574.688.474C19.137 20.163 22 16.412 22 12c0-5.525-4.475-10-10-10z"/></svg>
+            github.com/mbanagouro
+          </div>
+        </div>
+        <div class="gh-cta__stats">
+          <div>
+            <div class="gh-stat__num">34</div>
+            <div class="gh-stat__label">{t('about.oss.gh.repos')}</div>
+          </div>
+          <div>
+            <div class="gh-stat__num">3.2k</div>
+            <div class="gh-stat__label">{t('about.oss.gh.stars')}</div>
+          </div>
+          <div>
+            <div class="gh-stat__num">412</div>
+            <div class="gh-stat__label">{t('about.oss.gh.forks')}</div>
+          </div>
+          <div>
+            <div class="gh-stat__num">187</div>
+            <div class="gh-stat__label">{t('about.oss.gh.contributions')}</div>
+          </div>
+        </div>
+        <div class="gh-cta__ctas">
+          <Button href="https://github.com/mbanagouro" variant="acc" size="lg" target="_blank" rel="noopener">
+            {t('about.oss.gh.cta')}
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </Button>
+          <Button href="https://github.com/leanwork" variant="outline-dark" size="lg" target="_blank" rel="noopener">
+            {t('about.oss.gh.lw')}
+          </Button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- CASES -->
+  <section class="sec" id="cases" aria-labelledby="cases-title">
+    <div class="container">
+      <header class="sec__head">
+        <div class="sec__num">{t('about.cases.num')}</div>
+        <div>
+          <h2 class="sec__title" id="cases-title" set:html={t('about.cases.title')} />
+          <p class="sec__lede">{t('about.cases.lede')}</p>
+        </div>
+      </header>
+
+      <div class="cases-grid">
+
+        <article class="case-card">
+          <div class="case-card__top">
+            <span class="case-card__client">Banco médio · BR</span>
+            <span class="case-card__year">2025</span>
+          </div>
+          <h3 class="case-card__title">Plataforma de <em>pagamentos instantâneos</em></h3>
+          <div class="case-card__role"><strong>Papel:</strong> Arquiteto principal · Tech Lead do core</div>
+          <p class="case-card__result">Núcleo transacional construído em .NET 9, processando <strong>~1.2M transações/dia</strong> com p99 abaixo de 80ms. Migração do legacy COBOL feita em janelas de manutenção noturnas ao longo de 14 meses.</p>
+          <div class="case-card__stack">
+            <span class="chip">.NET 9</span><span class="chip">CQRS</span><span class="chip">Cosmos DB</span><span class="chip">Service Bus</span><span class="chip">AKS</span>
+          </div>
+        </article>
+
+        <article class="case-card">
+          <div class="case-card__top">
+            <span class="case-card__client">Varejista de moda · BR</span>
+            <span class="case-card__year">2024</span>
+          </div>
+          <h3 class="case-card__title">Migração <em>legacy → Azure</em></h3>
+          <div class="case-card__role"><strong>Papel:</strong> CTO interino · Liderança de migração</div>
+          <p class="case-card__result">ERP interno de 18 anos migrado de servidores físicos próprios para Azure App Service. <strong>Redução de 62% no custo de infra</strong>, deploy diário (era mensal), zero janela de downtime no go-live.</p>
+          <div class="case-card__stack">
+            <span class="chip">.NET 8</span><span class="chip">App Service</span><span class="chip">SQL Azure</span><span class="chip">Front Door</span>
+          </div>
+        </article>
+
+        <article class="case-card">
+          <div class="case-card__top">
+            <span class="case-card__client">Healthtech · BR</span>
+            <span class="case-card__year">2023</span>
+          </div>
+          <h3 class="case-card__title">Plataforma de <em>telemedicina</em></h3>
+          <div class="case-card__role"><strong>Papel:</strong> Arquiteto · Mentor do CTO da contratante</div>
+          <p class="case-card__result">Plataforma greenfield para consultas online. SignalR para sala virtual, .NET para backend, Cosmos DB para histórico. Da escolha do stack ao go-live em <strong>oito meses</strong>; 14k consultas/mês depois do lançamento.</p>
+          <div class="case-card__stack">
+            <span class="chip">.NET 8</span><span class="chip">SignalR</span><span class="chip">Cosmos DB</span><span class="chip">Container Apps</span><span class="chip">React</span>
+          </div>
+        </article>
+
+        <article class="case-card">
+          <div class="case-card__top">
+            <span class="case-card__client">Logística · BR/AR</span>
+            <span class="case-card__year">2022</span>
+          </div>
+          <h3 class="case-card__title">Roteirização <em>multi-país</em></h3>
+          <div class="case-card__role"><strong>Papel:</strong> Tech Lead · Modelagem de domínio</div>
+          <p class="case-card__result">Sistema de roteirização de entregas com regras de país, frota mista e custo variável. Modelagem por domínio (rota, parada, restrição) que sobreviveu a três rodadas de mudança de regra de negócio sem rewrite.</p>
+          <div class="case-card__stack">
+            <span class="chip">.NET 7</span><span class="chip">DDD</span><span class="chip">Functions</span><span class="chip">PostgreSQL</span>
+          </div>
+        </article>
+
+        <article class="case-card">
+          <div class="case-card__top">
+            <span class="case-card__client">Seguradora · BR</span>
+            <span class="case-card__year">2021</span>
+          </div>
+          <h3 class="case-card__title">Motor de <em>subscrição automatizada</em></h3>
+          <div class="case-card__role"><strong>Papel:</strong> Arquiteto · Mentor da equipe interna</div>
+          <p class="case-card__result">Motor de cálculo e aprovação automática de propostas. Regras como código (engine própria) substituindo planilhas de atuário. <strong>Tempo médio de aprovação caiu de 4 dias para 2 horas</strong>.</p>
+          <div class="case-card__stack">
+            <span class="chip">.NET 6</span><span class="chip">Rules Engine</span><span class="chip">SQL Server</span><span class="chip">Azure Functions</span>
+          </div>
+        </article>
+
+        <article class="case-card">
+          <div class="case-card__top">
+            <span class="case-card__client">Edtech · BR (Leanwork)</span>
+            <span class="case-card__year">2022—Hoje</span>
+          </div>
+          <h3 class="case-card__title">ASP.NET PRO <em>(produto próprio)</em></h3>
+          <div class="case-card__role"><strong>Papel:</strong> Fundador, instrutor e desenvolvedor</div>
+          <p class="case-card__result">Plataforma de cursos próprios para devs sêniores. Engine de progresso, sala ao vivo (SignalR), comunidade integrada. <strong>2.400+ alunos pagantes</strong> em três edições; receita reinvestida 100% em conteúdo.</p>
+          <div class="case-card__stack">
+            <span class="chip">.NET 9</span><span class="chip">Razor Pages</span><span class="chip">SignalR</span><span class="chip">App Service</span>
+          </div>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
 </BaseLayout>

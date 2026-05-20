@@ -1,0 +1,1044 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Eventos — Mick Banagouro</title>
+<meta name="description" content="Agenda completa: próximas palestras, workshops e painéis. Arquivo de eventos anteriores com slides e gravações." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="styles/tokens.css" />
+<link rel="stylesheet" href="styles/base.css" />
+<link rel="stylesheet" href="styles/site.css" />
+<style>
+  /* ── Page hero ── */
+  .page-hero {
+    padding: var(--s-9) 0 var(--s-7);
+    border-bottom: 1px solid var(--border);
+  }
+  .page-hero__inner {
+    display: grid; grid-template-columns: 1fr; gap: var(--s-7);
+  }
+  @media (min-width: 980px) {
+    .page-hero__inner { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: var(--s-9); align-items: end; }
+  }
+  .page-hero__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+    display: inline-flex; align-items: center; gap: var(--s-3);
+    margin-bottom: var(--s-5);
+  }
+  .page-hero__eyebrow::before { content: ""; width: 24px; height: 1px; background: var(--ink-300); }
+  .page-hero__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 5.5vw, 4.5rem);
+    line-height: 1.02;
+    letter-spacing: var(--tracking-display);
+  }
+  .page-hero__title em { font-style: italic; color: var(--ink-600); }
+  .page-hero__lede {
+    margin-top: var(--s-5);
+    font-size: var(--fs-18);
+    line-height: var(--lh-prose);
+    color: var(--ink-600);
+    max-width: 56ch;
+  }
+  /* Stats panel on right */
+  .stats {
+    border-left: 1px solid var(--border);
+    padding-left: var(--s-6);
+    display: grid; gap: var(--s-5);
+  }
+  @media (max-width: 979px) {
+    .stats { border-left: none; padding-left: 0; border-top: 1px solid var(--border); padding-top: var(--s-6); grid-template-columns: repeat(4, 1fr); }
+  }
+  .stat__num {
+    font-family: var(--font-display);
+    font-size: clamp(2rem, 4vw, 3rem);
+    line-height: 1;
+    color: var(--text);
+    letter-spacing: var(--tracking-display);
+  }
+  .stat__label {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--text-muted);
+    text-transform: uppercase; letter-spacing: var(--tracking-wide);
+    margin-top: var(--s-2);
+  }
+
+  /* ── Filter bar ── */
+  .filters {
+    position: sticky;
+    top: 64px; z-index: 30;
+    background: oklch(98.5% 0.003 65 / 0.92);
+    backdrop-filter: saturate(150%) blur(12px);
+    -webkit-backdrop-filter: saturate(150%) blur(12px);
+    border-bottom: 1px solid var(--border);
+  }
+  .filters__inner {
+    display: flex; align-items: center; gap: var(--s-3);
+    padding: var(--s-3) 0;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .filters__inner::-webkit-scrollbar { display: none; }
+  .filters__group {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    flex-shrink: 0;
+  }
+  .filters__label {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-subtle);
+    text-transform: uppercase; letter-spacing: var(--tracking-wide);
+    margin-right: var(--s-2);
+  }
+  .filters__sep {
+    width: 1px; height: 24px; background: var(--border-strong);
+    margin: 0 var(--s-3);
+    flex-shrink: 0;
+  }
+  .chip-btn {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    padding: 5px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-pill);
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--ink-700);
+    background: var(--surface);
+    cursor: pointer;
+    transition: all var(--dur-fast);
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .chip-btn:hover { border-color: var(--ink-700); color: var(--text); }
+  .chip-btn.is-active {
+    background: var(--ink-900); color: var(--ink-0); border-color: var(--ink-900);
+  }
+  .filters__spacer { flex: 1; min-width: 16px; }
+  .filters__count {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted); flex-shrink: 0;
+  }
+
+  /* ── Section heads ── */
+  .ev-section { padding: var(--s-8) 0; }
+  .ev-section + .ev-section { padding-top: 0; }
+  .ev-section__head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    margin-bottom: var(--s-6);
+    flex-wrap: wrap; gap: var(--s-3);
+  }
+  .ev-section__title {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--fs-32);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.1;
+    display: flex; align-items: baseline; gap: var(--s-3);
+  }
+  .ev-section__title .num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    color: var(--text-subtle);
+    font-weight: 400;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+  }
+  .ev-section__count {
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    color: var(--text-muted);
+  }
+  .ev-section__count strong { color: var(--text); font-weight: 500; }
+
+  /* ── Upcoming cards (próximos) ── */
+  .upcoming {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-4);
+  }
+  @media (min-width: 800px) { .upcoming { grid-template-columns: 1fr 1fr; } }
+
+  .ev-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: var(--s-6);
+    display: flex; flex-direction: column; gap: var(--s-5);
+    transition: border-color var(--dur-base) var(--ease-out);
+    text-decoration: none; color: inherit;
+    min-height: 280px;
+  }
+  .ev-card:hover { border-color: var(--ink-700); }
+  .ev-card.is-hidden { display: none; }
+
+  .ev-card__top {
+    display: flex; justify-content: space-between; align-items: flex-start; gap: var(--s-4);
+  }
+  .ev-card__date {
+    background: var(--ink-900);
+    color: var(--ink-0);
+    padding: var(--s-3) var(--s-4);
+    border-radius: var(--r-md);
+    display: grid; place-items: center;
+    text-align: center;
+    min-width: 70px;
+  }
+  .ev-card__date .d {
+    font-family: var(--font-sans); font-weight: 600;
+    font-size: var(--fs-24); line-height: 1;
+    letter-spacing: var(--tracking-tight);
+  }
+  .ev-card__date .m {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    text-transform: uppercase; letter-spacing: var(--tracking-wide);
+    color: var(--ink-300);
+    margin-top: 4px;
+  }
+  .ev-card__role { align-self: flex-start; }
+
+  .ev-card__title {
+    font-weight: 600;
+    font-size: var(--fs-20);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.25;
+  }
+  .ev-card__abstract {
+    margin-top: var(--s-3);
+    font-size: var(--fs-14);
+    line-height: var(--lh-prose);
+    color: var(--ink-600);
+    flex: 1;
+  }
+  .ev-card__abstract em {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--ink-700);
+  }
+  .ev-card__foot {
+    display: flex; align-items: center; justify-content: space-between;
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono); font-size: var(--fs-13);
+    color: var(--ink-600);
+  }
+  .ev-card__foot-left { display: flex; gap: var(--s-4); align-items: center; flex-wrap: wrap; }
+  .ev-card__foot-left svg { width: 14px; height: 14px; stroke-width: 1.5; color: var(--text-subtle); display: inline-block; vertical-align: -2px; margin-right: 4px; }
+  .ev-card__cta {
+    display: inline-flex; align-items: center; gap: var(--s-2);
+    color: var(--text);
+    font-weight: 500;
+  }
+  .ev-card:hover .ev-card__cta { color: var(--accent-700); }
+  .ev-card__cta svg { width: 12px; height: 12px; stroke-width: 1.75; transition: transform var(--dur-base) var(--ease-out); }
+  .ev-card:hover .ev-card__cta svg { transform: translate(2px, -2px); }
+
+  /* "Featured" upcoming flag */
+  .ev-card--soon {
+    background: var(--ink-950);
+    color: var(--ink-100);
+    border-color: transparent;
+  }
+  .ev-card--soon .ev-card__date { background: var(--accent); color: var(--accent-fg); }
+  .ev-card--soon .ev-card__date .m { color: oklch(30% 0.08 65); }
+  .ev-card--soon .ev-card__abstract { color: var(--ink-300); }
+  .ev-card--soon .ev-card__abstract em { color: var(--accent-300); }
+  .ev-card--soon .ev-card__foot {
+    border-top-color: oklch(25% 0.01 65);
+    color: var(--ink-300);
+  }
+  .ev-card--soon .ev-card__foot-left svg { color: var(--ink-400); }
+  .ev-card--soon .ev-card__cta { color: var(--ink-100); }
+  .ev-card--soon:hover .ev-card__cta { color: var(--accent-300); }
+
+  /* ── Past events (anteriores) — compact list ── */
+  .past-list {
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .past-row {
+    display: grid;
+    cursor: pointer;
+    grid-template-columns: 1fr;
+    gap: var(--s-3);
+    padding: var(--s-5) var(--s-6);
+    border-bottom: 1px solid var(--border);
+    transition: background var(--dur-fast);
+    text-decoration: none; color: inherit;
+    align-items: center;
+  }
+  @media (min-width: 960px) {
+    .past-row {
+      grid-template-columns: 110px minmax(0, 1.8fr) 140px 150px minmax(0, 1fr) 36px;
+      gap: var(--s-5);
+    }
+  }
+  .past-row:last-child { border-bottom: none; }
+  .past-row:hover { background: var(--surface-alt); }
+  .past-row.is-hidden { display: none; }
+
+  .past-date {
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    color: var(--ink-700);
+    display: flex; flex-direction: column;
+  }
+  .past-date .d {
+    font-size: var(--fs-20);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: var(--tracking-tight);
+    color: var(--text);
+  }
+  .past-date .m {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    text-transform: uppercase; letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .past-title {
+    font-weight: 600;
+    font-size: var(--fs-15);
+    letter-spacing: var(--tracking-tight);
+  }
+  .past-title-sub {
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--text-muted);
+  }
+  .past-city {
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    color: var(--ink-600);
+  }
+  .past-city svg { width: 13px; height: 13px; stroke-width: 1.5; display: inline-block; vertical-align: -2px; margin-right: 4px; color: var(--text-subtle); }
+  .past-resources { display: flex; gap: var(--s-2); flex-wrap: wrap; }
+  .res-link {
+    display: inline-flex; align-items: center; gap: 4px;
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--ink-700);
+    border: 1px solid var(--border-strong);
+    padding: 3px 8px;
+    border-radius: var(--r-sm);
+    transition: all var(--dur-fast);
+  }
+  .res-link:hover { border-color: var(--ink-700); color: var(--text); background: var(--surface); }
+  .res-link svg { width: 10px; height: 10px; stroke-width: 2; }
+  .past-arrow {
+    display: none;
+    width: 28px; height: 28px;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    place-items: center;
+    color: var(--ink-700);
+    transition: all var(--dur-fast);
+  }
+  @media (min-width: 960px) { .past-arrow { display: grid; } }
+  .past-row:hover .past-arrow { background: var(--ink-900); color: var(--ink-0); border-color: var(--ink-900); }
+  .past-arrow svg { width: 12px; height: 12px; stroke-width: 1.75; }
+
+  /* Empty state */
+  .empty {
+    padding: var(--s-9) 0;
+    text-align: center;
+    font-family: var(--font-mono); font-size: var(--fs-13);
+    color: var(--text-muted);
+    display: none;
+  }
+  .empty.is-shown { display: block; }
+
+  /* ── Pagination ── */
+  .pager {
+    display: flex; justify-content: space-between; align-items: center;
+    padding: var(--s-6) 0 0;
+    flex-wrap: wrap; gap: var(--s-4);
+  }
+  .pager__info {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted);
+  }
+  .pager__info strong { color: var(--text); font-weight: 500; }
+  .pager__pages {
+    display: flex; gap: var(--s-2); align-items: center;
+  }
+  .pager__btn {
+    min-width: 36px; height: 36px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
+    background: var(--surface);
+    font-family: var(--font-mono); font-size: var(--fs-13);
+    color: var(--ink-700);
+    display: grid; place-items: center;
+    padding: 0 10px;
+    cursor: pointer;
+    transition: all var(--dur-fast);
+  }
+  .pager__btn:hover:not(:disabled):not(.is-active) {
+    border-color: var(--ink-700); color: var(--text);
+  }
+  .pager__btn:disabled { opacity: 0.4; cursor: not-allowed; }
+  .pager__btn.is-active {
+    background: var(--ink-900); color: var(--ink-0); border-color: var(--ink-900);
+  }
+  .pager__btn svg { width: 12px; height: 12px; stroke-width: 1.75; }
+
+  /* ── CTA bottom ── */
+  .organize-cta {
+    margin: var(--s-9) 0 0;
+    padding: var(--s-8);
+    background: var(--ink-950);
+    color: var(--ink-100);
+    border-radius: var(--r-lg);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-5);
+  }
+  @media (min-width: 800px) {
+    .organize-cta { grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); align-items: center; gap: var(--s-7); }
+  }
+  .organize-cta__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.1;
+    letter-spacing: var(--tracking-display);
+    color: var(--ink-0);
+  }
+  .organize-cta__title em { font-style: italic; color: var(--accent-300); }
+  .organize-cta__copy {
+    margin-top: var(--s-3);
+    font-size: var(--fs-15);
+    color: var(--ink-300);
+    line-height: var(--lh-prose);
+    max-width: 50ch;
+  }
+  .organize-cta__actions {
+    display: flex; gap: var(--s-3); flex-wrap: wrap;
+    justify-content: flex-start;
+  }
+  @media (min-width: 800px) { .organize-cta__actions { justify-content: flex-end; } }
+</style>
+</head>
+<body data-screen-label="05 Eventos">
+
+  <!-- ─────────────────────────── HEADER ─────────────────────────── -->
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a href="index.html" class="brand">
+        <span class="brand__mark">M</span>
+        <span>Mick<span class="brand__last"> Banagouro</span></span>
+      </a>
+      <nav class="nav" aria-label="Principal">
+        <a href="sobre.html">Sobre</a>
+        <a href="aspnet-pro.html">ASP.NET&nbsp;PRO</a>
+        <a href="blog.html">Blog</a>
+        <a href="eventos.html" aria-current="page">Eventos</a>
+      </nav>
+      <div class="header-cta">
+        <a href="#organizar" class="btn btn-ghost btn-sm">Convide-me</a>
+        <a href="aspnet-pro.html" class="btn btn-acc btn-sm">ASP.NET PRO
+          <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <button class="menu-btn" aria-label="Abrir menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ─────────────────────────── PAGE HERO ─────────────────────────── -->
+    <section class="page-hero">
+      <div class="container page-hero__inner">
+        <div>
+          <span class="page-hero__eyebrow">— 04 / Agenda</span>
+          <h1 class="page-hero__title">Palestras, painéis e <em>workshops em pé.</em></h1>
+          <p class="page-hero__lede">
+            Próximas aparições confirmadas e o arquivo de eventos anteriores — com slides e gravações quando o organizador disponibilizou. Em média entrego uma talk por mês.
+          </p>
+        </div>
+        <div class="stats">
+          <div>
+            <div class="stat__num">04</div>
+            <div class="stat__label">Próximos</div>
+          </div>
+          <div>
+            <div class="stat__num">36</div>
+            <div class="stat__label">Eventos no arquivo</div>
+          </div>
+          <div>
+            <div class="stat__num">12</div>
+            <div class="stat__label">Cidades</div>
+          </div>
+          <div>
+            <div class="stat__num">'18→</div>
+            <div class="stat__label">Desde 2018</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── FILTERS ─────────────────────────── -->
+    <nav class="filters" aria-label="Filtrar eventos">
+      <div class="container">
+        <div class="filters__inner">
+
+          <div class="filters__group">
+            <span class="filters__label">Papel</span>
+            <button class="chip-btn is-active" data-filter="role" data-value="all">Todos</button>
+            <button class="chip-btn" data-filter="role" data-value="palestrante">Palestrante</button>
+            <button class="chip-btn" data-filter="role" data-value="instrutor">Instrutor</button>
+            <button class="chip-btn" data-filter="role" data-value="painelista">Painelista</button>
+          </div>
+
+          <div class="filters__sep" aria-hidden="true"></div>
+
+          <div class="filters__group">
+            <span class="filters__label">Ano</span>
+            <button class="chip-btn is-active" data-filter="year" data-value="all">Todos</button>
+            <button class="chip-btn" data-filter="year" data-value="2026">2026</button>
+            <button class="chip-btn" data-filter="year" data-value="2025">2025</button>
+            <button class="chip-btn" data-filter="year" data-value="2024">2024</button>
+          </div>
+
+          <div class="filters__spacer"></div>
+          <span class="filters__count" id="filtersCount">Mostrando <strong style="color:var(--text);">40</strong> eventos</span>
+        </div>
+      </div>
+    </nav>
+
+    <!-- ─────────────────────────── PRÓXIMOS ─────────────────────────── -->
+    <section class="ev-section" id="proximos" aria-labelledby="up-title">
+      <div class="container">
+        <header class="ev-section__head">
+          <h2 class="ev-section__title" id="up-title"><span class="num">— Próximos</span></h2>
+          <span class="ev-section__count"><strong id="upCount">4</strong> confirmados</span>
+        </header>
+
+        <div class="upcoming" id="upcoming">
+
+          <a href="#" class="ev-card ev-card--soon" data-role="palestrante" data-year="2026">
+            <div class="ev-card__top">
+              <div class="ev-card__date"><span class="d">12</span><span class="m">jun · 26</span></div>
+              <span class="chip chip--accent ev-card__role">Palestrante</span>
+            </div>
+            <div>
+              <div class="ev-card__title">TDC São Paulo · Trilha .NET</div>
+              <div class="ev-card__abstract"><em>"Arquitetura por domínio em sistemas legados"</em> — 50 minutos sobre como introduzir DDD num sistema .NET de 12 anos sem queimar o time no processo.</div>
+            </div>
+            <div class="ev-card__foot">
+              <div class="ev-card__foot-left">
+                <span><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>São Paulo · presencial</span>
+              </div>
+              <span class="ev-card__cta">Inscrições <svg viewBox="0 0 24 24"><path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75M14.25 6h6m0 0v6m0-6L10.5 15.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </a>
+
+          <a href="#" class="ev-card" data-role="palestrante" data-year="2026">
+            <div class="ev-card__top">
+              <div class="ev-card__date"><span class="d">03</span><span class="m">jul · 26</span></div>
+              <span class="chip chip--solid ev-card__role">Palestrante</span>
+            </div>
+            <div>
+              <div class="ev-card__title">.NET Conf Brasil</div>
+              <div class="ev-card__abstract"><em>"Observabilidade no .NET 9 — além do OpenTelemetry básico"</em>. 40 minutos sobre como balanceamos métricas, traces e logs em sistemas críticos em produção.</div>
+            </div>
+            <div class="ev-card__foot">
+              <div class="ev-card__foot-left">
+                <span><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18" stroke-linecap="round" stroke-linejoin="round"/></svg>Online · gratuito</span>
+              </div>
+              <span class="ev-card__cta">Inscrever <svg viewBox="0 0 24 24"><path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75M14.25 6h6m0 0v6m0-6L10.5 15.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </a>
+
+          <a href="#" class="ev-card" data-role="painelista" data-year="2026">
+            <div class="ev-card__top">
+              <div class="ev-card__date"><span class="d">22</span><span class="m">ago · 26</span></div>
+              <span class="chip ev-card__role">Painelista</span>
+            </div>
+            <div>
+              <div class="ev-card__title">DevOps Days Porto Alegre</div>
+              <div class="ev-card__abstract">Painel <em>"Liderança técnica em times remotos"</em>. Modelo de squads por domínio, plano de carreira e como manter padrão técnico sem virar polícia de PR.</div>
+            </div>
+            <div class="ev-card__foot">
+              <div class="ev-card__foot-left">
+                <span><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>Porto Alegre · presencial</span>
+              </div>
+              <span class="ev-card__cta">Inscrições <svg viewBox="0 0 24 24"><path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75M14.25 6h6m0 0v6m0-6L10.5 15.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </a>
+
+          <a href="#" class="ev-card" data-role="instrutor" data-year="2026">
+            <div class="ev-card__top">
+              <div class="ev-card__date"><span class="d">14</span><span class="m">set · 26</span></div>
+              <span class="chip chip--accent ev-card__role">Instrutor</span>
+            </div>
+            <div>
+              <div class="ev-card__title">NDC Brasília · Workshop</div>
+              <div class="ev-card__abstract">Workshop intensivo de dois dias: <em>"Arquitetura .NET para sistemas críticos"</em>. Turma fechada, 20 vagas, código de produção do início ao fim.</div>
+            </div>
+            <div class="ev-card__foot">
+              <div class="ev-card__foot-left">
+                <span><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>Brasília · presencial · 2 dias</span>
+              </div>
+              <span class="ev-card__cta">Vagas <svg viewBox="0 0 24 24"><path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75M14.25 6h6m0 0v6m0-6L10.5 15.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+            </div>
+          </a>
+
+        </div>
+
+        <div class="empty" id="emptyUpcoming">Nenhum evento futuro com esse filtro.</div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── ANTERIORES ─────────────────────────── -->
+    <section class="ev-section" id="anteriores" aria-labelledby="past-title">
+      <div class="container">
+        <header class="ev-section__head">
+          <h2 class="ev-section__title" id="past-title"><span class="num">— Arquivo</span></h2>
+          <span class="ev-section__count"><strong id="pastCount">36</strong> eventos · slides &amp; gravações</span>
+        </header>
+
+        <div class="past-list" id="pastList">
+
+          <!-- 2025 -->
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="palestrante" data-year="2025">
+            <div class="past-date"><span class="d">18</span><span class="m">nov · 25</span></div>
+            <div>
+              <div class="past-title">TDC Recife · Trilha Backend</div>
+              <div class="past-title-sub">CQRS sem cerimônia: quando aplicar e quando recuar</div>
+            </div>
+            <span class="chip chip--solid">Palestrante</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>Recife</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Slides <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a href="#" class="res-link">Vídeo <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="palestrante" data-year="2025">
+            <div class="past-date"><span class="d">22</span><span class="m">out · 25</span></div>
+            <div>
+              <div class="past-title">.NET Day Brasil</div>
+              <div class="past-title-sub">Source generators em produção — quatro casos práticos</div>
+            </div>
+            <span class="chip chip--solid">Palestrante</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18" stroke-linecap="round" stroke-linejoin="round"/></svg>Online</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Slides <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a href="#" class="res-link">Vídeo <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="painelista" data-year="2025">
+            <div class="past-date"><span class="d">04</span><span class="m">set · 25</span></div>
+            <div>
+              <div class="past-title">Meetup Azure São Paulo</div>
+              <div class="past-title-sub">Painel: App Service vs Container Apps em projetos reais</div>
+            </div>
+            <span class="chip">Painelista</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>São Paulo</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Vídeo <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="palestrante" data-year="2025">
+            <div class="past-date"><span class="d">12</span><span class="m">ago · 25</span></div>
+            <div>
+              <div class="past-title">BSB Tech Conference</div>
+              <div class="past-title-sub">Migração legacy para Azure: o que ninguém te conta</div>
+            </div>
+            <span class="chip chip--solid">Palestrante</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>Brasília</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Slides <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="instrutor" data-year="2025">
+            <div class="past-date"><span class="d">25</span><span class="m">jul · 25</span></div>
+            <div>
+              <div class="past-title">DevExperience Porto Alegre · Workshop</div>
+              <div class="past-title-sub">Workshop de um dia: testes em sistemas críticos</div>
+            </div>
+            <span class="chip chip--accent">Instrutor</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>Porto Alegre</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Material <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="palestrante" data-year="2025">
+            <div class="past-date"><span class="d">14</span><span class="m">jun · 25</span></div>
+            <div>
+              <div class="past-title">TDC São Paulo · Trilha Arquitetura</div>
+              <div class="past-title-sub">Boundaries: a única abstração que importa</div>
+            </div>
+            <span class="chip chip--solid">Palestrante</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>São Paulo</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Slides <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a href="#" class="res-link">Vídeo <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="painelista" data-year="2025">
+            <div class="past-date"><span class="d">22</span><span class="m">abr · 25</span></div>
+            <div>
+              <div class="past-title">Build Conference SP</div>
+              <div class="past-title-sub">Painel: o que significa ser sênior em 2025</div>
+            </div>
+            <span class="chip">Painelista</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>São Paulo</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Vídeo <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="palestrante" data-year="2025">
+            <div class="past-date"><span class="d">14</span><span class="m">mar · 25</span></div>
+            <div>
+              <div class="past-title">Live Coding Brasil</div>
+              <div class="past-title-sub">Refatorando 12 anos de código .NET ao vivo</div>
+            </div>
+            <span class="chip chip--solid">Palestrante</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18" stroke-linecap="round" stroke-linejoin="round"/></svg>Online</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Vídeo <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a href="#" class="res-link">Repo <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="palestrante" data-year="2025">
+            <div class="past-date"><span class="d">08</span><span class="m">fev · 25</span></div>
+            <div>
+              <div class="past-title">QCon São Paulo</div>
+              <div class="past-title-sub">Modelagem de domínio em sistemas financeiros</div>
+            </div>
+            <span class="chip chip--solid">Palestrante</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>São Paulo</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Slides <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a href="#" class="res-link">Vídeo <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <!-- 2024 -->
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="palestrante" data-year="2024">
+            <div class="past-date"><span class="d">22</span><span class="m">nov · 24</span></div>
+            <div>
+              <div class="past-title">TDC Florianópolis</div>
+              <div class="past-title-sub">Observabilidade em .NET além do log básico</div>
+            </div>
+            <span class="chip chip--solid">Palestrante</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>Florianópolis</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Slides <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="painelista" data-year="2024">
+            <div class="past-date"><span class="d">14</span><span class="m">out · 24</span></div>
+            <div>
+              <div class="past-title">DevConf Brasil</div>
+              <div class="past-title-sub">Painel: arquitetura sem dogmas</div>
+            </div>
+            <span class="chip">Painelista</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>São Paulo</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Vídeo <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="palestrante" data-year="2024">
+            <div class="past-date"><span class="d">08</span><span class="m">set · 24</span></div>
+            <div>
+              <div class="past-title">.NET Day Minas Gerais</div>
+              <div class="past-title-sub">EF Core vs Dapper — convivência possível</div>
+            </div>
+            <span class="chip chip--solid">Palestrante</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>Belo Horizonte</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Slides <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+              <a href="#" class="res-link">Vídeo <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="instrutor" data-year="2024">
+            <div class="past-date"><span class="d">22</span><span class="m">jun · 24</span></div>
+            <div>
+              <div class="past-title">NDC Brasília · Workshop</div>
+              <div class="past-title-sub">Workshop: API Design em .NET 8</div>
+            </div>
+            <span class="chip chip--accent">Instrutor</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>Brasília</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Material <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="palestrante" data-year="2024">
+            <div class="past-date"><span class="d">10</span><span class="m">mai · 24</span></div>
+            <div>
+              <div class="past-title">DevOpsDays Rio</div>
+              <div class="past-title-sub">CI/CD em .NET para times pequenos</div>
+            </div>
+            <span class="chip chip--solid">Palestrante</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>Rio de Janeiro</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Slides <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+          <div role="link" tabindex="0" data-href="#" class="past-row" data-role="palestrante" data-year="2024">
+            <div class="past-date"><span class="d">14</span><span class="m">mar · 24</span></div>
+            <div>
+              <div class="past-title">.NET Conf Brasil 2024</div>
+              <div class="past-title-sub">Razor Pages em 2024: defesa de uma ferramenta esquecida</div>
+            </div>
+            <span class="chip chip--solid">Palestrante</span>
+            <span class="past-city"><svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18" stroke-linecap="round" stroke-linejoin="round"/></svg>Online</span>
+            <div class="past-resources">
+              <a href="#" class="res-link">Vídeo <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></a>
+            </div>
+            <span class="past-arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </div>
+
+        </div>
+
+        <div class="empty" id="emptyPast">Nenhum evento no arquivo com esse filtro.</div>
+
+        <!-- Pagination -->
+        <nav class="pager" aria-label="Paginação do arquivo">
+          <span class="pager__info">Página <strong id="curPage">1</strong> de <strong id="totalPages">3</strong> · mostrando <strong id="rangeFrom">1</strong>–<strong id="rangeTo">6</strong> de <strong id="totalResults">15</strong></span>
+          <div class="pager__pages" id="pagerPages">
+            <!-- Filled by JS -->
+          </div>
+        </nav>
+
+        <!-- ───── Organize CTA ───── -->
+        <div class="organize-cta" id="organizar">
+          <div>
+            <h3 class="organize-cta__title">Organiza um evento técnico? <em>Vamos falar.</em></h3>
+            <p class="organize-cta__copy">Aceito de 6 a 10 talks por ano. Tenho um conjunto pequeno de palestras que entrego bem — peço só que o evento tenha foco real em conteúdo técnico, não comercial.</p>
+          </div>
+          <div class="organize-cta__actions">
+            <a href="mailto:mick@mbanagouro.com.br?subject=Convite para evento" class="btn btn-acc btn-lg">Enviar convite</a>
+            <a href="#" class="btn btn-outline-dark btn-lg">Ver one-pager (PDF)</a>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─────────────────────────── FOOTER ─────────────────────────── -->
+  <footer class="site-footer" id="contato">
+    <div class="container">
+      <div class="site-footer__inner">
+        <div class="site-footer__brand-block">
+          <div class="site-footer__brand-line">Software de produção, <em>ensinado por quem entrega.</em></div>
+          <p class="site-footer__about">CTO @ Leanwork Group. Arquiteto, instrutor e palestrante .NET. Baseado em São Paulo, Brasil.</p>
+        </div>
+        <div>
+          <h4>Site</h4>
+          <ul>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="aspnet-pro.html">ASP.NET&nbsp;PRO</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="eventos.html">Eventos</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Redes</h4>
+          <ul>
+            <li><a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn <span style="font-size:10px;">↗</span></a></li>
+            <li><a href="https://github.com" target="_blank" rel="noopener">GitHub <span style="font-size:10px;">↗</span></a></li>
+            <li><a href="https://youtube.com" target="_blank" rel="noopener">YouTube <span style="font-size:10px;">↗</span></a></li>
+            <li><a href="https://x.com" target="_blank" rel="noopener">Twitter / X <span style="font-size:10px;">↗</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contato</h4>
+          <ul>
+            <li><a href="mailto:mick@mbanagouro.com.br">mick@mbanagouro.com.br</a></li>
+            <li><a href="https://leanwork.group" target="_blank" rel="noopener">Leanwork Group <span style="font-size:10px;">↗</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <span>© 2026 Michel Banagouro · mbanagouro.com.br</span>
+        <span>HTML estático · Cloudflare Pages</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ============================================================
+    // Filters + Pagination
+    // ============================================================
+    (function() {
+      const state = { role: 'all', year: 'all', page: 1, perPage: 6 };
+
+      const upcomingRows = Array.from(document.querySelectorAll('#upcoming .ev-card'));
+      const pastRows = Array.from(document.querySelectorAll('#pastList .past-row'));
+      const upCount = document.getElementById('upCount');
+      const pastCount = document.getElementById('pastCount');
+      const totalCount = document.getElementById('filtersCount');
+      const emptyUp = document.getElementById('emptyUpcoming');
+      const emptyPast = document.getElementById('emptyPast');
+
+      const matches = (el) => {
+        const r = el.dataset.role;
+        const y = el.dataset.year;
+        return (state.role === 'all' || r === state.role)
+            && (state.year === 'all' || y === state.year);
+      };
+
+      function applyFilter() {
+        // Upcoming — all visible matches always shown
+        const upMatches = upcomingRows.filter(matches);
+        upcomingRows.forEach(el => el.classList.toggle('is-hidden', !matches(el)));
+        emptyUp.classList.toggle('is-shown', upMatches.length === 0);
+        upCount.textContent = upMatches.length;
+
+        // Past — filter first, then paginate
+        const pastMatches = pastRows.filter(matches);
+        pastCount.textContent = pastMatches.length;
+        emptyPast.classList.toggle('is-shown', pastMatches.length === 0);
+
+        // Total
+        totalCount.innerHTML = 'Mostrando <strong style="color:var(--text);">' + (upMatches.length + pastMatches.length) + '</strong> eventos';
+
+        // Reset to page 1 when filter changes
+        state.page = 1;
+        renderPage(pastMatches);
+      }
+
+      function renderPage(matchedPast) {
+        const totalPages = Math.max(1, Math.ceil(matchedPast.length / state.perPage));
+        if (state.page > totalPages) state.page = totalPages;
+
+        // Hide all past rows first, then show only matched + current page
+        pastRows.forEach(r => r.style.display = 'none');
+        const from = (state.page - 1) * state.perPage;
+        const to = from + state.perPage;
+        matchedPast.slice(from, to).forEach(r => r.style.display = '');
+
+        // Pager info
+        document.getElementById('curPage').textContent = state.page;
+        document.getElementById('totalPages').textContent = totalPages;
+        document.getElementById('rangeFrom').textContent = matchedPast.length === 0 ? 0 : from + 1;
+        document.getElementById('rangeTo').textContent = Math.min(to, matchedPast.length);
+        document.getElementById('totalResults').textContent = matchedPast.length;
+
+        renderPagerControls(totalPages, matchedPast);
+      }
+
+      function renderPagerControls(totalPages, matchedPast) {
+        const pager = document.getElementById('pagerPages');
+        pager.innerHTML = '';
+
+        const mkBtn = (label, opts = {}) => {
+          const b = document.createElement('button');
+          b.className = 'pager__btn' + (opts.active ? ' is-active' : '');
+          if (opts.disabled) b.disabled = true;
+          if (opts.svg) {
+            b.innerHTML = opts.svg;
+            b.setAttribute('aria-label', label);
+          } else {
+            b.textContent = label;
+          }
+          if (opts.onClick) b.addEventListener('click', opts.onClick);
+          return b;
+        };
+
+        const prevSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M10.5 19.5L3 12m0 0l7.5-7.5M3 12h18" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+        const nextSvg = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+
+        pager.appendChild(mkBtn('Anterior', {
+          svg: prevSvg,
+          disabled: state.page === 1,
+          onClick: () => { state.page--; renderPage(matchedPast); window.scrollTo({ top: document.getElementById('anteriores').offsetTop - 80, behavior: 'smooth' }); }
+        }));
+
+        for (let i = 1; i <= totalPages; i++) {
+          pager.appendChild(mkBtn(String(i), {
+            active: i === state.page,
+            onClick: () => { state.page = i; renderPage(matchedPast); window.scrollTo({ top: document.getElementById('anteriores').offsetTop - 80, behavior: 'smooth' }); }
+          }));
+        }
+
+        pager.appendChild(mkBtn('Próxima', {
+          svg: nextSvg,
+          disabled: state.page === totalPages,
+          onClick: () => { state.page++; renderPage(matchedPast); window.scrollTo({ top: document.getElementById('anteriores').offsetTop - 80, behavior: 'smooth' }); }
+        }));
+      }
+
+
+      // Make past-row divs act like links (since we can't nest <a> tags)
+      document.querySelectorAll('.past-row').forEach(row => {
+        row.addEventListener('click', (e) => {
+          // ignore clicks on res-link anchors inside
+          if (e.target.closest('.res-link')) return;
+          const href = row.dataset.href;
+          if (href) window.location.href = href;
+        });
+        row.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            row.click();
+          }
+        });
+      });
+
+      // Wire chip buttons
+      document.querySelectorAll('.chip-btn[data-filter]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const filter = btn.dataset.filter;
+          const value = btn.dataset.value;
+          state[filter] = value;
+          // toggle is-active within the same filter group
+          document.querySelectorAll('.chip-btn[data-filter="' + filter + '"]').forEach(b => {
+            b.classList.toggle('is-active', b.dataset.value === value);
+          });
+          applyFilter();
+        });
+      });
+
+      // Initial
+      applyFilter();
+    })();
+  </script>
+
+</body>
+</html>

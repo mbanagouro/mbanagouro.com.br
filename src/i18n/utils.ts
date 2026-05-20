@@ -34,6 +34,8 @@ export function getAlternatePath(url: URL, target: Lang): string {
     projects: { 'pt-br': 'projetos', en: 'projects' },
     blog: { 'pt-br': 'blog', en: 'blog' },
     links: { 'pt-br': 'links', en: 'links' },
+    eventos: { 'pt-br': 'eventos', en: 'events' },
+    events: { 'pt-br': 'eventos', en: 'events' },
   };
 
   if (segments.length > 0 && slugMap[segments[0]]) {

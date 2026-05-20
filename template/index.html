@@ -1,0 +1,909 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Mick Banagouro — CTO @ Leanwork · Arquiteto e instrutor .NET</title>
+<meta name="description" content="Onze anos de .NET em produção. CTO da Leanwork, criador do ASP.NET PRO, palestrante. Arquitetura, liderança técnica e educação para devs sêniores." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="styles/tokens.css" />
+<link rel="stylesheet" href="styles/base.css" />
+<link rel="stylesheet" href="styles/site.css" />
+<style>
+  /* ================================================================
+     Home — page-specific styles
+     ================================================================ */
+
+  /* ── HERO ── */
+  .hero {
+    padding: var(--s-9) 0 var(--s-8);
+    border-bottom: 1px solid var(--border);
+  }
+  .hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-7);
+    align-items: center;
+  }
+  @media (min-width: 980px) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1.35fr) minmax(0, 1fr);
+      gap: var(--s-9);
+      align-items: center;
+    }
+  }
+  .hero__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+    display: inline-flex; align-items: center; gap: var(--s-3);
+    margin-bottom: var(--s-6);
+  }
+  .hero__eyebrow::before {
+    content: "";
+    width: 24px; height: 1px; background: var(--ink-300);
+  }
+  .hero__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.75rem, 6vw, 5rem);
+    line-height: 1.02;
+    letter-spacing: var(--tracking-display);
+    color: var(--text);
+  }
+  .hero__title em {
+    font-style: italic;
+    color: var(--ink-600);
+  }
+  .hero__lede {
+    margin-top: var(--s-6);
+    font-size: var(--fs-18);
+    line-height: var(--lh-prose);
+    color: var(--ink-600);
+    max-width: 56ch;
+  }
+  .hero__ctas {
+    margin-top: var(--s-7);
+    display: flex; gap: var(--s-3); flex-wrap: wrap;
+  }
+
+  /* Hero photo placeholder — editorial portrait */
+  .hero__photo {
+    position: relative;
+    aspect-ratio: 4 / 5;
+    width: 100%;
+    max-width: 460px;
+    justify-self: center;
+  }
+  @media (min-width: 980px) { .hero__photo { justify-self: end; } }
+  .hero__photo-inner {
+    position: absolute; inset: 0;
+    background:
+      repeating-linear-gradient(
+        135deg,
+        oklch(92% 0.006 65) 0,
+        oklch(92% 0.006 65) 1px,
+        transparent 1px,
+        transparent 10px
+      ),
+      linear-gradient(180deg, oklch(96% 0.005 65), oklch(92% 0.008 65));
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
+    overflow: hidden;
+  }
+  .hero__photo-tag {
+    position: absolute; bottom: 16px; left: 16px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--ink-700);
+    background: var(--ink-0);
+    border: 1px solid var(--border);
+    padding: 5px 9px;
+    border-radius: var(--r-sm);
+  }
+  .hero__photo-meta {
+    position: absolute; top: 16px; right: 16px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+  }
+  .hero__photo-corner {
+    position: absolute; bottom: -10px; right: -10px;
+    background: var(--accent);
+    color: var(--accent-fg);
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    padding: 6px 10px;
+    border-radius: var(--r-sm);
+    letter-spacing: -0.005em;
+  }
+
+  /* ── CREDENTIALS STRIP ── */
+  .creds {
+    padding: var(--s-5) 0;
+    border-bottom: 1px solid var(--border);
+    background: var(--surface);
+  }
+  .creds__inner {
+    display: flex; align-items: center; flex-wrap: wrap;
+    gap: var(--s-5);
+  }
+  .creds__leanwork {
+    display: inline-flex; align-items: center; gap: var(--s-3);
+    font-weight: 600;
+    letter-spacing: var(--tracking-tight);
+    color: var(--text);
+    font-size: var(--fs-15);
+  }
+  .lw-mark {
+    width: 28px; height: 28px;
+    background: var(--ink-900);
+    color: var(--ink-0);
+    display: grid; place-items: center;
+    border-radius: var(--r-sm);
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    font-weight: 600;
+  }
+  .creds__sep {
+    height: 14px; width: 1px; background: var(--border-strong);
+  }
+  @media (max-width: 720px) {
+    .creds__sep { display: none; }
+  }
+  .creds__line {
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    color: var(--ink-600);
+    display: inline-flex; gap: var(--s-3); align-items: center;
+    flex-wrap: wrap;
+  }
+  .creds__line strong { color: var(--text); font-weight: 500; }
+  .creds__line span.dot::before {
+    content: "·";
+    margin-right: 8px;
+    color: var(--ink-300);
+  }
+
+  /* ── EXPERIENCE CARDS ── */
+  .xp-grid {
+    display: grid;
+    gap: var(--s-4);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 720px) { .xp-grid { grid-template-columns: 1fr 1fr; } }
+  @media (min-width: 1100px) { .xp-grid { grid-template-columns: repeat(4, 1fr); } }
+
+  .xp-card {
+    position: relative;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: var(--s-6);
+    display: flex; flex-direction: column; gap: var(--s-5);
+    transition: border-color var(--dur-base) var(--ease-out),
+                transform var(--dur-base) var(--ease-out);
+    min-height: 280px;
+  }
+  .xp-card:hover { border-color: var(--ink-700); }
+  .xp-card__num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--text-subtle);
+    letter-spacing: var(--tracking-wide);
+  }
+  .xp-card__icon {
+    width: 36px; height: 36px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-sm);
+    display: grid; place-items: center;
+    color: var(--ink-800);
+  }
+  .xp-card__icon svg { width: 18px; height: 18px; stroke-width: 1.5; }
+  .xp-card__body { flex: 1; display: flex; flex-direction: column; gap: var(--s-3); }
+  .xp-card__title {
+    font-weight: 600;
+    font-size: var(--fs-20);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.2;
+  }
+  .xp-card__copy {
+    font-size: var(--fs-14);
+    line-height: var(--lh-prose);
+    color: var(--ink-600);
+  }
+  .xp-card__meta {
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--text-muted);
+  }
+  .xp-card__meta strong { color: var(--text); font-weight: 500; }
+
+  /* ── ASP.NET PRO SECTION ── */
+  .pro {
+    background: var(--ink-950);
+    color: var(--ink-100);
+    padding: var(--s-9) 0;
+    position: relative;
+    overflow: hidden;
+  }
+  .pro::before {
+    content: "";
+    position: absolute;
+    top: -200px; right: -200px;
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, oklch(72% 0.16 65 / 0.08), transparent 60%);
+    pointer-events: none;
+  }
+  .pro__inner { position: relative; }
+  .pro__top {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: var(--s-7);
+    flex-wrap: wrap; gap: var(--s-3);
+  }
+  .pro__eyebrow {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--accent-300);
+    display: inline-flex; align-items: center; gap: var(--s-3);
+  }
+  .pro__eyebrow::before {
+    content: ""; width: 8px; height: 8px;
+    background: var(--accent);
+    border-radius: 2px;
+  }
+  .pro__status {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--ink-400);
+    display: inline-flex; align-items: center; gap: var(--s-2);
+  }
+  .pro__status::before {
+    content: ""; width: 6px; height: 6px; border-radius: 50%;
+    background: oklch(72% 0.15 145);
+    box-shadow: 0 0 0 3px oklch(72% 0.15 145 / 0.2);
+  }
+  .pro__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-7);
+  }
+  @media (min-width: 900px) {
+    .pro__grid { grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr); gap: var(--s-9); }
+  }
+  .pro__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 5vw, 4.5rem);
+    line-height: 1;
+    letter-spacing: var(--tracking-display);
+    color: var(--ink-0);
+  }
+  .pro__sub {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    color: var(--accent-300);
+    margin-top: var(--s-3);
+    font-weight: 400;
+  }
+  .pro__copy {
+    margin-top: var(--s-6);
+    font-size: var(--fs-16);
+    line-height: var(--lh-prose);
+    color: var(--ink-300);
+    max-width: 50ch;
+  }
+  .pro__bullets {
+    list-style: none;
+    margin-top: var(--s-6);
+    display: grid; gap: var(--s-3);
+  }
+  .pro__bullets li {
+    display: flex; gap: var(--s-3); align-items: flex-start;
+    font-size: var(--fs-15);
+    color: var(--ink-200);
+    line-height: 1.5;
+  }
+  .pro__bullets li::before {
+    content: ""; width: 6px; height: 6px;
+    background: var(--accent);
+    margin-top: 9px;
+    flex-shrink: 0;
+  }
+  .pro__bullets li strong { color: var(--ink-0); font-weight: 500; }
+  .pro__ctas {
+    margin-top: var(--s-7);
+    display: flex; gap: var(--s-3); flex-wrap: wrap;
+  }
+
+  /* Module panel on the right */
+  .pro__modules {
+    background: oklch(13% 0.012 65);
+    border: 1px solid oklch(22% 0.01 65);
+    border-radius: var(--r-lg);
+    padding: var(--s-6);
+  }
+  .pro__modules-head {
+    display: flex; justify-content: space-between; align-items: baseline;
+    padding-bottom: var(--s-4);
+    margin-bottom: var(--s-4);
+    border-bottom: 1px solid oklch(22% 0.01 65);
+  }
+  .pro__modules-title {
+    font-weight: 600;
+    font-size: var(--fs-14);
+    letter-spacing: var(--tracking-tight);
+    color: var(--ink-100);
+  }
+  .pro__modules-meta {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--ink-400);
+  }
+  .pro__modules-list { list-style: none; display: grid; gap: 0; }
+  .pro__modules-list li {
+    display: grid;
+    grid-template-columns: 36px 1fr auto;
+    gap: var(--s-3);
+    align-items: baseline;
+    padding: var(--s-3) 0;
+    border-bottom: 1px solid oklch(20% 0.01 65);
+    font-size: var(--fs-14);
+    color: var(--ink-100);
+  }
+  .pro__modules-list li:last-child { border-bottom: none; }
+  .pro__modules-list .num {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--ink-400);
+    letter-spacing: 0;
+  }
+  .pro__modules-list .dur {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--ink-400);
+  }
+
+  /* ── BLOG SECTION ── */
+  .posts {
+    display: grid;
+    gap: var(--s-4);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 760px) { .posts { grid-template-columns: 1fr 1fr 1fr; } }
+
+  .post {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    padding: var(--s-6);
+    display: flex; flex-direction: column;
+    gap: var(--s-5);
+    transition: border-color var(--dur-base) var(--ease-out);
+    text-decoration: none;
+    color: inherit;
+    min-height: 320px;
+  }
+  .post:hover { border-color: var(--ink-700); }
+  .post__top {
+    display: flex; justify-content: space-between; align-items: center;
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--text-muted);
+  }
+  .post__tag {
+    color: var(--accent-700);
+    background: var(--accent-50);
+    border: 1px solid var(--accent-300);
+    padding: 2px 8px;
+    border-radius: var(--r-pill);
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+  }
+  .post__title {
+    font-weight: 600;
+    font-size: var(--fs-20);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.25;
+    flex: 1;
+  }
+  .post__title em {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-weight: 400;
+    color: var(--ink-700);
+  }
+  .post__excerpt {
+    font-size: var(--fs-14);
+    line-height: var(--lh-prose);
+    color: var(--ink-600);
+  }
+  .post__foot {
+    padding-top: var(--s-3);
+    border-top: 1px solid var(--border);
+    display: flex; justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--text-muted);
+  }
+
+  /* ── EVENTOS SECTION ── */
+  .events {
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+    overflow: hidden;
+  }
+  .events__row {
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: var(--s-4);
+    padding: var(--s-5) var(--s-6);
+    border-bottom: 1px solid var(--border);
+    align-items: center;
+    transition: background var(--dur-fast);
+    text-decoration: none;
+    color: inherit;
+  }
+  @media (min-width: 800px) {
+    .events__row {
+      grid-template-columns: 110px minmax(0, 1.8fr) 140px 160px 36px;
+      gap: var(--s-5);
+    }
+  }
+  .events__row:last-child { border-bottom: none; }
+  .events__row:hover { background: var(--surface-alt); }
+
+  .events__date {
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    color: var(--text);
+    letter-spacing: -0.01em;
+    display: flex; flex-direction: column;
+  }
+  .events__date .d {
+    font-size: var(--fs-24);
+    font-family: var(--font-sans);
+    font-weight: 600;
+    line-height: 1;
+    letter-spacing: var(--tracking-tight);
+  }
+  .events__date .m {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    text-transform: uppercase; letter-spacing: var(--tracking-wide);
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+  .events__title {
+    font-weight: 600; font-size: var(--fs-16);
+    letter-spacing: var(--tracking-tight);
+  }
+  .events__title-sub {
+    margin-top: 4px;
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--text-muted);
+  }
+  .events__role {
+    display: none;
+  }
+  @media (min-width: 800px) { .events__role { display: inline-flex; } }
+  .events__city {
+    display: none;
+    font-family: var(--font-mono);
+    font-size: var(--fs-13);
+    color: var(--ink-600);
+  }
+  @media (min-width: 800px) { .events__city { display: block; } }
+  .events__city svg { width: 14px; height: 14px; stroke-width: 1.5; display: inline-block; vertical-align: -2px; margin-right: 6px; color: var(--text-subtle); }
+
+  .events__arrow {
+    display: none;
+    width: 28px; height: 28px;
+    border: 1px solid var(--border-strong);
+    border-radius: 50%;
+    place-items: center;
+    color: var(--ink-700);
+    transition: background var(--dur-fast), color var(--dur-fast), border-color var(--dur-fast);
+  }
+  @media (min-width: 800px) { .events__arrow { display: grid; } }
+  .events__row:hover .events__arrow {
+    background: var(--ink-900);
+    color: var(--ink-0);
+    border-color: var(--ink-900);
+  }
+  .events__arrow svg { width: 12px; height: 12px; stroke-width: 1.75; }
+</style>
+</head>
+<body data-screen-label="01 Home">
+
+  <template id="__bundler_thumbnail" data-bg-color="#fbfaf7">
+    <svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg">
+      <rect width="1200" height="800" fill="#fbfaf7"/>
+      <rect x="80" y="80" width="56" height="56" rx="6" fill="#161410"/>
+      <text x="108" y="120" text-anchor="middle" font-family="ui-monospace, monospace" font-size="28" font-weight="600" fill="#fbfaf7">M</text>
+      <text x="240" y="430" font-family="Georgia, serif" font-style="italic" font-size="140" fill="#161410" letter-spacing="-3">Mick.</text>
+      <rect x="240" y="500" width="280" height="14" rx="2" fill="#161410" opacity="0.85"/>
+      <rect x="240" y="540" width="420" height="14" rx="2" fill="#161410" opacity="0.5"/>
+      <rect x="240" y="610" width="200" height="44" rx="6" fill="#E6A23D"/>
+      <rect x="900" y="180" width="220" height="280" rx="6" fill="#ebe7df" stroke="#161410" stroke-opacity="0.15"/>
+    </svg>
+  </template>
+
+  <!-- ─────────────────────────── HEADER ─────────────────────────── -->
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a href="index.html" class="brand">
+        <span class="brand__mark">M</span>
+        <span>Mick<span class="brand__last"> Banagouro</span></span>
+      </a>
+      <nav class="nav" aria-label="Principal">
+        <a href="sobre.html">Sobre</a>
+        <a href="aspnet-pro.html">ASP.NET&nbsp;PRO</a>
+        <a href="blog.html">Blog</a>
+        <a href="eventos.html">Eventos</a>
+      </nav>
+      <div class="header-cta">
+        <a href="#contato" class="btn btn-ghost btn-sm">Fale comigo</a>
+        <a href="aspnet-pro.html" class="btn btn-acc btn-sm">ASP.NET PRO
+          <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <button class="menu-btn" aria-label="Abrir menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- ─────────────────────────── HERO ─────────────────────────── -->
+    <section class="hero" aria-label="Apresentação">
+      <div class="container">
+        <div class="hero__grid">
+          <div>
+            <div class="hero__eyebrow">CTO @ Leanwork · Arquiteto · Instrutor</div>
+            <h1 class="hero__title">
+              Arquitetura .NET <em>para sistemas que precisam durar.</em>
+            </h1>
+            <p class="hero__lede">
+              Sou Mick Banagouro — CTO e cofundador da Leanwork há onze anos. Construo software corporativo, lidero times técnicos e ensino .NET para devs sêniores no ASP.NET&nbsp;PRO.
+            </p>
+            <div class="hero__ctas">
+              <a href="aspnet-pro.html" class="btn btn-acc btn-lg">
+                Inscrever no ASP.NET PRO
+                <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+              <a href="#contato" class="btn btn-secondary btn-lg">Fale comigo</a>
+            </div>
+          </div>
+          <div class="hero__photo" aria-hidden="true">
+            <div class="hero__photo-inner">
+              <span class="hero__photo-meta">Hero · 4:5</span>
+              <span class="hero__photo-tag">[ retrato editorial · foto pro ]</span>
+            </div>
+            <span class="hero__photo-corner">disponível para projetos</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── CREDENTIALS ─────────────────────────── -->
+    <section class="creds" aria-label="Identidade profissional">
+      <div class="container creds__inner">
+        <span class="creds__leanwork">
+          <span class="lw-mark">L</span>
+          <span>leanwork<span style="color:var(--text-muted); font-weight:400">.group</span></span>
+        </span>
+        <span class="creds__sep" aria-hidden="true"></span>
+        <span class="creds__line">
+          <strong>CTO &amp; Cofundador</strong>
+          <span class="dot">11+ anos</span>
+          <span class="dot">.NET / React / Azure</span>
+          <span class="dot">São Paulo, BR</span>
+        </span>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── EXPERIÊNCIA ─────────────────────────── -->
+    <section class="section" id="experiencia" aria-labelledby="xp-title">
+      <div class="container">
+        <header class="section__head">
+          <div class="section__title-wrap">
+            <span class="section__num">— 01 / Experiência</span>
+            <h2 class="section__title" id="xp-title">Onze anos no produto. <em>Quatro frentes.</em></h2>
+            <p class="section__lede">Não sou freelancer nem influenciador. O que faço hoje é resultado de mais de uma década resolvendo software corporativo na Leanwork — e a partir disso construindo material, palestras e times.</p>
+          </div>
+          <a href="sobre.html" class="section__see">
+            Conheça minha trajetória
+            <svg viewBox="0 0 24 24"><path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75M14.25 6h6m0 0v6m0-6L10.5 15.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </header>
+
+        <div class="xp-grid">
+          <div class="xp-card">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div class="xp-card__icon">
+                <svg viewBox="0 0 24 24"><path d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m4.5-6h1.5m-1.5 3h1.5m-1.5 3h1.5M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="xp-card__num">01</span>
+            </div>
+            <div class="xp-card__body">
+              <h3 class="xp-card__title">Arquitetura corporativa</h3>
+              <p class="xp-card__copy">Sistemas distribuídos em .NET, modelagem de domínio e estratégias de migração legacy → Azure. Foco em sustentar produção, não em hype.</p>
+            </div>
+            <div class="xp-card__meta"><span>04 cases públicos</span><span>↗</span></div>
+          </div>
+
+          <div class="xp-card">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div class="xp-card__icon">
+                <svg viewBox="0 0 24 24"><path d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="xp-card__num">02</span>
+            </div>
+            <div class="xp-card__body">
+              <h3 class="xp-card__title">Liderança técnica</h3>
+              <p class="xp-card__copy">CTO de uma software house com mais de 40 engenheiros. Plano de carreira técnica, modelo de squads por domínio, processos de revisão que sobrevivem ao crescimento.</p>
+            </div>
+            <div class="xp-card__meta"><span>40+ engenheiros</span><span>Leanwork</span></div>
+          </div>
+
+          <div class="xp-card">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div class="xp-card__icon">
+                <svg viewBox="0 0 24 24"><path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="xp-card__num">03</span>
+            </div>
+            <div class="xp-card__body">
+              <h3 class="xp-card__title">Educação técnica</h3>
+              <p class="xp-card__copy">Criador do ASP.NET&nbsp;PRO — formação para devs sêniores que querem dominar arquitetura, observabilidade e performance, não decorar atalhos.</p>
+            </div>
+            <div class="xp-card__meta"><span>2.4k alunos</span><span>Edição 2026</span></div>
+          </div>
+
+          <div class="xp-card">
+            <div style="display:flex; align-items:center; justify-content:space-between;">
+              <div class="xp-card__icon">
+                <svg viewBox="0 0 24 24"><path d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+              <span class="xp-card__num">04</span>
+            </div>
+            <div class="xp-card__body">
+              <h3 class="xp-card__title">Palestras e comunidade</h3>
+              <p class="xp-card__copy">Palestrante recorrente em TDC, .NET Conf Brasil, NDC e meetups locais. Painéis sobre carreira sênior e arquitetura corporativa em .NET.</p>
+            </div>
+            <div class="xp-card__meta"><span>+30 talks</span><span>2018–2026</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── ASP.NET PRO ─────────────────────────── -->
+    <section class="pro" id="aspnet-pro" aria-labelledby="pro-title">
+      <div class="container pro__inner">
+        <div class="pro__top">
+          <span class="pro__eyebrow">— 02 / ASP.NET PRO · Turma 2026</span>
+          <span class="pro__status">Inscrições abertas até 30 de junho</span>
+        </div>
+
+        <div class="pro__grid">
+          <div>
+            <h2 class="pro__title" id="pro-title">ASP.NET PRO</h2>
+            <p class="pro__sub">O curso de .NET para quem já programa.</p>
+            <p class="pro__copy">
+              Não é mais um tutorial de Minimal API. É como times sêniores estruturam, observam e mantêm software .NET em produção por anos. Vídeo denso, repositórios reais e revisões ao vivo com o instrutor — sem materiais reciclados.
+            </p>
+            <ul class="pro__bullets">
+              <li><span><strong>Arquitetura por domínio</strong> aplicada à realidade brasileira — não a exemplos americanos genéricos.</span></li>
+              <li><span><strong>Observabilidade, performance e plano de migração</strong> — o que o tutorial nunca cobre.</span></li>
+              <li><span><strong>Revisões de código ao vivo</strong> com o instrutor — não conteúdo gravado e esquecido.</span></li>
+            </ul>
+            <div class="pro__ctas">
+              <a href="aspnet-pro.html" class="btn btn-acc btn-lg">
+                Inscrever-se
+                <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </a>
+              <a href="aspnet-pro.html" class="btn btn-outline-dark btn-lg">Conheça o programa</a>
+            </div>
+          </div>
+
+          <aside class="pro__modules" aria-label="Módulos do programa">
+            <div class="pro__modules-head">
+              <span class="pro__modules-title">Módulos do programa</span>
+              <span class="pro__modules-meta">~ 48 horas</span>
+            </div>
+            <ul class="pro__modules-list">
+              <li><span class="num">01</span><span>Arquitetura por domínio em .NET</span><span class="dur">8h</span></li>
+              <li><span class="num">02</span><span>Observabilidade e telemetria</span><span class="dur">6h</span></li>
+              <li><span class="num">03</span><span>Performance e otimização</span><span class="dur">7h</span></li>
+              <li><span class="num">04</span><span>Migração legacy → Azure</span><span class="dur">9h</span></li>
+              <li><span class="num">05</span><span>Testes em sistemas críticos</span><span class="dur">6h</span></li>
+              <li><span class="num">06</span><span>Revisões ao vivo</span><span class="dur">12h</span></li>
+            </ul>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── BLOG ─────────────────────────── -->
+    <section class="section section--alt" id="blog" aria-labelledby="blog-title">
+      <div class="container">
+        <header class="section__head">
+          <div class="section__title-wrap">
+            <span class="section__num">— 03 / Escrita</span>
+            <h2 class="section__title" id="blog-title">Últimos posts <em>do blog.</em></h2>
+            <p class="section__lede">Ensaios técnicos longos sobre arquitetura, .NET, liderança e a operação real de uma software house brasileira. Sem listas de "10 dicas".</p>
+          </div>
+          <a href="blog.html" class="section__see">
+            Todos os posts
+            <svg viewBox="0 0 24 24"><path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75M14.25 6h6m0 0v6m0-6L10.5 15.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </header>
+
+        <div class="posts">
+          <a href="blog.html" class="post">
+            <div class="post__top">
+              <span class="post__tag">Arquitetura</span>
+              <span>8 min</span>
+            </div>
+            <h3 class="post__title">Quando CQRS é (e quando <em>não é</em>) a resposta</h3>
+            <p class="post__excerpt">Antes de discutir CQRS, vale revisitar o que é complexidade essencial num sistema de domínio. Boa parte das implementações que vejo são respostas a acoplamento, não a arquitetura.</p>
+            <div class="post__foot"><span>14 mai · 2026</span><span>↗</span></div>
+          </a>
+
+          <a href="blog.html" class="post">
+            <div class="post__top">
+              <span class="post__tag">Azure</span>
+              <span>12 min</span>
+            </div>
+            <h3 class="post__title">Migração legacy → Azure: <em>o que ninguém te conta</em></h3>
+            <p class="post__excerpt">Lift-and-shift é uma armadilha cara. Compartilho o roteiro de migração que usamos em quatro projetos na Leanwork, com os pontos onde quase todo time tropeça.</p>
+            <div class="post__foot"><span>02 mai · 2026</span><span>↗</span></div>
+          </a>
+
+          <a href="blog.html" class="post">
+            <div class="post__top">
+              <span class="post__tag">Liderança</span>
+              <span>10 min</span>
+            </div>
+            <h3 class="post__title">Plano de carreira técnica numa empresa de serviços</h3>
+            <p class="post__excerpt">Como construímos uma trilha técnica de verdade na Leanwork — sem obrigar todo dev sênior a virar gestor. O documento, os critérios e os erros que cometemos.</p>
+            <div class="post__foot"><span>18 abr · 2026</span><span>↗</span></div>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ─────────────────────────── EVENTOS ─────────────────────────── -->
+    <section class="section" id="eventos" aria-labelledby="ev-title">
+      <div class="container">
+        <header class="section__head">
+          <div class="section__title-wrap">
+            <span class="section__num">— 04 / Agenda</span>
+            <h2 class="section__title" id="ev-title">Próximos eventos.</h2>
+            <p class="section__lede">Palestras, workshops e painéis confirmados para os próximos meses. Se você organiza um evento técnico, fale comigo — tenho um conjunto pequeno de talks que entrego bem.</p>
+          </div>
+          <a href="eventos.html" class="section__see">
+            Agenda completa
+            <svg viewBox="0 0 24 24"><path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75M14.25 6h6m0 0v6m0-6L10.5 15.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+        </header>
+
+        <div class="events">
+          <a href="eventos.html" class="events__row">
+            <div class="events__date"><span class="d">12</span><span class="m">jun · 2026</span></div>
+            <div>
+              <div class="events__title">TDC São Paulo · Trilha .NET</div>
+              <div class="events__title-sub">Arquitetura por domínio em sistemas legados</div>
+            </div>
+            <span class="chip events__role chip--solid">Palestrante</span>
+            <span class="events__city">
+              <svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              São Paulo
+            </span>
+            <span class="events__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="eventos.html" class="events__row">
+            <div class="events__date"><span class="d">03</span><span class="m">jul · 2026</span></div>
+            <div>
+              <div class="events__title">.NET Conf Brasil</div>
+              <div class="events__title-sub">Observabilidade no .NET 9 — além do OpenTelemetry básico</div>
+            </div>
+            <span class="chip events__role chip--solid">Palestrante</span>
+            <span class="events__city">
+              <svg viewBox="0 0 24 24"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Online
+            </span>
+            <span class="events__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="eventos.html" class="events__row">
+            <div class="events__date"><span class="d">22</span><span class="m">ago · 2026</span></div>
+            <div>
+              <div class="events__title">DevOps Days Porto Alegre</div>
+              <div class="events__title-sub">Painel: liderança técnica em times remotos</div>
+            </div>
+            <span class="chip events__role">Painelista</span>
+            <span class="events__city">
+              <svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Porto Alegre
+            </span>
+            <span class="events__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+
+          <a href="eventos.html" class="events__row">
+            <div class="events__date"><span class="d">14</span><span class="m">set · 2026</span></div>
+            <div>
+              <div class="events__title">NDC Brasília · Workshop</div>
+              <div class="events__title-sub">Workshop de dois dias: arquitetura .NET para sistemas críticos</div>
+            </div>
+            <span class="chip events__role chip--accent">Instrutor</span>
+            <span class="events__city">
+              <svg viewBox="0 0 24 24"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Brasília
+            </span>
+            <span class="events__arrow"><svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ─────────────────────────── FOOTER ─────────────────────────── -->
+  <footer class="site-footer" id="contato">
+    <div class="container">
+      <div class="site-footer__inner">
+        <div class="site-footer__brand-block">
+          <div class="site-footer__brand-line">Software de produção, <em>ensinado por quem entrega.</em></div>
+          <p class="site-footer__about">CTO @ Leanwork Group. Arquiteto, instrutor e palestrante .NET. Baseado em São Paulo, Brasil.</p>
+        </div>
+        <div>
+          <h4>Site</h4>
+          <ul>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="aspnet-pro.html">ASP.NET&nbsp;PRO</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="eventos.html">Eventos</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Redes</h4>
+          <ul>
+            <li><a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn <span style="font-size:10px;">↗</span></a></li>
+            <li><a href="https://github.com" target="_blank" rel="noopener">GitHub <span style="font-size:10px;">↗</span></a></li>
+            <li><a href="https://youtube.com" target="_blank" rel="noopener">YouTube <span style="font-size:10px;">↗</span></a></li>
+            <li><a href="https://x.com" target="_blank" rel="noopener">Twitter / X <span style="font-size:10px;">↗</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contato</h4>
+          <ul>
+            <li><a href="mailto:mick@mbanagouro.com.br">mick@mbanagouro.com.br</a></li>
+            <li><a href="https://leanwork.group" target="_blank" rel="noopener">Leanwork Group <span style="font-size:10px;">↗</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <span>© 2026 Michel Banagouro · mbanagouro.com.br</span>
+        <span>HTML estático · Cloudflare Pages</span>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>

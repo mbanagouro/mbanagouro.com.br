@@ -1,8 +1,10 @@
 ---
+import '~/styles/home.css';
 import { getCollection } from 'astro:content';
 import BaseLayout from '~/layouts/BaseLayout.astro';
-import BlogCard from '~/components/BlogCard.astro';
-import SocialLinks from '~/components/SocialLinks.astro';
+import Button from '~/components/Button.astro';
+import Chip from '~/components/Chip.astro';
+import SectionHead from '~/components/SectionHead.astro';
 import { useTranslations, localizedPath } from '~/i18n/utils';
 
 const lang = 'pt-br' as const;
@@ -11,71 +13,295 @@ const t = useTranslations(lang);
 const latestPosts = (await getCollection('blog-pt', ({ data }) => !data.draft))
   .sort((a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime())
   .slice(0, 3);
+
+function fmtDate(d: Date): string {
+  const day = d.getDate().toString().padStart(2, '0');
+  const months = ['jan', 'fev', 'mar', 'abr', 'mai', 'jun', 'jul', 'ago', 'set', 'out', 'nov', 'dez'];
+  return `${day} ${months[d.getMonth()]} · ${d.getFullYear()}`;
+}
 ---
 
 <BaseLayout
-  title="Michel Banagouro — Engenheiro de Software"
-  description={t('home.intro')}
+  title="Michel Banagouro — CTO @ Leanwork · Arquiteto e instrutor .NET"
+  description="Onze anos de .NET em produção. CTO da Leanwork, criador do ASP.NET PRO, palestrante. Arquitetura, liderança técnica e educação para devs sêniores."
   lang={lang}
 >
-  <section class="grid items-center gap-10 md:grid-cols-[auto_1fr]">
-    <div class="flex justify-center md:justify-start">
-      <div class="relative h-40 w-40 overflow-hidden rounded-full border-4 border-brand-500/20 bg-gradient-to-br from-brand-400 to-brand-600 shadow-lg sm:h-48 sm:w-48">
-        <span class="absolute inset-0 flex items-center justify-center text-5xl font-bold text-white">MB</span>
-      </div>
-    </div>
 
-    <div>
-      <p class="mb-2 text-sm uppercase tracking-wider text-brand-600 dark:text-brand-400">
-        Olá, eu sou
-      </p>
-      <h1 class="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-5xl">
-        Michel Banagouro
-      </h1>
-      <p class="mt-3 text-lg text-zinc-700 dark:text-zinc-300">{t('home.tagline')}</p>
-      <p class="mt-4 max-w-2xl text-zinc-600 dark:text-zinc-400">{t('home.intro')}</p>
-
-      <div class="mt-6 flex flex-wrap gap-3">
-        <a
-          href={localizedPath('/sobre', lang)}
-          class="inline-flex items-center rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white no-underline shadow-sm hover:bg-brand-700"
-        >
-          {t('home.cta.about')}
-        </a>
-        <a
-          href={localizedPath('/blog', lang)}
-          class="inline-flex items-center rounded-md border border-zinc-300 bg-white px-4 py-2 text-sm font-medium text-zinc-700 no-underline hover:bg-zinc-50 dark:border-zinc-700 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
-        >
-          {t('home.cta.blog')}
-        </a>
-      </div>
-
-      <div class="mt-6">
-        <SocialLinks />
+  <!-- HERO -->
+  <section class="hero" aria-label="Apresentação">
+    <div class="container">
+      <div class="hero__grid">
+        <div>
+          <div class="hero__eyebrow">{t('home.hero.eyebrow')}</div>
+          <h1 class="hero__title" set:html={t('home.hero.title')} />
+          <p class="hero__lede">{t('home.hero.lede')}</p>
+          <div class="hero__ctas">
+            <Button href="https://aspnetpro.com.br" variant="acc" size="lg">
+              {t('home.hero.cta_primary')}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </Button>
+            <Button href="#contato" variant="secondary" size="lg">{t('home.hero.cta_secondary')}</Button>
+          </div>
+        </div>
+        <div class="hero__photo" aria-hidden="true">
+          <div class="hero__photo-inner">
+            <span class="hero__photo-meta">Hero · 4:5</span>
+            <span class="hero__photo-tag">[ retrato editorial · foto pro ]</span>
+          </div>
+          <span class="hero__photo-corner">{t('home.hero.available')}</span>
+        </div>
       </div>
     </div>
   </section>
 
-  {latestPosts.length > 0 && (
-    <section class="mt-20">
-      <div class="mb-6 flex items-baseline justify-between">
-        <h2 class="text-2xl font-bold tracking-tight">{t('home.latest_posts')}</h2>
-        <a href={localizedPath('/blog', lang)} class="text-sm font-medium text-brand-600 dark:text-brand-400">
-          {t('home.see_all')} →
+  <!-- CREDENTIALS -->
+  <section class="creds" aria-label="Identidade profissional">
+    <div class="container creds__inner">
+      <span class="creds__leanwork">
+        <span class="lw-mark">L</span>
+        <span>leanwork<span style="color:var(--text-muted); font-weight:400">.group</span></span>
+      </span>
+      <span class="creds__sep" aria-hidden="true"></span>
+      <span class="creds__line">
+        <strong>CTO &amp; Cofundador</strong>
+        <span class="dot">11+ anos</span>
+        <span class="dot">.NET / React / Azure</span>
+        <span class="dot">São Paulo, BR</span>
+      </span>
+    </div>
+  </section>
+
+  <!-- EXPERIÊNCIA -->
+  <section class="section" id="experiencia" aria-label="Experiência">
+    <div class="container">
+      <SectionHead
+        num={t('home.xp.num')}
+        title={t('home.xp.title')}
+        lede={t('home.xp.lede')}
+      >
+        <a href={localizedPath('/sobre', lang)} class="section__see">
+          {t('home.xp.see_more')}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75M14.25 6h6m0 0v6m0-6L10.5 15.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </SectionHead>
+
+      <div class="xp-grid">
+        <div class="xp-card">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div class="xp-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3.75 21h16.5M4.5 3h15M5.25 3v18m13.5-18v18M9 6.75h1.5m-1.5 3h1.5m-1.5 3h1.5m4.5-6h1.5m-1.5 3h1.5m-1.5 3h1.5M9 21v-3.375c0-.621.504-1.125 1.125-1.125h3.75c.621 0 1.125.504 1.125 1.125V21" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="xp-card__num">01</span>
+          </div>
+          <div class="xp-card__body">
+            <h3 class="xp-card__title">Arquitetura corporativa</h3>
+            <p class="xp-card__copy">Sistemas distribuídos em .NET, modelagem de domínio e estratégias de migração legacy → Azure. Foco em sustentar produção, não em hype.</p>
+          </div>
+          <div class="xp-card__meta"><span>04 cases públicos</span><span>↗</span></div>
+        </div>
+
+        <div class="xp-card">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div class="xp-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="xp-card__num">02</span>
+          </div>
+          <div class="xp-card__body">
+            <h3 class="xp-card__title">Liderança técnica</h3>
+            <p class="xp-card__copy">CTO de uma software house com mais de 40 engenheiros. Plano de carreira técnica, modelo de squads por domínio, processos de revisão que sobrevivem ao crescimento.</p>
+          </div>
+          <div class="xp-card__meta"><span>40+ engenheiros</span><span>Leanwork</span></div>
+        </div>
+
+        <div class="xp-card">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div class="xp-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0018 18a8.967 8.967 0 00-6 2.292m0-14.25v14.25" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="xp-card__num">03</span>
+          </div>
+          <div class="xp-card__body">
+            <h3 class="xp-card__title">Educação técnica</h3>
+            <p class="xp-card__copy">Criador do ASP.NET&nbsp;PRO — formação para devs sêniores que querem dominar arquitetura, observabilidade e performance, não decorar atalhos.</p>
+          </div>
+          <div class="xp-card__meta"><span>2.4k alunos</span><span>Edição 2026</span></div>
+        </div>
+
+        <div class="xp-card">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div class="xp-card__icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M3.75 3v11.25A2.25 2.25 0 006 16.5h2.25M3.75 3h-1.5m1.5 0h16.5m0 0h1.5m-1.5 0v11.25A2.25 2.25 0 0118 16.5h-2.25m-7.5 0h7.5m-7.5 0l-1 3m8.5-3l1 3m0 0l.5 1.5m-.5-1.5h-9.5m0 0l-.5 1.5m.75-9l3-3 2.148 2.148A12.061 12.061 0 0116.5 7.605" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+            <span class="xp-card__num">04</span>
+          </div>
+          <div class="xp-card__body">
+            <h3 class="xp-card__title">Palestras e comunidade</h3>
+            <p class="xp-card__copy">Palestrante recorrente em TDC, .NET Conf Brasil, NDC e meetups locais. Painéis sobre carreira sênior e arquitetura corporativa em .NET.</p>
+          </div>
+          <div class="xp-card__meta"><span>+30 talks</span><span>2018–2026</span></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ASP.NET PRO -->
+  <section class="pro" id="aspnet-pro" aria-label="ASP.NET PRO">
+    <div class="container pro__inner">
+      <div class="pro__top">
+        <span class="pro__eyebrow">{t('home.aspnetpro.num')}</span>
+        <span class="pro__status">{t('home.aspnetpro.status')}</span>
+      </div>
+      <div class="pro__grid">
+        <div>
+          <h2 class="pro__title">{t('home.aspnetpro.title')}</h2>
+          <p class="pro__sub">{t('home.aspnetpro.sub')}</p>
+          <p class="pro__copy">{t('home.aspnetpro.copy')}</p>
+          <ul class="pro__bullets">
+            <li><span><strong>Arquitetura por domínio</strong> aplicada à realidade brasileira — não a exemplos americanos genéricos.</span></li>
+            <li><span><strong>Observabilidade, performance e plano de migração</strong> — o que o tutorial nunca cobre.</span></li>
+            <li><span><strong>Revisões de código ao vivo</strong> com o instrutor — não conteúdo gravado e esquecido.</span></li>
+          </ul>
+          <div class="pro__ctas">
+            <Button href="https://aspnetpro.com.br" variant="acc" size="lg">
+              {t('home.aspnetpro.cta_primary')}
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </Button>
+            <Button href="https://aspnetpro.com.br" variant="outline-dark" size="lg">{t('home.aspnetpro.cta_secondary')}</Button>
+          </div>
+        </div>
+        <aside class="pro__modules" aria-label="Módulos do programa">
+          <div class="pro__modules-head">
+            <span class="pro__modules-title">{t('home.aspnetpro.modules_title')}</span>
+            <span class="pro__modules-meta">{t('home.aspnetpro.modules_meta')}</span>
+          </div>
+          <ul class="pro__modules-list">
+            <li><span class="num">01</span><span>Arquitetura por domínio em .NET</span><span class="dur">8h</span></li>
+            <li><span class="num">02</span><span>Observabilidade e telemetria</span><span class="dur">6h</span></li>
+            <li><span class="num">03</span><span>Performance e otimização</span><span class="dur">7h</span></li>
+            <li><span class="num">04</span><span>Migração legacy → Azure</span><span class="dur">9h</span></li>
+            <li><span class="num">05</span><span>Testes em sistemas críticos</span><span class="dur">6h</span></li>
+            <li><span class="num">06</span><span>Revisões ao vivo</span><span class="dur">12h</span></li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <!-- BLOG -->
+  <section class="section section--alt" id="blog" aria-label="Blog">
+    <div class="container">
+      <SectionHead
+        num={t('home.blog.num')}
+        title={t('home.blog.title')}
+        lede={t('home.blog.lede')}
+      >
+        <a href={localizedPath('/blog', lang)} class="section__see">
+          {t('home.blog.see_all')}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75M14.25 6h6m0 0v6m0-6L10.5 15.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </SectionHead>
+
+      {latestPosts.length > 0 && (
+        <div class="posts">
+          {latestPosts.map((post) => (
+            <a href={`/blog/${post.id}`} class="post">
+              <div class="post__top">
+                {post.data.tags?.[0] && <span class="post__tag">{post.data.tags[0]}</span>}
+              </div>
+              <h3 class="post__title">{post.data.title}</h3>
+              <p class="post__excerpt">{post.data.description}</p>
+              <div class="post__foot">
+                <span>{fmtDate(post.data.pubDate)}</span>
+                <span>↗</span>
+              </div>
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- EVENTOS -->
+  <section class="section" id="eventos" aria-label="Agenda">
+    <div class="container">
+      <SectionHead
+        num={t('home.events.num')}
+        title={t('home.events.title')}
+        lede={t('home.events.lede')}
+      >
+        <a href="/eventos" class="section__see">
+          {t('home.events.see_all')}
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75M14.25 6h6m0 0v6m0-6L10.5 15.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+      </SectionHead>
+
+      <div class="events">
+        <a href="/eventos" class="events__row">
+          <div class="events__date"><span class="d">12</span><span class="m">jun · 2026</span></div>
+          <div>
+            <div class="events__title">TDC São Paulo · Trilha .NET</div>
+            <div class="events__title-sub">Arquitetura por domínio em sistemas legados</div>
+          </div>
+          <Chip variant="solid" class="events__role">Palestrante</Chip>
+          <span class="events__city">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            São Paulo
+          </span>
+          <span class="events__arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a href="/eventos" class="events__row">
+          <div class="events__date"><span class="d">03</span><span class="m">jul · 2026</span></div>
+          <div>
+            <div class="events__title">.NET Conf Brasil</div>
+            <div class="events__title-sub">Observabilidade no .NET 9 — além do OpenTelemetry básico</div>
+          </div>
+          <Chip variant="solid" class="events__role">Palestrante</Chip>
+          <span class="events__city">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Online
+          </span>
+          <span class="events__arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a href="/eventos" class="events__row">
+          <div class="events__date"><span class="d">22</span><span class="m">ago · 2026</span></div>
+          <div>
+            <div class="events__title">DevOps Days Porto Alegre</div>
+            <div class="events__title-sub">Painel: liderança técnica em times remotos</div>
+          </div>
+          <Chip class="events__role">Painelista</Chip>
+          <span class="events__city">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Porto Alegre
+          </span>
+          <span class="events__arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a href="/eventos" class="events__row">
+          <div class="events__date"><span class="d">14</span><span class="m">set · 2026</span></div>
+          <div>
+            <div class="events__title">NDC Brasília · Workshop</div>
+            <div class="events__title-sub">Workshop de dois dias: arquitetura .NET para sistemas críticos</div>
+          </div>
+          <Chip variant="accent" class="events__role">Instrutor</Chip>
+          <span class="events__city">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Brasília
+          </span>
+          <span class="events__arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
         </a>
       </div>
-      <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {latestPosts.map((post) => (
-          <BlogCard
-            slug={post.id}
-            title={post.data.title}
-            description={post.data.description}
-            pubDate={post.data.pubDate}
-            tags={post.data.tags}
-            lang={lang}
-          />
-        ))}
-      </div>
-    </section>
-  )}
+    </div>
+  </section>
+
 </BaseLayout>

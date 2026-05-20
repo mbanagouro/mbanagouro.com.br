@@ -1,0 +1,752 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Quando CQRS é (e quando não é) a resposta — Mick Banagouro</title>
+<meta name="description" content="Antes de discutir CQRS, vale revisitar o que é complexidade essencial num sistema de domínio. Ensaio sobre quando a separação compensa — e quando é só acoplamento disfarçado." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700;800&family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;500&display=swap" />
+<link rel="stylesheet" href="styles/tokens.css" />
+<link rel="stylesheet" href="styles/base.css" />
+<link rel="stylesheet" href="styles/site.css" />
+<style>
+  /* ── Article layout ── */
+  .article-wrap {
+    padding: var(--s-9) 0 var(--s-8);
+  }
+  .crumbs {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted);
+    margin-bottom: var(--s-7);
+    display: flex; gap: var(--s-2); align-items: center;
+  }
+  .crumbs a { color: var(--text-muted); transition: color var(--dur-fast); }
+  .crumbs a:hover { color: var(--text); }
+  .crumbs span { color: var(--text-subtle); }
+
+  .article-header {
+    max-width: 800px;
+    margin-bottom: var(--s-8);
+  }
+  .article-eyebrow {
+    display: inline-flex; gap: var(--s-3); align-items: center;
+    margin-bottom: var(--s-5);
+  }
+  .article-eyebrow .chip { font-weight: 500; }
+  .article-eyebrow .pub {
+    font-family: var(--font-mono); font-size: var(--fs-13);
+    color: var(--text-muted);
+  }
+  .article-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(2.5rem, 6vw, 4.5rem);
+    line-height: 1.25;
+    letter-spacing: var(--tracking-display);
+  }
+  .article-title em { font-style: italic; color: var(--ink-600); }
+  .article-lede {
+    margin-top: var(--s-8);
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(1.25rem, 2.5vw, 1.625rem);
+    line-height: 1.4;
+    color: var(--ink-600);
+    max-width: 56ch;
+  }
+
+  /* Byline */
+  .byline {
+    display: flex;
+    align-items: center;
+    gap: var(--s-4);
+    padding: var(--s-5) 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    margin-top: var(--s-7);
+    margin-bottom: var(--s-8);
+  }
+  .byline__avatar {
+    width: 44px; height: 44px;
+    background: var(--ink-900); color: var(--ink-0);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    font-family: var(--font-mono); font-size: var(--fs-14); font-weight: 600;
+    flex-shrink: 0;
+  }
+  .byline__main { flex: 1; min-width: 0; }
+  .byline__name {
+    font-weight: 600;
+    font-size: var(--fs-14);
+    letter-spacing: var(--tracking-tight);
+  }
+  .byline__role {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted); margin-top: 2px;
+  }
+  .byline__meta {
+    display: flex; gap: var(--s-4); align-items: center;
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-muted); flex-wrap: wrap;
+  }
+  .byline__meta strong { color: var(--text); font-weight: 500; }
+  .byline__share { display: flex; gap: var(--s-2); }
+  .byline__share button {
+    width: 32px; height: 32px;
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-sm);
+    display: grid; place-items: center;
+    color: var(--ink-700);
+    transition: all var(--dur-fast);
+  }
+  .byline__share button:hover { color: var(--text); border-color: var(--ink-700); }
+  .byline__share svg { width: 14px; height: 14px; stroke-width: 1.75; }
+
+  /* ── Article grid ── */
+  .article-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-9);
+  }
+  @media (min-width: 1080px) {
+    .article-grid {
+      grid-template-columns: minmax(0, 680px) minmax(0, 1fr);
+      gap: var(--s-9);
+    }
+  }
+
+  /* ── Prose styles ── */
+  .prose {
+    font-family: var(--font-sans);
+    font-size: 1.0625rem;
+    line-height: 1.7;
+    color: var(--ink-700);
+    max-width: 680px;
+  }
+  .prose > * + * { margin-top: var(--s-5); }
+  .prose > p + p { margin-top: var(--s-5); }
+  .prose p { color: var(--ink-700); }
+  .prose strong { color: var(--text); font-weight: 600; }
+  .prose em { font-style: italic; }
+  .prose a {
+    color: var(--text);
+    border-bottom: 1px solid var(--border-strong);
+    transition: color var(--dur-fast), border-color var(--dur-fast);
+  }
+  .prose a:hover { color: var(--accent-700); border-color: var(--accent-500); }
+  .prose h2 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--fs-28);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.2;
+    color: var(--text);
+    margin-top: var(--s-8);
+    padding-top: var(--s-5);
+    border-top: 1px solid var(--border);
+    scroll-margin-top: 96px;
+  }
+  .prose h2::before {
+    content: "§ " attr(data-num);
+    display: block;
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--text-subtle);
+    font-weight: 400;
+    letter-spacing: var(--tracking-wide);
+    text-transform: uppercase;
+    margin-bottom: var(--s-2);
+  }
+  .prose h3 {
+    font-family: var(--font-sans);
+    font-weight: 600;
+    font-size: var(--fs-20);
+    letter-spacing: var(--tracking-tight);
+    line-height: 1.3;
+    color: var(--text);
+    margin-top: var(--s-6);
+  }
+  .prose ul, .prose ol {
+    padding-left: var(--s-5);
+    color: var(--ink-700);
+  }
+  .prose ul { list-style: none; padding-left: 0; }
+  .prose ul li {
+    position: relative;
+    padding-left: var(--s-5);
+  }
+  .prose ul li::before {
+    content: "";
+    position: absolute;
+    left: 0; top: 12px;
+    width: 8px; height: 1px;
+    background: var(--ink-400);
+  }
+  .prose ul li + li { margin-top: var(--s-3); }
+  .prose ol li + li { margin-top: var(--s-3); }
+
+  .prose blockquote {
+    border-left: 3px solid var(--accent);
+    padding: var(--s-3) 0 var(--s-3) var(--s-5);
+    margin: var(--s-7) 0;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: var(--fs-24);
+    line-height: 1.35;
+    color: var(--text);
+  }
+  .prose blockquote cite {
+    display: block;
+    margin-top: var(--s-3);
+    font-family: var(--font-mono);
+    font-style: normal;
+    font-size: var(--fs-12);
+    color: var(--text-muted);
+    letter-spacing: 0;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+  }
+
+  .prose code {
+    font-family: var(--font-mono);
+    font-size: 0.92em;
+    background: var(--ink-100);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--ink-800);
+    border: 1px solid var(--border);
+  }
+
+  .prose pre {
+    margin: var(--s-6) 0;
+    background: oklch(11% 0.012 65);
+    border: 1px solid oklch(18% 0.012 65);
+    border-radius: var(--r-md);
+    overflow: hidden;
+    position: relative;
+  }
+  .prose pre::before {
+    content: attr(data-lang);
+    position: absolute; top: 12px; right: 12px;
+    font-family: var(--font-mono);
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: oklch(60% 0.01 65);
+  }
+  .prose pre code {
+    display: block;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: var(--s-5) var(--s-5);
+    overflow-x: auto;
+    font-size: var(--fs-13);
+    line-height: 1.7;
+    color: oklch(88% 0.005 65);
+  }
+  /* Sober syntax highlight tokens */
+  .tok-k { color: oklch(78% 0.12 65); }    /* keyword — amber */
+  .tok-t { color: oklch(80% 0.06 200); }   /* type — cool */
+  .tok-s { color: oklch(80% 0.1 140); }    /* string — green-ish */
+  .tok-c { color: oklch(50% 0.01 65); font-style: italic; } /* comment */
+  .tok-f { color: oklch(82% 0.005 65); }   /* identifier */
+
+  .prose hr {
+    border: none;
+    border-top: 1px dashed var(--border-strong);
+    margin: var(--s-7) 0;
+  }
+
+  .prose .pull {
+    margin: var(--s-7) 0;
+    padding: var(--s-6);
+    background: var(--surface-alt);
+    border-left: 3px solid var(--ink-900);
+    border-radius: 0 var(--r-md) var(--r-md) 0;
+  }
+  .prose .pull strong { color: var(--text); display: block; margin-bottom: var(--s-2); }
+  .prose .pull p { font-size: var(--fs-15); }
+  .prose .pull p + p { margin-top: var(--s-3); }
+
+  /* ── Sidebar (TOC) ── */
+  .toc {
+    position: sticky;
+    top: 88px;
+    align-self: start;
+  }
+  @media (max-width: 1079px) {
+    .toc { position: static; }
+  }
+  .toc__inner {
+    padding: var(--s-5);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    background: var(--surface);
+  }
+  .toc__title {
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    text-transform: uppercase;
+    letter-spacing: var(--tracking-wide);
+    color: var(--text-subtle);
+    margin-bottom: var(--s-4);
+    padding-bottom: var(--s-3);
+    border-bottom: 1px solid var(--border);
+  }
+  .toc__list { list-style: none; display: grid; gap: var(--s-3); }
+  .toc__list a {
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: var(--s-2);
+    font-size: var(--fs-13);
+    line-height: 1.5;
+    color: var(--ink-600);
+    transition: color var(--dur-fast);
+  }
+  .toc__list a:hover { color: var(--text); }
+  .toc__list a.is-active { color: var(--text); font-weight: 500; }
+  .toc__list a.is-active .num { color: var(--accent-700); }
+  .toc__list .num {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--text-subtle);
+  }
+  .toc__meta {
+    margin-top: var(--s-5);
+    padding-top: var(--s-4);
+    border-top: 1px solid var(--border);
+    font-family: var(--font-mono);
+    font-size: var(--fs-12);
+    color: var(--text-muted);
+    display: grid; gap: var(--s-2);
+  }
+  .toc__meta strong { color: var(--text); font-weight: 500; }
+  .toc__meta-row { display: flex; justify-content: space-between; }
+
+  /* ── Bottom: next / bio / related ── */
+  .article-end {
+    margin-top: var(--s-9);
+    padding-top: var(--s-7);
+    border-top: 1px solid var(--border);
+    max-width: 680px;
+  }
+  .end-tags {
+    display: flex; gap: var(--s-2); flex-wrap: wrap;
+    margin-bottom: var(--s-6);
+  }
+  .author-card {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: var(--s-5);
+    padding: var(--s-6);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--r-lg);
+    align-items: start;
+  }
+  .author-card__avatar {
+    aspect-ratio: 1; width: 100%;
+    background:
+      repeating-linear-gradient(135deg, oklch(92% 0.006 65) 0, oklch(92% 0.006 65) 1px, transparent 1px, transparent 7px),
+      oklch(94% 0.005 65);
+    border: 1px solid var(--border-strong);
+    border-radius: var(--r-md);
+  }
+  .author-card__name { font-weight: 600; font-size: var(--fs-16); letter-spacing: var(--tracking-tight); }
+  .author-card__role { font-family: var(--font-mono); font-size: var(--fs-12); color: var(--text-muted); margin-top: 2px; }
+  .author-card__bio { font-size: var(--fs-14); line-height: var(--lh-prose); color: var(--ink-600); margin-top: var(--s-3); }
+  .author-card__links { margin-top: var(--s-4); display: flex; gap: var(--s-2); flex-wrap: wrap; }
+
+  .next-post {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--s-5);
+    margin-top: var(--s-6);
+    padding: var(--s-6);
+    background: var(--ink-950);
+    color: var(--ink-100);
+    border-radius: var(--r-lg);
+    text-decoration: none;
+    transition: transform var(--dur-base) var(--ease-out);
+  }
+  @media (min-width: 700px) {
+    .next-post { grid-template-columns: 1fr auto; gap: var(--s-7); align-items: center; }
+  }
+  .next-post:hover { transform: translateX(4px); }
+  .next-post__label {
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--accent-300);
+    text-transform: uppercase; letter-spacing: var(--tracking-wide);
+    margin-bottom: var(--s-3);
+  }
+  .next-post__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: clamp(1.5rem, 3vw, 2rem);
+    line-height: 1.1;
+    color: var(--ink-0);
+    letter-spacing: var(--tracking-display);
+  }
+  .next-post__title em { font-style: italic; color: var(--ink-300); }
+  .next-post__meta {
+    margin-top: var(--s-3);
+    font-family: var(--font-mono); font-size: var(--fs-12);
+    color: var(--ink-400);
+  }
+  .next-post__arrow {
+    width: 48px; height: 48px;
+    border: 1px solid oklch(30% 0.01 65);
+    border-radius: 50%;
+    display: grid; place-items: center;
+    color: var(--ink-100);
+    transition: all var(--dur-base);
+  }
+  .next-post:hover .next-post__arrow { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); }
+  .next-post__arrow svg { width: 18px; height: 18px; stroke-width: 1.5; }
+
+  /* Reading progress */
+  .reading-progress {
+    position: fixed; top: 64px; left: 0; right: 0;
+    height: 2px; background: transparent;
+    z-index: 40;
+  }
+  .reading-progress__bar {
+    height: 100%; width: 0%;
+    background: var(--accent);
+    transition: width 100ms linear;
+  }
+</style>
+</head>
+<body data-screen-label="04 Blog — Post detalhe">
+
+  <!-- ─────────────────────────── HEADER ─────────────────────────── -->
+  <header class="site-header">
+    <div class="container site-header__inner">
+      <a href="index.html" class="brand">
+        <span class="brand__mark">M</span>
+        <span>Mick<span class="brand__last"> Banagouro</span></span>
+      </a>
+      <nav class="nav" aria-label="Principal">
+        <a href="sobre.html">Sobre</a>
+        <a href="aspnet-pro.html">ASP.NET&nbsp;PRO</a>
+        <a href="blog.html" aria-current="page">Blog</a>
+        <a href="eventos.html">Eventos</a>
+      </nav>
+      <div class="header-cta">
+        <a href="#contato" class="btn btn-ghost btn-sm">Fale comigo</a>
+        <a href="aspnet-pro.html" class="btn btn-acc btn-sm">ASP.NET PRO
+          <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <button class="menu-btn" aria-label="Abrir menu" aria-expanded="false">
+          <svg viewBox="0 0 24 24"><path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div class="reading-progress" aria-hidden="true">
+    <div class="reading-progress__bar" id="progressBar"></div>
+  </div>
+
+  <main>
+
+    <article class="article-wrap">
+      <div class="container">
+
+        <!-- ───── Breadcrumb ───── -->
+        <nav class="crumbs" aria-label="Caminho">
+          <a href="index.html">Início</a>
+          <span>/</span>
+          <a href="blog.html">Blog</a>
+          <span>/</span>
+          <span style="color:var(--text);">Arquitetura</span>
+        </nav>
+
+        <!-- ───── Article header ───── -->
+        <header class="article-header">
+          <div class="article-eyebrow">
+            <span class="chip chip--accent">Arquitetura</span>
+            <span class="pub">14 mai · 2026 · Ensaio #23</span>
+          </div>
+          <h1 class="article-title">Quando CQRS é <em>(e quando não é)</em> a resposta</h1>
+          <p class="article-lede">
+            Antes de discutir CQRS, vale revisitar o que realmente é "complexidade essencial" num sistema de domínio. Boa parte das implementações que vejo são respostas a um problema acidental — geralmente acoplamento — disfarçado de problema arquitetural.
+          </p>
+
+          <div class="byline">
+            <div class="byline__avatar">MB</div>
+            <div class="byline__main">
+              <div class="byline__name">Mick Banagouro</div>
+              <div class="byline__role">CTO @ Leanwork · Arquiteto .NET</div>
+            </div>
+            <div class="byline__meta">
+              <span><strong>8 min</strong> de leitura</span>
+              <span><strong>~ 2.1k</strong> palavras</span>
+            </div>
+            <div class="byline__share" role="group" aria-label="Compartilhar">
+              <button title="Copiar link" aria-label="Copiar link">
+                <svg viewBox="0 0 24 24"><path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button title="LinkedIn" aria-label="Compartilhar no LinkedIn">
+                <svg viewBox="0 0 24 24"><path d="M4.5 4.5a2.25 2.25 0 100 4.5 2.25 2.25 0 000-4.5zM3 10.5h3v9H3v-9zM9 10.5h3v1.5a3.75 3.75 0 016 3v4.5h-3v-4.125a1.875 1.875 0 10-3.75 0V19.5H9v-9z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </button>
+              <button title="X" aria-label="Compartilhar no Twitter/X">
+                <svg viewBox="0 0 24 24"><path d="M4 4l7.5 9L4.5 20H7l6-6.5L17 20h3l-7.75-9.3L19.5 4H17l-5.25 5.75L7 4H4z" stroke-linejoin="round"/></svg>
+              </button>
+            </div>
+          </div>
+        </header>
+
+        <!-- ───── Article body (with TOC) ───── -->
+        <div class="article-grid">
+
+          <div class="prose" id="articleBody">
+
+            <p>Toda vez que entro num projeto novo onde o time já se preparou para a minha visita, alguém em algum momento vai querer falar sobre CQRS. Já é um clássico. O sintoma normalmente é uma camada de aplicação inflada, um conjunto opaco de "services" que ninguém entende, e a sensação difusa de que <em>"talvez precisássemos separar leitura de escrita"</em>.</p>
+
+            <p>A pergunta certa quase nunca é se você precisa de CQRS. É qual problema você realmente está tentando resolver — e se esse problema é resolvido por separação ou por outra coisa. Este ensaio é a minha régua, depois de implementar CQRS de verdade em três projetos da Leanwork e ter cogitado em outros dez antes de desistir.</p>
+
+            <h2 data-num="01" id="s1">O que estou chamando de CQRS</h2>
+
+            <p>Antes de qualquer coisa, definição. Quando digo CQRS aqui, estou falando estritamente do padrão original do Greg Young: <strong>modelos diferentes para leitura e para escrita</strong>. Não estou falando de "ter uma classe Command e uma classe Query no mesmo handler". Isso é estilo de código, não arquitetura.</p>
+
+            <p>CQRS de verdade significa que o caminho que altera o estado do sistema e o caminho que consulta esse estado são <em>artefatos separados</em>: classes diferentes, frequentemente bancos diferentes, às vezes serviços diferentes. Os modelos não dividem nenhuma estrutura.</p>
+
+            <blockquote>
+              "A maioria dos sistemas se beneficia de ter dois modelos. A maioria dos times não está preparada para sustentar dois modelos."
+              <cite>— um ex-CTO meu, em 2017</cite>
+            </blockquote>
+
+            <h2 data-num="02" id="s2">Sintomas que não são CQRS</h2>
+
+            <p>Antes de discutir os casos onde CQRS resolve, vale eliminar o ruído. Existem três sintomas que <strong>frequentemente são confundidos</strong> com "preciso de CQRS" e que, na prática, são outra coisa:</p>
+
+            <ul>
+              <li><strong>Camada de serviços inflada.</strong> Isso é problema de organização interna. Resolve com pastas, contextos e disciplina — não com separação de modelos.</li>
+              <li><strong>Consultas lentas.</strong> Isso é problema de índices, projeção e cache. Resolve com EF Core direito ou Dapper em queries específicas — não com event store.</li>
+              <li><strong>Regras de negócio espalhadas.</strong> Isso é problema de modelo de domínio. Resolve com agregação correta — não com separação CQ.</li>
+            </ul>
+
+            <p>Se você implementar CQRS pra resolver um desses três, vai sair do outro lado com <strong>os mesmos problemas mais uma carga operacional nova</strong>. É o pior dos dois mundos.</p>
+
+            <div class="pull">
+              <strong>Régua prática</strong>
+              <p>Se o time consegue articular qual problema CQRS resolve em uma frase, e essa frase contém "modelo de leitura" ou "consistência eventual", siga em frente. Se a frase contém "fica mais organizado" ou "melhores práticas", recue.</p>
+            </div>
+
+            <h2 data-num="03" id="s3">Onde a separação compensa de verdade</h2>
+
+            <p>Existem três cenários onde a separação paga o custo — e raramente vejo CQRS aplicado por bons motivos fora deles:</p>
+
+            <h3>3.1 — Reads e writes têm volumes radicalmente diferentes</h3>
+
+            <p>O caso clássico: um sistema de catálogo onde 10.000 consultas acontecem para cada escrita. Separar o modelo permite otimizar leitura agressivamente — vistas materializadas, denormalização agressiva, cache de objetos prontos — sem comprometer o modelo de escrita.</p>
+
+            <h3>3.2 — A leitura precisa cruzar contextos de forma cara</h3>
+
+            <p>Quando uma única tela do produto precisa de dados de cinco bounded contexts diferentes, manter o modelo de leitura denormalizado e separado da escrita evita o pesadelo de orquestrar joins entre serviços ou contextos.</p>
+
+            <h3>3.3 — O domínio é genuinamente event-sourced</h3>
+
+            <p>Se você já decidiu por event sourcing (auditoria total, replay, etc.), CQRS deixa de ser uma escolha — é consequência. O modelo de leitura é a projeção, e o modelo de escrita é o stream de eventos. Aqui não há atalho.</p>
+
+            <p>Um exemplo concreto de como separamos comando e query num projeto financeiro recente:</p>
+
+<pre data-lang="C# · .NET 9"><code><span class="tok-c">// O comando — quem altera o estado.</span>
+<span class="tok-k">public record</span> <span class="tok-t">ConfirmarPagamento</span>(<span class="tok-t">Guid</span> PedidoId, <span class="tok-t">decimal</span> Valor);
+
+<span class="tok-k">public class</span> <span class="tok-t">ConfirmarPagamentoHandler</span> : <span class="tok-t">ICommandHandler</span>&lt;<span class="tok-t">ConfirmarPagamento</span>&gt;
+{
+    <span class="tok-k">public async</span> <span class="tok-t">Task</span> <span class="tok-f">Handle</span>(<span class="tok-t">ConfirmarPagamento</span> cmd, <span class="tok-t">CancellationToken</span> ct)
+    {
+        <span class="tok-k">var</span> pedido = <span class="tok-k">await</span> _repo.<span class="tok-f">CarregarAsync</span>(cmd.PedidoId, ct);
+        pedido.<span class="tok-f">ConfirmarPagamento</span>(cmd.Valor);
+        <span class="tok-k">await</span> _repo.<span class="tok-f">SalvarAsync</span>(pedido, ct);
+    }
+}
+
+<span class="tok-c">// A query — modelo separado, otimizado para a tela.</span>
+<span class="tok-k">public record</span> <span class="tok-t">PedidoResumo</span>(<span class="tok-t">Guid</span> Id, <span class="tok-t">string</span> Status, <span class="tok-t">decimal</span> Total, <span class="tok-t">string</span> Cliente);
+
+<span class="tok-k">public class</span> <span class="tok-t">ResumoPedidoQuery</span>
+{
+    <span class="tok-k">public async</span> <span class="tok-t">Task</span>&lt;<span class="tok-t">PedidoResumo</span>&gt; <span class="tok-f">Run</span>(<span class="tok-t">Guid</span> id, <span class="tok-t">CancellationToken</span> ct)
+        =&gt; <span class="tok-k">await</span> _readDb.<span class="tok-f">QueryFirstAsync</span>&lt;<span class="tok-t">PedidoResumo</span>&gt;(
+            <span class="tok-s">"select * from pedido_resumo where id = @id"</span>, <span class="tok-k">new</span> { id });
+}</code></pre>
+
+            <p>Note que não há <code>IRepository</code> compartilhado entre os dois lados. O comando trabalha sobre o agregado <em>real</em>; a query trabalha sobre uma projeção achatada construída especificamente para essa tela.</p>
+
+            <h2 data-num="04" id="s4">Como manter o time são durante a transição</h2>
+
+            <p>Se você decidiu que CQRS faz sentido, a parte difícil começa agora. Não é o código — é manter o time produtivo enquanto a estrutura muda. Algumas regras que vieram da minha experiência:</p>
+
+            <ul>
+              <li><strong>Não migre tudo de uma vez.</strong> Comece pelo bounded context que tem o desbalanço de leitura/escrita mais óbvio. Os outros podem esperar.</li>
+              <li><strong>Mantenha consistência forte enquanto puder.</strong> Eventual consistency é uma decisão de produto, não técnica. Adie até que o cliente entenda.</li>
+              <li><strong>Tenha uma estratégia de re-projeção desde o dia um.</strong> Você vai descobrir que projetou errado. Conviva com isso.</li>
+              <li><strong>Faça pair programming agressivo nas duas primeiras semanas.</strong> O modelo mental novo é mais caro do que o código novo.</li>
+            </ul>
+
+            <h2 data-num="05" id="s5">Critérios para reverter</h2>
+
+            <p>Sim — em dois dos três projetos onde implementei CQRS, em algum momento revertemos parcialmente. Não é vergonha. O ponto é saber identificar quando o custo está maior que o benefício:</p>
+
+            <ol>
+              <li>Bugs intermitentes de consistência aparecem com frequência maior do que features.</li>
+              <li>Devs novos levam mais de três semanas para entender o fluxo completo de uma feature.</li>
+              <li>A maioria das histórias do sprint atravessa os dois modelos — sinal de que a fronteira está no lugar errado.</li>
+            </ol>
+
+            <p>Se você bater dois desses três por mais de um trimestre, é hora de uma retrospectiva séria sobre se o problema que CQRS resolveu ainda existe — ou se ele resolveu o problema antigo e criou um pior.</p>
+
+            <hr />
+
+            <p><em>Se você ficou com perguntas ou quer discutir um caso específico, me responda no LinkedIn ou por e-mail. Conversa de arquitetura específica vale mais do que ensaio genérico.</em></p>
+
+          </div>
+
+          <!-- ───── TOC sidebar ───── -->
+          <aside class="toc" aria-label="Sumário">
+            <div class="toc__inner">
+              <div class="toc__title">Sumário</div>
+              <ul class="toc__list">
+                <li><a href="#s1"><span class="num">01</span><span>O que estou chamando de CQRS</span></a></li>
+                <li><a href="#s2"><span class="num">02</span><span>Sintomas que não são CQRS</span></a></li>
+                <li><a href="#s3"><span class="num">03</span><span>Onde a separação compensa</span></a></li>
+                <li><a href="#s4"><span class="num">04</span><span>Mantendo o time são na transição</span></a></li>
+                <li><a href="#s5"><span class="num">05</span><span>Critérios para reverter</span></a></li>
+              </ul>
+              <div class="toc__meta">
+                <div class="toc__meta-row"><span>Leitura</span><strong>8 min</strong></div>
+                <div class="toc__meta-row"><span>Palavras</span><strong>~ 2.100</strong></div>
+                <div class="toc__meta-row"><span>Última edição</span><strong>14 mai</strong></div>
+              </div>
+            </div>
+          </aside>
+
+        </div>
+
+        <!-- ───── Article end ───── -->
+        <div class="article-end">
+          <div class="end-tags">
+            <span class="chip chip--accent">Arquitetura</span>
+            <span class="chip">.NET</span>
+            <span class="chip">DDD</span>
+            <span class="chip">CQRS</span>
+            <span class="chip">Domain Modeling</span>
+          </div>
+
+          <div class="author-card">
+            <div class="author-card__avatar" aria-hidden="true"></div>
+            <div>
+              <div class="author-card__name">Mick Banagouro</div>
+              <div class="author-card__role">CTO @ Leanwork · Arquiteto .NET · Criador do ASP.NET PRO</div>
+              <p class="author-card__bio">Onze anos construindo software corporativo em .NET. Escrevo aqui sobre as decisões reais que tomamos na Leanwork — incluindo as que não deram certo.</p>
+              <div class="author-card__links">
+                <a href="sobre.html" class="btn btn-secondary btn-sm">Sobre mim</a>
+                <a href="aspnet-pro.html" class="btn btn-acc btn-sm">ASP.NET PRO</a>
+                <a href="#contato" class="btn btn-ghost btn-sm">Falar comigo →</a>
+              </div>
+            </div>
+          </div>
+
+          <a href="post.html" class="next-post">
+            <div>
+              <div class="next-post__label">Próximo ensaio</div>
+              <h3 class="next-post__title">Migração legacy → Azure: <em>o que ninguém te conta</em></h3>
+              <div class="next-post__meta">02 mai · 2026 · 12 min · Azure</div>
+            </div>
+            <div class="next-post__arrow">
+              <svg viewBox="0 0 24 24"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            </div>
+          </a>
+        </div>
+
+      </div>
+    </article>
+
+  </main>
+
+  <!-- ─────────────────────────── FOOTER ─────────────────────────── -->
+  <footer class="site-footer" id="contato">
+    <div class="container">
+      <div class="site-footer__inner">
+        <div class="site-footer__brand-block">
+          <div class="site-footer__brand-line">Software de produção, <em>ensinado por quem entrega.</em></div>
+          <p class="site-footer__about">CTO @ Leanwork Group. Arquiteto, instrutor e palestrante .NET. Baseado em São Paulo, Brasil.</p>
+        </div>
+        <div>
+          <h4>Site</h4>
+          <ul>
+            <li><a href="sobre.html">Sobre</a></li>
+            <li><a href="aspnet-pro.html">ASP.NET&nbsp;PRO</a></li>
+            <li><a href="blog.html">Blog</a></li>
+            <li><a href="eventos.html">Eventos</a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Redes</h4>
+          <ul>
+            <li><a href="https://linkedin.com" target="_blank" rel="noopener">LinkedIn <span style="font-size:10px;">↗</span></a></li>
+            <li><a href="https://github.com" target="_blank" rel="noopener">GitHub <span style="font-size:10px;">↗</span></a></li>
+            <li><a href="https://youtube.com" target="_blank" rel="noopener">YouTube <span style="font-size:10px;">↗</span></a></li>
+            <li><a href="https://x.com" target="_blank" rel="noopener">Twitter / X <span style="font-size:10px;">↗</span></a></li>
+          </ul>
+        </div>
+        <div>
+          <h4>Contato</h4>
+          <ul>
+            <li><a href="mailto:mick@mbanagouro.com.br">mick@mbanagouro.com.br</a></li>
+            <li><a href="https://leanwork.group" target="_blank" rel="noopener">Leanwork Group <span style="font-size:10px;">↗</span></a></li>
+          </ul>
+        </div>
+      </div>
+      <div class="site-footer__bottom">
+        <span>© 2026 Michel Banagouro · mbanagouro.com.br</span>
+        <span>HTML estático · Cloudflare Pages</span>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // ── Reading progress bar ──
+    (function() {
+      const bar = document.getElementById('progressBar');
+      const body = document.getElementById('articleBody');
+      if (!bar || !body) return;
+      const update = () => {
+        const rect = body.getBoundingClientRect();
+        const top = -rect.top;
+        const height = rect.height - window.innerHeight;
+        const pct = Math.max(0, Math.min(1, top / height));
+        bar.style.width = (pct * 100) + '%';
+      };
+      window.addEventListener('scroll', update, { passive: true });
+      window.addEventListener('resize', update);
+      update();
+    })();
+
+    // ── TOC active section ──
+    (function() {
+      const tocLinks = document.querySelectorAll('.toc__list a');
+      const headings = Array.from(tocLinks).map(a => document.querySelector(a.getAttribute('href'))).filter(Boolean);
+      if (!headings.length) return;
+
+      const onScroll = () => {
+        const scrollY = window.scrollY + 120;
+        let active = headings[0];
+        for (const h of headings) {
+          if (h.offsetTop <= scrollY) active = h;
+        }
+        tocLinks.forEach(a => a.classList.toggle('is-active', a.getAttribute('href') === '#' + active.id));
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      onScroll();
+    })();
+  </script>
+
+</body>
+</html>

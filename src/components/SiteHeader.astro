@@ -1,0 +1,131 @@
+---
+import { useTranslations, getLangFromUrl, localizedPath } from '~/i18n/utils';
+import LanguageSwitcher from './LanguageSwitcher.astro';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const aboutSlug = lang === 'pt-br' ? 'sobre' : 'about';
+const eventsSlug = lang === 'pt-br' ? 'eventos' : 'events';
+
+const nav = [
+  { href: localizedPath(`/${aboutSlug}`, lang), label: t('nav.about') },
+  { href: 'https://aspnetpro.com.br', label: 'ASP.NET PRO', external: true },
+  { href: localizedPath('/blog', lang), label: t('nav.blog') },
+  { href: localizedPath(`/${eventsSlug}`, lang), label: t('nav.events') },
+];
+
+const currentPath = Astro.url.pathname.replace(/\/$/, '') || '/';
+---
+
+<header class="site-header">
+  <div class="container site-header__inner">
+    <a href={localizedPath('/', lang)} class="brand">
+      <span class="brand__mark">M</span>
+      <span>Michel<span class="brand__last"> Banagouro</span></span>
+    </a>
+
+    <nav class="nav" aria-label={lang === 'pt-br' ? 'Principal' : 'Main'}>
+      {nav.map((item) => {
+        if (item.external) {
+          return (
+            <a href={item.href} target="_blank" rel="noopener noreferrer">
+              {item.label}
+            </a>
+          );
+        }
+        const itemPath = item.href.replace(/\/$/, '') || '/';
+        const active = currentPath === itemPath;
+        return (
+          <a href={item.href} aria-current={active ? 'page' : undefined}>
+            {item.label}
+          </a>
+        );
+      })}
+    </nav>
+
+    <div class="header-cta">
+      <LanguageSwitcher />
+      <a href="#contato" class="btn btn-ghost btn-sm">{t('header.contact')}</a>
+      <a href="https://aspnetpro.com.br" class="btn btn-acc btn-sm" target="_blank" rel="noopener noreferrer">
+        ASP.NET PRO
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <button
+        id="site-menu-btn"
+        class="menu-btn"
+        type="button"
+        aria-label={lang === 'pt-br' ? 'Abrir menu' : 'Open menu'}
+        aria-expanded="false"
+        aria-controls="site-mobile-menu"
+      >
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+          <path d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </button>
+    </div>
+  </div>
+</header>
+
+<nav
+  id="site-mobile-menu"
+  class="mobile-menu"
+  aria-label={lang === 'pt-br' ? 'Menu móvel' : 'Mobile menu'}
+  hidden
+>
+  <div class="container mobile-menu__inner">
+    {nav.map((item) => (
+      item.external
+        ? <a href={item.href} target="_blank" rel="noopener noreferrer">{item.label}</a>
+        : <a href={item.href}>{item.label}</a>
+    ))}
+    <div class="mobile-menu__lang">
+      <LanguageSwitcher />
+    </div>
+  </div>
+</nav>
+
+<style>
+  .mobile-menu {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: var(--s-3) 0 var(--s-4);
+  }
+  .mobile-menu__inner {
+    display: grid;
+    gap: 2px;
+  }
+  .mobile-menu a {
+    display: block;
+    padding: var(--s-3) var(--s-3);
+    font-size: var(--fs-15);
+    font-weight: 500;
+    color: var(--ink-700);
+    border-radius: var(--r-md);
+    transition: background var(--dur-fast), color var(--dur-fast);
+  }
+  .mobile-menu a:hover {
+    background: var(--surface-alt);
+    color: var(--text);
+  }
+  .mobile-menu__lang {
+    padding: var(--s-3) var(--s-3) 0;
+    margin-top: var(--s-2);
+    border-top: 1px solid var(--border);
+  }
+</style>
+
+<script is:inline>
+  (function () {
+    const btn = document.getElementById('site-menu-btn');
+    const menu = document.getElementById('site-mobile-menu');
+    if (!btn || !menu) return;
+    btn.addEventListener('click', function () {
+      const isHidden = menu.hidden;
+      menu.hidden = !isHidden;
+      btn.setAttribute('aria-expanded', String(isHidden));
+    });
+  })();
+</script>

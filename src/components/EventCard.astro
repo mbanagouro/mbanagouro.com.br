@@ -1,0 +1,68 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import type { Lang } from '~/i18n/ui';
+import { useTranslations } from '~/i18n/utils';
+
+interface Props {
+  event: CollectionEntry<'events-pt'> | CollectionEntry<'events-en'>;
+  lang: Lang;
+}
+
+const { event, lang } = Astro.props;
+const t = useTranslations(lang);
+const { date, title, abstract, role, city, online, featured, url } = event.data;
+
+const locale = lang === 'pt-br' ? 'pt-BR' : 'en-US';
+const day = new Intl.DateTimeFormat(locale, { day: '2-digit' }).format(date);
+const mon = new Intl.DateTimeFormat(locale, { month: 'short' }).format(date).replace('.', '');
+const yr = date.getFullYear().toString().slice(2);
+const monthYear = `${mon} · ${yr}`;
+
+const chipClass = { speaker: 'chip--solid', instructor: 'chip--accent', panelist: '' }[role];
+const roleLabel = { speaker: t('events.role.speaker'), instructor: t('events.role.instructor'), panelist: t('events.role.panelist') }[role];
+---
+
+<a
+  href={url ?? '#'}
+  class:list={['ev-card', featured && 'ev-card--soon']}
+  data-role={role}
+  data-year={date.getFullYear()}
+>
+  <div class="ev-card__top">
+    <div class="ev-card__date">
+      <span class="d">{day}</span>
+      <span class="m">{monthYear}</span>
+    </div>
+    <span class:list={['chip', 'ev-card__role', chipClass]}>{roleLabel}</span>
+  </div>
+  <div>
+    <div class="ev-card__title">{title}</div>
+    {abstract && <div class="ev-card__abstract" set:html={abstract} />}
+  </div>
+  <div class="ev-card__foot">
+    <div class="ev-card__foot-left">
+      {online ? (
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M12 21a9 9 0 100-18 9 9 0 000 18zM3.6 9h16.8M3.6 15h16.8M11.5 3a17 17 0 000 18M12.5 3a17 17 0 010 18" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {city}
+        </span>
+      ) : (
+        <span>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/>
+            <path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          {city}
+        </span>
+      )}
+    </div>
+    <span class="ev-card__cta">
+      {t('events.upcoming.register')}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+        <path d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75A1.125 1.125 0 013.75 20.625V7.875c0-.621.504-1.125 1.125-1.125H6.75M14.25 6h6m0 0v6m0-6L10.5 15.75" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </span>
+  </div>
+</a>

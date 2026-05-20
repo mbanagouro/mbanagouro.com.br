@@ -1,0 +1,14 @@
+---
+interface Props {
+  variant?: 'default' | 'solid' | 'accent' | 'dark';
+  class?: string;
+}
+
+const { variant = 'default', class: className } = Astro.props;
+
+const classes = ['chip', variant !== 'default' ? `chip--${variant}` : '', className]
+  .filter(Boolean)
+  .join(' ');
+---
+
+<span class={classes}><slot /></span>

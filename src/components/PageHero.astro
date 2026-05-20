@@ -1,0 +1,19 @@
+---
+interface Props {
+  eyebrow: string;
+  title: string;
+  lede?: string;
+  class?: string;
+}
+
+const { eyebrow, title, lede, class: className } = Astro.props;
+---
+
+<section class:list={['page-hero', className]}>
+  <div class="container page-hero__inner">
+    <span class="page-hero__eyebrow" set:html={eyebrow} />
+    <h1 class="page-hero__title" set:html={title} />
+    {lede && <p class="page-hero__lede">{lede}</p>}
+    <slot />
+  </div>
+</section>
