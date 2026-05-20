@@ -1,4 +1,5 @@
 ---
+import '~/styles/projects.css';
 import BaseLayout from '~/layouts/BaseLayout.astro';
 import { useTranslations } from '~/i18n/utils';
 
@@ -6,37 +7,41 @@ const lang = 'en' as const;
 const t = useTranslations(lang);
 
 const links = [
-  { label: 'ASP.NET PRO',  url: 'https://aspnetpro.com.br',                  hint: '.NET training' },
-  { label: 'GitHub',       url: 'https://github.com/mbanagouro',             hint: 'Open source code' },
-  { label: 'YouTube',      url: 'https://www.youtube.com/@mbanagouro',       hint: 'Videos and tutorials' },
-  { label: 'Instagram',    url: 'https://www.instagram.com/mbanagouro',      hint: 'Behind-the-scenes' },
+  { label: 'ASP.NET PRO',  url: 'https://aspnetpro.com.br',             hint: '.NET training' },
+  { label: 'GitHub',       url: 'https://github.com/mbanagouro',        hint: 'Open source code' },
+  { label: 'YouTube',      url: 'https://www.youtube.com/@mbanagouro',  hint: 'Videos and tutorials' },
+  { label: 'Instagram',    url: 'https://www.instagram.com/mbanagouro', hint: 'Behind-the-scenes' },
 ];
 ---
 
 <BaseLayout title={t('links.title')} description={t('links.subtitle')} lang={lang}>
-  <header class="mb-10">
-    <h1 class="text-4xl font-bold tracking-tight sm:text-5xl">{t('links.title')}</h1>
-    <p class="mt-3 text-lg text-zinc-600 dark:text-zinc-400">{t('links.subtitle')}</p>
-  </header>
 
-  <ul class="mx-auto flex max-w-xl flex-col gap-3">
-    {links.map((l) => (
-      <li>
-        <a
-          href={l.url}
-          target="_blank"
-          rel="noopener noreferrer"
-          class="flex items-center justify-between gap-4 rounded-xl border border-zinc-200 bg-white px-5 py-4 no-underline transition-colors hover:border-brand-400 dark:border-zinc-800 dark:bg-zinc-900/40 dark:hover:border-brand-500"
-        >
-          <div>
-            <p class="font-semibold text-zinc-900 dark:text-zinc-100">{l.label}</p>
-            <p class="text-sm text-zinc-500 dark:text-zinc-400">{l.hint}</p>
-          </div>
-          <svg class="h-5 w-5 text-zinc-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-            <path d="m9 18 6-6-6-6" />
-          </svg>
-        </a>
-      </li>
-    ))}
-  </ul>
+  <section class="page-hero">
+    <div class="container">
+      <span class="page-hero__eyebrow">{t('links.hero.eyebrow')}</span>
+      <h1 class="page-hero__title" set:html={t('links.hero.title')} />
+      <p class="page-hero__lede">{t('links.hero.lede')}</p>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <ul class="links-list">
+        {links.map((l) => (
+          <li>
+            <a href={l.url} target="_blank" rel="noopener noreferrer" class="link-item">
+              <div>
+                <p class="link-item__label">{l.label}</p>
+                <p class="link-item__hint">{l.hint}</p>
+              </div>
+              <svg class="link-item__arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="m9 18 6-6-6-6" />
+              </svg>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
 </BaseLayout>

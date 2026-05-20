@@ -1,5 +1,7 @@
 ---
+import '~/styles/404.css';
 import BaseLayout from '~/layouts/BaseLayout.astro';
+import Button from '~/components/Button.astro';
 import { useTranslations, getLangFromUrl, localizedPath } from '~/i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -7,15 +9,16 @@ const t = useTranslations(lang);
 ---
 
 <BaseLayout title={t('404.title')} description={t('404.message')} lang={lang} noindex>
-  <section class="mx-auto flex max-w-xl flex-col items-center text-center py-16">
-    <p class="text-7xl font-bold text-brand-500">404</p>
-    <h1 class="mt-4 text-3xl font-bold tracking-tight">{t('404.title')}</h1>
-    <p class="mt-3 text-zinc-600 dark:text-zinc-400">{t('404.message')}</p>
-    <a
-      href={localizedPath('/', lang)}
-      class="mt-8 inline-flex items-center rounded-md bg-brand-600 px-4 py-2 text-sm font-medium text-white no-underline shadow-sm hover:bg-brand-700"
-    >
-      ← {t('404.home')}
-    </a>
-  </section>
+  <div class="not-found">
+    <div class="not-found__inner">
+      <p class="not-found__code">404</p>
+      <h1 class="not-found__title">{t('404.title')}</h1>
+      <p class="not-found__message">{t('404.message')}</p>
+      <div class="not-found__cta">
+        <Button href={localizedPath('/', lang)} variant="acc" size="lg">
+          ← {t('404.home')}
+        </Button>
+      </div>
+    </div>
+  </div>
 </BaseLayout>

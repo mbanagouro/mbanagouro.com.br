@@ -1,0 +1,51 @@
+---
+import type { Lang } from '~/i18n/ui';
+import { localizedPath, useTranslations } from '~/i18n/utils';
+import Chip from './Chip.astro';
+
+interface Props {
+  slug: string;
+  title: string;
+  description: string;
+  pubDate: Date;
+  tags: string[];
+  lang: Lang;
+  postIndex: number;
+}
+
+const { slug, title, description, pubDate, tags, lang, postIndex } = Astro.props;
+const t = useTranslations(lang);
+const href = localizedPath(`/blog/${slug}`, lang);
+
+const locale = lang === 'pt-br' ? 'pt-BR' : 'en-US';
+const day = pubDate.toLocaleDateString(locale, { day: '2-digit', month: 'short' });
+const year = pubDate.getFullYear();
+const primaryTag = tags[0] ?? 'all';
+const numStr = String(postIndex).padStart(2, '0');
+---
+
+<a href={href} class="featured" data-tag={primaryTag}>
+  <div>
+    <div class="featured__top">
+      <span class="featured__badge">★ {t('blog.featured.badge')}</span>
+      <span>{day} · {year}</span>
+    </div>
+    <h2 class="featured__title">{title}</h2>
+    <p class="featured__excerpt">{description}</p>
+    <div class="featured__meta">
+      {tags.map((tag, i) => (
+        <Chip variant={i === 0 ? 'accent' : 'default'}>{tag}</Chip>
+      ))}
+    </div>
+    <span class="featured__cta">
+      {t('blog.featured.cta')}
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
+        <path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </span>
+  </div>
+  <div class="featured__visual" aria-hidden="true">
+    <div class="featured__visual-num">{numStr}</div>
+    <div class="featured__visual-tag">post #{numStr} · {t('blog.post.cover_label')}</div>
+  </div>
+</a>

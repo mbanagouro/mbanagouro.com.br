@@ -1,6 +1,22 @@
 ---
+import '~/styles/blog.css';
 import BaseLayout from './BaseLayout.astro';
-import { useTranslations, getLangFromUrl } from '~/i18n/utils';
+import Chip from '~/components/Chip.astro';
+import Button from '~/components/Button.astro';
+import { getLangFromUrl, localizedPath, useTranslations } from '~/i18n/utils';
+
+interface Heading {
+  depth: number;
+  slug: string;
+  text: string;
+}
+
+interface NextPost {
+  slug: string;
+  title: string;
+  pubDate: Date;
+  tags: string[];
+}
 
 interface Props {
   title: string;
@@ -9,58 +25,213 @@ interface Props {
   updatedDate?: Date;
   heroImage?: string;
   tags?: string[];
+  headings?: Heading[];
+  nextPost?: NextPost | null;
 }
 
-const { title, description, pubDate, updatedDate, heroImage, tags = [] } = Astro.props;
+const { title, description, pubDate, updatedDate, heroImage, tags = [], headings = [], nextPost } = Astro.props;
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
 const locale = lang === 'pt-br' ? 'pt-BR' : 'en-US';
-const formatter = new Intl.DateTimeFormat(locale, {
-  year: 'numeric',
-  month: 'long',
-  day: 'numeric',
-});
+const pubFormatted = pubDate.toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' });
+const updFormatted = updatedDate?.toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' });
+
+const blogHref = localizedPath('/blog', lang);
+const aboutPath = lang === 'pt-br' ? '/sobre' : '/about';
+const aboutHref = localizedPath(aboutPath, lang);
+
+const tocHeadings = headings.filter(h => h.depth === 2);
+
+const nextHref = nextPost ? localizedPath(`/blog/${nextPost.slug}`, lang) : null;
+const nextDate = nextPost
+  ? nextPost.pubDate.toLocaleDateString(locale, { day: '2-digit', month: 'short', year: 'numeric' })
+  : null;
 ---
 
 <BaseLayout
-  title={title}
+  title={`${title} — Michel Banagouro`}
   description={description}
   type="article"
   publishedTime={pubDate.toISOString()}
   image={heroImage}
+  lang={lang}
 >
-  <article class="mx-auto max-w-3xl">
-    <header class="mb-10">
-      <p class="mb-3 text-sm uppercase tracking-wider text-brand-600 dark:text-brand-400">
-        {t('blog.published_on')} <time datetime={pubDate.toISOString()}>{formatter.format(pubDate)}</time>
-        {updatedDate && (
+  <div class="reading-progress" aria-hidden="true">
+    <div class="reading-progress__bar" id="progressBar"></div>
+  </div>
+
+  <article class="article-wrap">
+    <div class="container">
+
+      <!-- Breadcrumb -->
+      <nav class="crumbs" aria-label="Caminho">
+        <a href={localizedPath('/', lang)}>{t('blog.crumb.home')}</a>
+        <span>/</span>
+        <a href={blogHref}>Blog</a>
+        {tags[0] && (
           <>
-            &middot; <span class="italic">updated {formatter.format(updatedDate)}</span>
+            <span>/</span>
+            <span style="color:var(--text);">{tags[0]}</span>
           </>
         )}
-      </p>
-      <h1 class="text-4xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-5xl">
-        {title}
-      </h1>
-      <p class="mt-4 text-lg text-zinc-600 dark:text-zinc-400">{description}</p>
-      {tags.length > 0 && (
-        <ul class="mt-4 flex flex-wrap gap-2">
-          {tags.map((tag) => (
-            <li class="rounded-full bg-zinc-100 px-3 py-1 text-xs font-medium text-zinc-700 dark:bg-zinc-800 dark:text-zinc-300">
-              #{tag}
-            </li>
-          ))}
-        </ul>
-      )}
-    </header>
+      </nav>
 
-    {heroImage && (
-      <img src={heroImage} alt="" class="mb-10 w-full rounded-xl border border-zinc-200 dark:border-zinc-800" />
-    )}
+      <!-- Article header -->
+      <header class="article-header">
+        <div class="article-eyebrow">
+          {tags[0] && <Chip variant="accent">{tags[0]}</Chip>}
+          <span class="pub">
+            <time datetime={pubDate.toISOString()}>{pubFormatted}</time>
+            {updatedDate && <> · <em>upd. {updFormatted}</em></>}
+          </span>
+        </div>
+        <h1 class="article-title">{title}</h1>
+        <p class="article-lede">{description}</p>
 
-    <div class="prose-custom">
-      <slot />
+        <!-- Byline -->
+        <div class="byline">
+          <div class="byline__avatar" aria-hidden="true">MB</div>
+          <div class="byline__main">
+            <div class="byline__name">{t('blog.author.name')}</div>
+            <div class="byline__role">{t('blog.author.role')}</div>
+          </div>
+          <div class="byline__meta">
+            <span><time datetime={pubDate.toISOString()}>{pubFormatted}</time></span>
+          </div>
+          <div class="byline__share" role="group" aria-label={t('blog.byline.copy_link')}>
+            <button id="copyLinkBtn" title={t('blog.byline.copy_link')} aria-label={t('blog.byline.copy_link')}>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m13.35-.622l1.757-1.757a4.5 4.5 0 00-6.364-6.364l-4.5 4.5a4.5 4.5 0 001.242 7.244" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Article grid: prose + TOC -->
+      <div class="article-grid">
+
+        <div class="prose" id="articleBody">
+          <slot />
+        </div>
+
+        {tocHeadings.length > 0 && (
+          <aside class="toc" aria-label={t('blog.toc.title')}>
+            <div class="toc__inner">
+              <div class="toc__title">{t('blog.toc.title')}</div>
+              <ul class="toc__list">
+                {tocHeadings.map((h, i) => (
+                  <li>
+                    <a href={`#${h.slug}`}>
+                      <span class="num">{String(i + 1).padStart(2, '0')}</span>
+                      <span>{h.text}</span>
+                    </a>
+                  </li>
+                ))}
+              </ul>
+              <div class="toc__meta">
+                <div class="toc__meta-row">
+                  <span>{t('blog.toc.reading')}</span>
+                  <strong><time datetime={pubDate.toISOString()}>{pubFormatted}</time></strong>
+                </div>
+                {updatedDate && (
+                  <div class="toc__meta-row">
+                    <span>{t('blog.toc.updated')}</span>
+                    <strong>{updFormatted}</strong>
+                  </div>
+                )}
+              </div>
+            </div>
+          </aside>
+        )}
+
+      </div>
+
+      <!-- Article end -->
+      <div class="article-end">
+        {tags.length > 0 && (
+          <div class="end-tags">
+            {tags.map((tag, i) => <Chip variant={i === 0 ? 'accent' : 'default'}>{tag}</Chip>)}
+          </div>
+        )}
+
+        <div class="author-card">
+          <div class="author-card__avatar" aria-hidden="true"></div>
+          <div>
+            <div class="author-card__name">{t('blog.author.name')}</div>
+            <div class="author-card__role">{t('blog.author.role')}</div>
+            <p class="author-card__bio">{t('blog.author.bio')}</p>
+            <div class="author-card__links">
+              <Button href={aboutHref} variant="secondary" size="sm">{t('blog.author.cta_about')}</Button>
+              <Button href="https://aspnetpro.com.br" variant="acc" size="sm">{t('blog.author.cta_course')}</Button>
+              <Button href="#contato" variant="ghost" size="sm">{t('blog.author.cta_contact')}</Button>
+            </div>
+          </div>
+        </div>
+
+        {nextPost && nextHref && (
+          <a href={nextHref} class="next-post">
+            <div>
+              <div class="next-post__label">{t('blog.next.label')}</div>
+              <h3 class="next-post__title">{nextPost.title}</h3>
+              <div class="next-post__meta">{nextDate}{nextPost.tags[0] ? ` · ${nextPost.tags[0]}` : ''}</div>
+            </div>
+            <div class="next-post__arrow" aria-hidden="true">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                <path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round" />
+              </svg>
+            </div>
+          </a>
+        )}
+      </div>
+
     </div>
   </article>
 </BaseLayout>
+
+<script>
+  // Reading progress bar
+  (function () {
+    const bar = document.getElementById('progressBar');
+    const body = document.getElementById('articleBody');
+    if (!bar || !body) return;
+    const update = () => {
+      const rect = body.getBoundingClientRect();
+      const top = -rect.top;
+      const height = rect.height - window.innerHeight;
+      const pct = Math.max(0, Math.min(1, top / height));
+      bar.style.width = (pct * 100) + '%';
+    };
+    window.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    update();
+  })();
+
+  // TOC active section
+  (function () {
+    const tocLinks = Array.from(document.querySelectorAll('.toc__list a'));
+    if (!tocLinks.length) return;
+    const headings = tocLinks
+      .map(a => document.querySelector(a.getAttribute('href') ?? ''))
+      .filter(Boolean) as HTMLElement[];
+    if (!headings.length) return;
+    const onScroll = () => {
+      const scrollY = window.scrollY + 120;
+      let active = headings[0];
+      for (const h of headings) {
+        if (h.offsetTop <= scrollY) active = h;
+      }
+      tocLinks.forEach(a => a.classList.toggle('is-active', a.getAttribute('href') === '#' + active.id));
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
+  })();
+
+  // Copy link button
+  (function () {
+    const btn = document.getElementById('copyLinkBtn');
+    if (!btn) return;
+    btn.addEventListener('click', () => navigator.clipboard.writeText(location.href).catch(() => {}));
+  })();
+</script>
