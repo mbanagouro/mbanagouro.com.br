@@ -23,7 +23,7 @@ function fmtDate(d: Date): string {
 
 <BaseLayout
   title="Michel Banagouro — CTO @ Leanwork · Arquiteto e instrutor .NET"
-  description="Onze anos de .NET em produção. CTO da Leanwork, criador do ASP.NET PRO, palestrante. Arquitetura, liderança técnica e educação para devs sêniores."
+  description="Vinte anos de .NET em produção. CTO da Leanwork, criador do ASP.NET PRO, palestrante. Arquitetura, liderança técnica e educação para devs."
   lang={lang}
 >
 
@@ -56,14 +56,14 @@ function fmtDate(d: Date): string {
     <div class="container creds__inner">
       <span class="creds__leanwork">
         <span class="lw-mark">L</span>
-        <span>leanwork<span style="color:var(--text-muted); font-weight:400">.group</span></span>
+        <span>leanwork<span style="color:var(--text-muted); font-weight:400">.com.br</span></span>
       </span>
       <span class="creds__sep" aria-hidden="true"></span>
       <span class="creds__line">
         <strong>CTO &amp; Cofundador</strong>
-        <span class="dot">11+ anos</span>
-        <span class="dot">.NET / React / Azure</span>
-        <span class="dot">São Paulo, BR</span>
+        <span class="dot">20+ anos</span>
+        <span class="dot">.NET / Azure</span>
+        <span class="dot">Londrina/PR</span>
       </span>
     </div>
   </section>
@@ -92,9 +92,9 @@ function fmtDate(d: Date): string {
           </div>
           <div class="xp-card__body">
             <h3 class="xp-card__title">Arquitetura corporativa</h3>
-            <p class="xp-card__copy">Sistemas distribuídos em .NET, modelagem de domínio e estratégias de migração legacy → Azure. Foco em sustentar produção, não em hype.</p>
+            <p class="xp-card__copy">Atuei na modelagem e arquitetura de plataformas de e-commerce como ByTennis, Centauro, Netfarma, Ultrafarma e Riachuelo, em ambientes on-premise e nuvem. Foco em sistemas que precisam durar e escalar.</p>
           </div>
-          <div class="xp-card__meta"><span>04 cases públicos</span><span>↗</span></div>
+          <div class="xp-card__meta"><span>E-commerce Enterprise</span><span>↗</span></div>
         </div>
 
         <div class="xp-card">
@@ -106,9 +106,9 @@ function fmtDate(d: Date): string {
           </div>
           <div class="xp-card__body">
             <h3 class="xp-card__title">Liderança técnica</h3>
-            <p class="xp-card__copy">CTO de uma software house com mais de 40 engenheiros. Plano de carreira técnica, modelo de squads por domínio, processos de revisão que sobrevivem ao crescimento.</p>
+            <p class="xp-card__copy">Coordeno squads e execuções alinhadas com as necessidades do cliente, aliando visão de negócio com decisão técnica. Avalio e desenvolvo os times nos quais atuo, com foco em autonomia e resultado.</p>
           </div>
-          <div class="xp-card__meta"><span>40+ engenheiros</span><span>Leanwork</span></div>
+          <div class="xp-card__meta"><span>Squads · Delivery</span><span>Leanwork</span></div>
         </div>
 
         <div class="xp-card">
@@ -120,9 +120,9 @@ function fmtDate(d: Date): string {
           </div>
           <div class="xp-card__body">
             <h3 class="xp-card__title">Educação técnica</h3>
-            <p class="xp-card__copy">Criador do ASP.NET&nbsp;PRO — formação para devs sêniores que querem dominar arquitetura, observabilidade e performance, não decorar atalhos.</p>
+            <p class="xp-card__copy">Sempre tive vontade de ensinar e passar o conhecimento adquirido para outros devs, seja dentro das empresas ou no mercado. Criei a comunidade ASP.NET&nbsp;PRO para ajudar desenvolvedores a evoluir conectando teoria com os desafios reais do dia a dia.</p>
           </div>
-          <div class="xp-card__meta"><span>2.4k alunos</span><span>Edição 2026</span></div>
+          <div class="xp-card__meta"><span>ASP.NET PRO</span><span>Comunidade</span></div>
         </div>
 
         <div class="xp-card">
@@ -134,9 +134,9 @@ function fmtDate(d: Date): string {
           </div>
           <div class="xp-card__body">
             <h3 class="xp-card__title">Palestras e comunidade</h3>
-            <p class="xp-card__copy">Palestrante recorrente em TDC, .NET Conf Brasil, NDC e meetups locais. Painéis sobre carreira sênior e arquitetura corporativa em .NET.</p>
+            <p class="xp-card__copy">Compartilho conhecimento em faculdades e eventos técnicos, com destaque para o Recruta Tech em Curitiba, onde tenho palestrado todos os anos nos últimos 3 anos. Quer me convidar para falar no seu evento?</p>
           </div>
-          <div class="xp-card__meta"><span>+30 talks</span><span>2018–2026</span></div>
+          <div class="xp-card__meta"><a href="mailto:michel@leanwork.com.br?subject=Convite para palestra" style="text-decoration:none; color:inherit;">Convide-me ↗</a><span>Recruta Tech</span></div>
         </div>
       </div>
     </div>
@@ -154,33 +154,13 @@ function fmtDate(d: Date): string {
           <h2 class="pro__title">{t('home.aspnetpro.title')}</h2>
           <p class="pro__sub">{t('home.aspnetpro.sub')}</p>
           <p class="pro__copy">{t('home.aspnetpro.copy')}</p>
-          <ul class="pro__bullets">
-            <li><span><strong>Arquitetura por domínio</strong> aplicada à realidade brasileira — não a exemplos americanos genéricos.</span></li>
-            <li><span><strong>Observabilidade, performance e plano de migração</strong> — o que o tutorial nunca cobre.</span></li>
-            <li><span><strong>Revisões de código ao vivo</strong> com o instrutor — não conteúdo gravado e esquecido.</span></li>
-          </ul>
           <div class="pro__ctas">
             <Button href="https://aspnetpro.com.br" variant="acc" size="lg">
               {t('home.aspnetpro.cta_primary')}
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
             </Button>
-            <Button href="https://aspnetpro.com.br" variant="outline-dark" size="lg">{t('home.aspnetpro.cta_secondary')}</Button>
           </div>
         </div>
-        <aside class="pro__modules" aria-label="Módulos do programa">
-          <div class="pro__modules-head">
-            <span class="pro__modules-title">{t('home.aspnetpro.modules_title')}</span>
-            <span class="pro__modules-meta">{t('home.aspnetpro.modules_meta')}</span>
-          </div>
-          <ul class="pro__modules-list">
-            <li><span class="num">01</span><span>Arquitetura por domínio em .NET</span><span class="dur">8h</span></li>
-            <li><span class="num">02</span><span>Observabilidade e telemetria</span><span class="dur">6h</span></li>
-            <li><span class="num">03</span><span>Performance e otimização</span><span class="dur">7h</span></li>
-            <li><span class="num">04</span><span>Migração legacy → Azure</span><span class="dur">9h</span></li>
-            <li><span class="num">05</span><span>Testes em sistemas críticos</span><span class="dur">6h</span></li>
-            <li><span class="num">06</span><span>Revisões ao vivo</span><span class="dur">12h</span></li>
-          </ul>
-        </aside>
       </div>
     </div>
   </section>
@@ -235,15 +215,15 @@ function fmtDate(d: Date): string {
 
       <div class="events">
         <a href="/eventos" class="events__row">
-          <div class="events__date"><span class="d">12</span><span class="m">jun · 2026</span></div>
+          <div class="events__date"><span class="d">02</span><span class="m">jun · 2026</span></div>
           <div>
-            <div class="events__title">TDC São Paulo · Trilha .NET</div>
-            <div class="events__title-sub">Arquitetura por domínio em sistemas legados</div>
+            <div class="events__title">II Tech Week · Inteligência Artificial em Ação</div>
+            <div class="events__title-sub">O programador morreu. Vida longa ao programador.</div>
           </div>
           <Chip variant="solid" class="events__role">Palestrante</Chip>
           <span class="events__city">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            São Paulo
+            Londrina/PR
           </span>
           <span class="events__arrow">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -251,10 +231,26 @@ function fmtDate(d: Date): string {
         </a>
 
         <a href="/eventos" class="events__row">
-          <div class="events__date"><span class="d">03</span><span class="m">jul · 2026</span></div>
+          <div class="events__date"><span class="d">20</span><span class="m">set · 2025</span></div>
           <div>
-            <div class="events__title">.NET Conf Brasil</div>
-            <div class="events__title-sub">Observabilidade no .NET 9 — além do OpenTelemetry básico</div>
+            <div class="events__title">Recruta Tech · Curitiba</div>
+            <div class="events__title-sub">Faça seu Backend conversar com a IA: Criando um MCP com ASP .NET 9</div>
+          </div>
+          <Chip variant="solid" class="events__role">Palestrante</Chip>
+          <span class="events__city">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Curitiba/PR
+          </span>
+          <span class="events__arrow">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </span>
+        </a>
+
+        <a href="/eventos" class="events__row">
+          <div class="events__date"><span class="d">18</span><span class="m">set · 2025</span></div>
+          <div>
+            <div class="events__title">Microsoft AI Conference</div>
+            <div class="events__title-sub">Faça seu Backend conversar com a IA: Criando um MCP com ASP .NET 9</div>
           </div>
           <Chip variant="solid" class="events__role">Palestrante</Chip>
           <span class="events__city">
@@ -267,31 +263,15 @@ function fmtDate(d: Date): string {
         </a>
 
         <a href="/eventos" class="events__row">
-          <div class="events__date"><span class="d">22</span><span class="m">ago · 2026</span></div>
+          <div class="events__date"><span class="d">13</span><span class="m">nov · 2024</span></div>
           <div>
-            <div class="events__title">DevOps Days Porto Alegre</div>
-            <div class="events__title-sub">Painel: liderança técnica em times remotos</div>
+            <div class="events__title">UnC · Mafra</div>
+            <div class="events__title-sub">A Arquitetura de um dos maiores E-commerce Farmacêutico do Brasil</div>
           </div>
-          <Chip class="events__role">Painelista</Chip>
+          <Chip variant="solid" class="events__role">Palestrante</Chip>
           <span class="events__city">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Porto Alegre
-          </span>
-          <span class="events__arrow">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-        </a>
-
-        <a href="/eventos" class="events__row">
-          <div class="events__date"><span class="d">14</span><span class="m">set · 2026</span></div>
-          <div>
-            <div class="events__title">NDC Brasília · Workshop</div>
-            <div class="events__title-sub">Workshop de dois dias: arquitetura .NET para sistemas críticos</div>
-          </div>
-          <Chip variant="accent" class="events__role">Instrutor</Chip>
-          <span class="events__city">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" stroke-linecap="round"/><path d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" stroke-linecap="round" stroke-linejoin="round"/></svg>
-            Brasília
+            Mafra/SC
           </span>
           <span class="events__arrow">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true"><path d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" stroke-linecap="round" stroke-linejoin="round"/></svg>

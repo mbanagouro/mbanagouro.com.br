@@ -1,21 +1,21 @@
 ---
 title: "Welcome to my blog"
-description: "First official post on the site. Expect thoughts, tutorials and behind-the-scenes of my projects."
+description: "First official post on the site. Expect real cases, architecture deep-dives and the day-to-day of a CTO in the Brazilian software market."
 pubDate: 2026-05-12
-tags: ["meta", "announcement"]
+tags: ["meta"]
 ---
 
-Hi! This is the first official post on **mbanagouro.com.br**. The idea behind this space is simple:
-a place of my own to write, no social-media algorithms in the middle.
+Hi! This is the first official post on **mbanagouro.com.br**. The idea is simple: a place of my own to write, no social-media algorithms in the middle.
 
-## What to expect
+## What you will find here
 
-- **Software development** — mainly ASP.NET, .NET, and web architecture.
-- **Applied AI** — how I have been using models like Claude day-to-day.
-- **Behind-the-scenes** — product decisions, lessons from failures, and bets that paid off.
+- **Architecture** — design decisions in real .NET systems, trade-offs and lessons from production.
+- **AI** — how to integrate artificial intelligence into backend development, including MCP, agents and real use cases.
+- **.NET and ASP.NET** — ecosystem updates, patterns that work and ones that don't.
+- **Azure** — infrastructure, deployment, observability and real-world costs.
+- **Technical leadership** — how to coordinate teams, align business with engineering and develop people.
+- **Operations** — the day-to-day of keeping software in production. Incidents, metrics, decisions under pressure.
+- **Real cases** — behind the scenes of projects I have done at Leanwork, without the marketing filter.
 
-If you want to follow along, subscribe to the [RSS feed](/en/rss.xml), or follow me on
-[GitHub](https://github.com/mbanagouro), [YouTube](https://www.youtube.com/@mbanagouro)
-or [ASP.NET PRO](https://aspnetpro.com.br).
-
-> This post is a placeholder. Edit at `src/content/blog/en/welcome.md`.
+If you want to follow along, subscribe to the [RSS feed](/en/rss.xml) or follow me on
+[YouTube](https://www.youtube.com/@aspnetpro) and [Instagram](https://www.instagram.com/aspnetpro).

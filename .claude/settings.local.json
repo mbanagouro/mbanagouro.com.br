@@ -5,7 +5,17 @@
       "Bash(npm install *)",
       "Bash(npm run *)",
       "Bash(node -e ' *)",
-      "Bash(node --input-type=module)"
+      "Bash(node --input-type=module)",
+      "Bash(Get-Content \"C:\\\\Users\\\\Michel\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\C--Projetos-Github-mbanagouro-mbanagouro-com-br\\\\6f3a7be9-7be2-46ba-bb87-4457d05692eb\\\\tasks\\\\b35qd2w86.output\" -Wait)",
+      "Bash(Select-String -Pattern \"ready|Local|error|failed\")",
+      "Bash(Remove-Item \"C:\\\\Projetos\\\\Github\\\\mbanagouro\\\\mbanagouro.com.br\\\\src\\\\content\\\\events\\\\pt\\\\2026-06-12-tdc-sp.md\",)",
+      "Bash(\"C:\\\\Projetos\\\\Github\\\\mbanagouro\\\\mbanagouro.com.br\\\\src\\\\content\\\\events\\\\pt\\\\2026-07-03-dotnet-conf-brasil.md\",)",
+      "Bash(\"C:\\\\Projetos\\\\Github\\\\mbanagouro\\\\mbanagouro.com.br\\\\src\\\\content\\\\events\\\\pt\\\\2026-08-22-devopsdays-poa.md\",)",
+      "Bash(\"C:\\\\Projetos\\\\Github\\\\mbanagouro\\\\mbanagouro.com.br\\\\src\\\\content\\\\events\\\\pt\\\\2026-09-14-ndc-brasilia.md\",)",
+      "Bash(\"C:\\\\Projetos\\\\Github\\\\mbanagouro\\\\mbanagouro.com.br\\\\src\\\\content\\\\events\\\\pt\\\\2025-11-18-tdc-recife.md\",)",
+      "Bash(gh api *)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:www.linkedin.com)"
     ]
   }
 }
